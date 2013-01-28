@@ -6,21 +6,33 @@ use Zend\Db\Sql\Select;
 
 class UsersTable
 {
+    /**
+     * Holds the TableGateway object
+     *
+     * @var TableGateway
+     */
     protected $tableGateway;
     
+    /**
+     * Constructor with a TableGateway object injected
+     *
+     * @param TableGateway $tableGateway
+     */
     public function __construct(TableGateway $tableGateway)
     {
         $this->tableGateway = $tableGateway;
     }
     
-    public function getById($id)
+    /**
+     * Method to get users by username
+     *
+     * @param string $username
+     * @return User
+     */
+    public function getByUsername($username)
     {
-        $id = (int) $id;
-        $rowset = $this->tableGateway->select(array('id' => $id));
-        $row = $rowset->current();
-        if (!$row) {
-            throw new \Exception("Could not find row $id");
-        }
-        return $row;
+        $rowset = $this->tableGateway->select(array('username' => $username));
+        
+        return $rowset->current();
     }
 }

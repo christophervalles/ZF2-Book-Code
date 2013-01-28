@@ -3,16 +3,25 @@ namespace Wall\Model;
 
 class User
 {
-    public $id;
-    public $username;
-    public $email;
-    public $avatar_id;
-    public $name;
-    public $surname;
-    public $bio;
-    public $location;
-    public $gender;
-
+    /**
+     * Properties of a User
+     */
+    protected $id;
+    protected $username;
+    protected $email;
+    protected $avatar_id;
+    protected $name;
+    protected $surname;
+    protected $bio;
+    protected $location;
+    protected $gender;
+    
+    /**
+     * This method is called by the TableGateway to populate the object
+     *
+     * @param array $data 
+     * @return void
+     */
     public function exchangeArray($data)
     {
         $this->id = (isset($data['id'])) ? $data['id'] : null;
@@ -26,6 +35,12 @@ class User
         $this->gender = (isset($data['gender'])) ? $this->getGenderString($data['gender']) : null;
     }
     
+    /**
+     * Helper function to get a string representation of the gender
+     *
+     * @param int $gender 
+     * @return string
+     */
     public function getGenderString($gender)
     {
         return $gender == 1? 'Male' : 'Female';

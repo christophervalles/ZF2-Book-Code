@@ -27,7 +27,7 @@ return array(
             'wall' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/wall/:id',
+                    'route'    => '/wall[/:id]',
                     'constraints' => array(
                         'id' => '\w+'
                     ),

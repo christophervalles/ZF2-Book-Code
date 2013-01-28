@@ -55,14 +55,18 @@ class Module
             $vars = null;
         }
         
-        $postProcessor = $di->get('json-pp', array(
-            'response' => $e->getResponse(),
-            'vars' => $vars,
-        ));
+        if ($e->getResponse()->getStatusCode() == 200) {
+            $postProcessor = $di->get('json-pp', array(
+                'response' => $e->getResponse(),
+                'vars' => $vars,
+            ));
+            
+            $postProcessor->process();
+            
+            return $postProcessor->getResponse();
+        }
         
-        $postProcessor->process();
-        
-        return $postProcessor->getResponse();
+        return $e->getResponse();
     }
     
     /**
@@ -124,7 +128,8 @@ class Module
                 'UsersTableGateway' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new User());
+                    $resultSetPrototype->setArrayObjectPrototype(new User);
+                    
                     return new TableGateway('users', $dbAdapter, null, $resultSetPrototype);
                 },
             ),
