@@ -123,14 +123,10 @@ class Module
                 'Wall\Model\UsersTable' => function($sm) {
                     $tableGateway = $sm->get('UsersTableGateway');
                     $table = new UsersTable($tableGateway);
-                    return $table;
                 },
                 'UsersTableGateway' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new User);
-                    
-                    return new TableGateway('users', $dbAdapter, null, $resultSetPrototype);
+                    return new UsersTable($dbAdapter);
                 },
             ),
         );
