@@ -10,7 +10,6 @@
 namespace Wall;
 
 use Zend\Mvc\MvcEvent;
-use Wall\Model\User;
 use Wall\Model\UsersTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
@@ -114,21 +113,5 @@ class Module
         $e->stopPropagation();
         
         return $postProcessor->getResponse();
-    }
-    
-    public function getServiceConfig()
-    {
-        return array(
-            'factories' => array(
-                'Wall\Model\UsersTable' => function($sm) {
-                    $tableGateway = $sm->get('UsersTableGateway');
-                    $table = new UsersTable($tableGateway);
-                },
-                'UsersTableGateway' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    return new UsersTable($dbAdapter);
-                },
-            ),
-        );
     }
 }

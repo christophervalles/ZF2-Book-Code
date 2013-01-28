@@ -27,7 +27,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Wall\Controller\Index' => 'Wall\Controller\IndexController'
+            'Wall\Controller\Index' => 'Wall\Controller\IndexController',
+            'Wall\Controller\Index2' => 'Wall\Controller\Index2Controller'
         ),
     ),
     'view_manager' => array(
@@ -36,9 +37,10 @@ return array(
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
-        'template_map' => array(
-            'wall/index/index'     => __DIR__ . '/../view/wall/index/index.phtml',
-        ),
+        // 'template_map' => array(
+        //     'wall/index/index'     => __DIR__ . '/../view/wall/index/index.phtml',
+        //     'wall/index2/index'     => __DIR__ . '/../view/wall/index2/index.phtml',
+        // ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),

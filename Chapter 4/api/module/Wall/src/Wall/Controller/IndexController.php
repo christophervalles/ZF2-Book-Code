@@ -36,10 +36,10 @@ class IndexController extends AbstractRestfulController
     {
         $usersTable = $this->getUsersTable();
         $userData = $usersTable->getByUsername($username);
-        die(var_dump($userData));
+        
         if ($userData !== false) {
             return array(
-                'user' => $userData
+                'user' => $userData->getArrayCopy()
             );
         } else {
             $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_404);

@@ -12,13 +12,16 @@ namespace Wall\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Http\Client;
 use Zend\Http\Request;
+use Zend\Stdlib\Hydrator\ClassMethods;
+use Wall\Entity\User;
 
 class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
+        $username = $this->getEvent()->getRouteMatch()->getParam('username');
         $request = new Request();
-        $request->setUri('http://zf2-api/wall/tbhot3ww');
+        $request->setUri(sprintf('http://zf2-api/wall/%s', $username));
         $request->setMethod('GET');
         
         $client = new Client();
@@ -26,7 +29,11 @@ class IndexController extends AbstractActionController
         
         if ($response->isSuccess()) {
             $response = \Zend\Json\Decoder::decode($response->getContent());
-            return (array)$response;
+            $hydrator = new ClassMethods(false);
+            
+            return array(
+                'user' => $hydrator->hydrate((array)$response->user, new User())
+            );
         }
         
         return array();

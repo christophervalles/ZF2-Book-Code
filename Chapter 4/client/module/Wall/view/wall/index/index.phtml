@@ -5,21 +5,21 @@
             <!-- Profile section -->
             <div class="span3 well" id="profile">
                 <section>
-                    <a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>" class="thumbnail">
-                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->name, $user->surname)  ?>" />
+                    <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="thumbnail">
+                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
                     </a>
                     <ul>
                         <li>
                             <h3><i class="icon-user"></i> Bio</h3>
-                            <p><?php echo $user->bio ?></p>
+                            <p><?php echo $user->getBio() ?></p>
                         </li>
                         <li>
                             <h3><i class="icon-globe"></i> Location</h3>
-                            <p><?php echo $user->location ?></p>
+                            <p><?php echo $user->getLocation() ?></p>
                         </li>
                         <li>
                             <h3><i class="icon-heart"></i> Gender</h3>
-                            <p><?php echo $user->gender ?></p>
+                            <p><?php echo $user->getGenderString() ?></p>
                         </li>
                     </ul>
                 </section>
@@ -30,7 +30,7 @@
                 <section>
                     <!-- Main Stream wall profile -->
                     <div id="wall-stream">
-                        <h2><?php printf('%s %s', $user->name, $user->surname)  ?></h2>
+                        <h2><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></h2>
                         <button class="btn btn-primary" type="button">Edit profile <i class="icon-edit icon-white"></i></button>
                     </div>
                 <section>
@@ -42,11 +42,11 @@
                         <li class="post">
                             <!-- Normal post -->
                             <section>
-                                <a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>" class="pull-left thumbnail">
-                                    <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->name, $user->surname)  ?>" />
+                                <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                    <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
                                 </a>
                                 <div class="post-body">
-                                    <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>"><?php printf('%s %s', $user->name, $user->surname)  ?></a></h4>
+                                    <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
                                     <p>Lorem Ipsum Dolo Sit Amet</p>
                                     <ul>
                                         <li><a href="#" title="Comment" class="comment-link"><i class=" icon-comment"></i> Comment</a></li>
@@ -64,11 +64,11 @@
                         <li class="post">
                             <!-- Answered post -->
                             <section>
-                                <a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>" class="pull-left thumbnail">
-                                    <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->name, $user->surname)  ?>" />
+                                <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                    <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
                                 </a>
                                 <div class="post-body">
-                                    <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>"><?php printf('%s %s', $user->name, $user->surname)  ?></a></h4>
+                                    <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
                                     <p>Lorem Ipsum Dolo Sit Amet</p>
                                     <ul>
                                         <li><a href="#" title="Comment" class="comment-link"><i class=" icon-comment"></i> Comment</a></li>
@@ -80,11 +80,11 @@
                                 <ul class="post-list">
                                     <li class="post">
                                         <section>
-                                            <a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>" class="pull-left thumbnail">
-                                                <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->name, $user->surname)  ?>" />
+                                            <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                                <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
                                             </a>
                                             <div class="post-body">
-                                                <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>"><?php printf('%s %s', $user->name, $user->surname)  ?></a></h4>
+                                                <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
                                                 <p>Lorem Ipsum Dolo Sit Amet</p>
                                             </div>
                                         </section>
@@ -92,11 +92,11 @@
 
                                     <li class="post last">
                                         <section>
-                                            <a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>" class="pull-left thumbnail">
-                                                <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->name, $user->surname)  ?>" />
+                                            <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                                <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
                                             </a>
                                             <div class="post-body">
-                                                <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->name, $user->surname)  ?>"><?php printf('%s %s', $user->name, $user->surname)  ?></a></h4>
+                                                <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
                                                 <p>Lorem Ipsum Dolo Sit Amet</p>
                                             </div>
                                         </section>
