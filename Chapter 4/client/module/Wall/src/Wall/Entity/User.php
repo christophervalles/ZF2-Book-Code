@@ -4,13 +4,13 @@ namespace Wall\Entity;
 
 class User
 {
-    private $id;
-    private $username;
-    private $name;
-    private $surname;
-    private $bio;
-    private $location;
-    private $gender;
+    protected $id;
+    protected $username;
+    protected $name;
+    protected $surname;
+    protected $bio;
+    protected $location;
+    protected $gender;
     
     public function setId($id)
     {
