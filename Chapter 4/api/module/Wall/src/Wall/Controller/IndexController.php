@@ -53,7 +53,7 @@ class IndexController extends AbstractRestfulController
      */
     public function getList()
     {
-        $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_405);
+        $this->methodNotAllowed();
     }
     
     /**
@@ -63,7 +63,7 @@ class IndexController extends AbstractRestfulController
      */
     public function create($data)
     {
-        $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_405);
+        $this->methodNotAllowed();
     }
     
     /**
@@ -73,7 +73,7 @@ class IndexController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
-        $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_405);
+        $this->methodNotAllowed();
     }
     
     /**
@@ -82,6 +82,11 @@ class IndexController extends AbstractRestfulController
      * @return void
      */
     public function delete($id)
+    {
+        $this->methodNotAllowed();
+    }
+    
+    protected function methodNotAllowed()
     {
         $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_405);
     }

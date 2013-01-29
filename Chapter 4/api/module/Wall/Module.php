@@ -10,12 +10,16 @@
 namespace Wall;
 
 use Zend\Mvc\MvcEvent;
-use Wall\Model\UsersTable;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\TableGateway\TableGateway;
 
 class Module
 {
+    /**
+     * Method executed when bootstrapping the module, we use it to setup a few listeners
+     * to various events like dispatch or error dispatch
+     *
+     * @param MvcEvent $e 
+     * @return void
+     */
     public function onBootstrap(MvcEvent $e)
     {
         $moduleManager = $e->getApplication()->getServiceManager()->get('modulemanager');
@@ -24,11 +28,21 @@ class Module
         $sharedEvents->attach('Zend\Mvc\Application', MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'errorProcess'), 999);
     }
     
+    /**
+     * Convenience method to return the config file
+     *
+     * @return string
+     */
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
     }
     
+    /**
+     * Return an autoloader configured namespace
+     *
+     * @return array
+     */
     public function getAutoloaderConfig()
     {
         return array(
@@ -41,21 +55,24 @@ class Module
     }
     
     /**
-     * @param MvcEvent $e
-     * @return null|\Zend\Http\PhpEnvironment\Response
+     * Method executed when the request is dispatched. We use a PostProcessor to
+     * transform the response to a JSON object
+     *
+     * @param MvcEvent $e 
+     * @return \Zend\Http\PhpEnvironment\Response
      */
     public function postProcess(MvcEvent $e)
     {
-        $di = $e->getTarget()->getServiceLocator()->get('di');
-        
-        if (is_array($e->getResult()->getVariables())) {
-            $vars = $e->getResult()->getVariables();
-        } else {
-            $vars = null;
-        }
-        
         if ($e->getResponse()->getStatusCode() == 200) {
-            $postProcessor = $di->get('json-pp', array(
+            $di = $e->getTarget()->getServiceLocator()->get('di');
+            
+            if (is_array($e->getResult()->getVariables())) {
+                $vars = $e->getResult()->getVariables();
+            } else {
+                $vars = null;
+            }
+            
+            $postProcessor = $di->get('JsonPostProcessor', array(
                 'response' => $e->getResponse(),
                 'vars' => $vars,
             ));
@@ -76,16 +93,16 @@ class Module
     {
         $di = $e->getApplication()->getServiceManager()->get('di');
         $eventParams = $e->getParams();
-        $configuration = $e->getApplication()->getConfig();
+        $config = $e->getApplication()->getConfig();
         
         $vars = array();
         if (isset($eventParams['exception'])) {
             $exception = $eventParams['exception'];
             
-            if ($configuration['errors']['show_exceptions']['message']) {
+            if ($config['errors']['show_exceptions']['message']) {
                 $vars['error-message'] = $exception->getMessage();
             }
-            if ($configuration['errors']['show_exceptions']['trace']) {
+            if ($config['errors']['show_exceptions']['trace']) {
                 $vars['error-trace'] = $exception->getTrace();
             }
         }
@@ -95,7 +112,7 @@ class Module
         }
         
         $postProcessor = $di->get(
-            $configuration['errors']['post_processor'],
+            'JsonPostProcessor',
             array('vars' => $vars, 'response' => $e->getResponse())
         );
         

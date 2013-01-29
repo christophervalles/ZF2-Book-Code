@@ -9,7 +9,6 @@
 
 return array(
     'errors' => array(
-        'post_processor' => 'json-pp',
         'show_exceptions' => array(
             'message' => true,
             'trace'   => true
@@ -18,7 +17,7 @@ return array(
     'di' => array(
         'instance' => array(
             'alias' => array(
-                'json-pp'  => 'Wall\PostProcessor\Json'
+                'JsonPostProcessor'  => 'Wall\PostProcessor\JsonPostProcessor'
             )
         )
     ),
