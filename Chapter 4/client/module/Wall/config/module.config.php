@@ -27,8 +27,7 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Wall\Controller\Index' => 'Wall\Controller\IndexController',
-            'Wall\Controller\Index2' => 'Wall\Controller\Index2Controller'
+            'Wall\Controller\Index' => 'Wall\Controller\IndexController'
         ),
     ),
     'view_manager' => array(
