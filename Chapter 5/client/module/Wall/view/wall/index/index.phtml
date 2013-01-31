@@ -1,0 +1,119 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="row-fluid">
+
+            <!-- Profile section -->
+            <div class="span3 well" id="profile">
+                <section>
+                    <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="thumbnail">
+                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
+                    </a>
+                    <ul>
+                        <li>
+                            <h3><i class="icon-user"></i> Bio</h3>
+                            <p><?php echo $user->getBio() ?></p>
+                        </li>
+                        <li>
+                            <h3><i class="icon-globe"></i> Location</h3>
+                            <p><?php echo $user->getLocation() ?></p>
+                        </li>
+                        <li>
+                            <h3><i class="icon-heart"></i> Gender</h3>
+                            <p><?php echo $user->getGenderString() ?></p>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Wall profile -->
+            <div class="span9" id="wall">
+                <section>
+                    <!-- Main Stream wall profile -->
+                    <div id="wall-stream">
+                        <h2><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></h2>
+                        <button class="btn btn-primary" type="button">Edit profile <i class="icon-edit icon-white"></i></button>
+                    </div>
+                <section>
+
+                <section>
+                    <!-- Post -->
+                    <ul class="post-list">
+
+                        <li class="post">
+                            <!-- Normal post -->
+                            <section>
+                                <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                    <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
+                                </a>
+                                <div class="post-body">
+                                    <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
+                                    <p>Lorem Ipsum Dolo Sit Amet</p>
+                                    <ul>
+                                        <li><a href="#" title="Comment" class="comment-link"><i class=" icon-comment"></i> Comment</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Comment box -->
+                                <form class="well input-append">
+                                    <input type="text" placeholder="Write a comment here..." class="span11"/>
+                                    <button class="btn" type="button">Send</button>
+                                </form>
+                            </section>
+                        </li>
+
+                        <li class="post">
+                            <!-- Answered post -->
+                            <section>
+                                <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                    <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
+                                </a>
+                                <div class="post-body">
+                                    <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
+                                    <p>Lorem Ipsum Dolo Sit Amet</p>
+                                    <ul>
+                                        <li><a href="#" title="Comment" class="comment-link"><i class=" icon-comment"></i> Comment</a></li>
+                                    </ul>
+                                </div>
+
+
+                                <!-- the answer -->
+                                <ul class="post-list">
+                                    <li class="post">
+                                        <section>
+                                            <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                                <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
+                                            </a>
+                                            <div class="post-body">
+                                                <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
+                                                <p>Lorem Ipsum Dolo Sit Amet</p>
+                                            </div>
+                                        </section>
+                                    </li>
+
+                                    <li class="post last">
+                                        <section>
+                                            <a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
+                                                <img src="/images/avatar.png" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
+                                            </a>
+                                            <div class="post-body">
+                                                <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>"><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></a></h4>
+                                                <p>Lorem Ipsum Dolo Sit Amet</p>
+                                            </div>
+                                        </section>
+                                    </li>
+                                </ul>
+
+                                <!-- Comment box -->
+                                <form class="well input-append">
+                                    <input type="text" placeholder="Write a comment here..." class="span11"/>
+                                    <button class="btn" type="button">Send</button>
+                                </form>
+                            </section>
+                        </li>
+                    </ul> <!-- Close post list -->
+                <section>
+            </div> <!-- Close wall profile -->
+
+        </div>
+    </div>
+</div>
