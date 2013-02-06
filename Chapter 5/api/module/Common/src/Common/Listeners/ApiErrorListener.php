@@ -58,18 +58,18 @@ class ApiErrorListener implements ListenerAggregateInterface
      */
     public static function onRender(MvcEvent $e)
     {
-        if (!$e->isError()) {
+        if ($e->getResponse()->isOk()) {
             return;
         }
         
         $httpCode = $e->getResponse()->getStatusCode();
         $sm = $e->getApplication()->getServiceManager();
         $viewModel = $e->getResult();
-        $exception = $viewModel->getVariable('exception')->getMessage();
+        $exception = $viewModel->getVariable('exception');
         
         $model = new JsonModel(array(
-            'errorCode' => $httpCode,
-            'errorMsg' => $exception
+            'errorCode' => $exception->getCode() ?: $httpCode,
+            'errorMsg' => $exception->getMessage()
         ));
         $model->setTerminal(true);
         

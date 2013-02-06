@@ -41,7 +41,7 @@ class IndexController extends AbstractRestfulController
         if ($userData !== false) {
             return new JsonModel($userData->getArrayCopy());
         } else {
-            $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_404);
+            throw new \Exception('User not found', 404);
         }
     }
     

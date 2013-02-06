@@ -36,8 +36,9 @@ class IndexController extends AbstractActionController
             return array(
                 'user' => $hydrator->hydrate($response, new User())
             );
+        } else {
+            $this->getResponse()->setStatusCode(404);
+            return;
         }
-        
-        return array();
     }
 }
