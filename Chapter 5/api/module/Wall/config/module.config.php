@@ -8,25 +8,12 @@
  */
 
 return array(
-    'errors' => array(
-        'show_exceptions' => array(
-            'message' => true,
-            'trace'   => true
-        )
-    ),
-    'di' => array(
-        'instance' => array(
-            'alias' => array(
-                'JsonPostProcessor'  => 'Wall\PostProcessor\JsonPostProcessor'
-            )
-        )
-    ),
     'router' => array(
         'routes' => array(
             'wall' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/wall[/:id]',
+                    'route'    => '/api/wall[/:id]',
                     'constraints' => array(
                         'id' => '\w+'
                     ),
@@ -35,6 +22,11 @@ return array(
                     ),
                 ),
             ),
+        ),
+    ),
+    'di' => array(
+        'services' => array(
+            'Wall\Model\UsersTable' => 'Wall\Model\UsersTable'
         ),
     ),
     'controllers' => array(

@@ -7,7 +7,9 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Wall;
+namespace Common;
+
+use Zend\Mvc\MvcEvent;
 
 class Module
 {
@@ -31,9 +33,22 @@ class Module
         return array(
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
                 ),
             ),
         );
+    }
+    
+    /**
+     * Attaches the ApiErrorListener on the render event
+     *
+     * @param MvcEvent $e
+     */
+    public function onBootstrap($e)
+    {
+        $app = $e->getTarget();
+        $services = $app->getServiceManager();
+        $events = $app->getEventManager();
+        $events->attach($services->get('Common\Listeners\ApiErrorListener'));
     }
 }

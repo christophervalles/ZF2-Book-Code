@@ -10,6 +10,7 @@
 namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\View\Model\JsonModel;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -38,9 +39,7 @@ class IndexController extends AbstractRestfulController
         $userData = $usersTable->getByUsername($username);
         
         if ($userData !== false) {
-            return array(
-                'user' => $userData->getArrayCopy()
-            );
+            return new JsonModel($userData->getArrayCopy());
         } else {
             $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_404);
         }
