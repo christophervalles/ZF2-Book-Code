@@ -23,6 +23,19 @@ return array(
                     ),
                 ),
             ),
+            'wall-post-text' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/:username/status',
+                    'constraints' => array(
+                        'username' => '\w+'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Wall\Controller\Index',
+                        'action'     => 'post-text',
+                    ),
+                ),
+            ),
         ),
     ),
     'controllers' => array(

@@ -11,6 +11,7 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use Wall\Model\UserStatusesTable;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -27,6 +28,13 @@ class IndexController extends AbstractRestfulController
     protected $usersTable;
     
     /**
+     * Holds the table object
+     *
+     * @var UserStatusesTable
+     */
+    protected $userStatusesTable;
+    
+    /**
      * This method will fetch the data related to the wall of a user and return
      * it. The data is fetched using the username as reference
      *
@@ -36,10 +44,16 @@ class IndexController extends AbstractRestfulController
     public function get($username)
     {
         $usersTable = $this->getUsersTable();
+        $userStatusesTable = $this->getUserStatusesTable();
+        
         $userData = $usersTable->getByUsername($username);
+        $userStatuses = $userStatusesTable->getByUserId($userData->id);
+        
+        $wallData = $userData->getArrayCopy();
+        $wallData['statuses'] = $userStatuses->toArray();
         
         if ($userData !== false) {
-            return new JsonModel($userData->getArrayCopy());
+            return new JsonModel($wallData);
         } else {
             throw new \Exception('User not found', 404);
         }
@@ -62,7 +76,23 @@ class IndexController extends AbstractRestfulController
      */
     public function create($data)
     {
-        $this->methodNotAllowed();
+        $filters = UserStatusesTable::getInputFilter();
+        $filters->setData($data);
+        $filters->isValid();
+        
+        if ($filters->isValid()) {
+            $userStatusesTable = $this->getUserStatusesTable();
+            $result = new JsonModel(array(
+                'result' => $userStatusesTable->create($data['user_id'], $data['status'])
+            ));
+        } else {
+            $result = new JsonModel(array(
+                'result' => false,
+                'errors' => $filters->getMessages()
+            ));
+        }
+        
+        return $result;
     }
     
     /**
@@ -103,5 +133,20 @@ class IndexController extends AbstractRestfulController
             $this->usersTable = $sm->get('Wall\Model\UsersTable');
         }
         return $this->usersTable;
+    }
+    
+    /**
+     * This is a convenience method to load the userStatusesTable db object and keeps track
+     * of the instance to avoid multiple of them
+     *
+     * @return UserStatusesTable
+     */
+    protected function getUserStatusesTable()
+    {
+        if (!$this->userStatusesTable) {
+            $sm = $this->getServiceLocator();
+            $this->userStatusesTable = $sm->get('Wall\Model\UserStatusesTable');
+        }
+        return $this->userStatusesTable;
     }
 }

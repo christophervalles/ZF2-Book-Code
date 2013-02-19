@@ -145,4 +145,28 @@ footer .container {
   border-top: 1px solid #ddd;
   padding-top: 10px;
 }
-
+.hero-unit-404 {
+    padding: 60px 0;
+    background-color: #eee;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+.hero-unit-404 .span3 {
+    padding: 0 0 0 60px;
+}
+.hero-unit-404 h1 {
+    text-align: center;
+    line-height: 80px;
+    text-shadow: 0 0 5px #ddd;
+}
+.hero-unit-404 h1 span {
+    display: block;
+    font-size: 100px;
+}
+.hero-unit-404 .img-circle {
+    border: 2px solid #ddd;
+}
+#wall-status textarea {
+    resize: none;
+}

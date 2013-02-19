@@ -2,6 +2,9 @@
 
 namespace Wall\Entity;
 
+use Zend\Stdlib\Hydrator\ClassMethods;
+use Wall\Entity\Status;
+
 class User
 {
     protected $id;
@@ -11,10 +14,11 @@ class User
     protected $bio;
     protected $location;
     protected $gender;
+    protected $statuses = array();
     
     public function setId($id)
     {
-        $this->id = $id;
+        $this->id = (int)$id;
     }
     
     public function setUsername($username)
@@ -44,7 +48,16 @@ class User
     
     public function setGender($gender)
     {
-        $this->gender = $gender;
+        $this->gender = (int)$gender;
+    }
+    
+    public function setStatuses($statuses)
+    {
+        $hydrator = new ClassMethods();
+        
+        foreach ($statuses as $status) {
+            $this->statuses[] = $hydrator->hydrate($status, new Status());
+        }
     }
     
     public function getId()
@@ -85,5 +98,10 @@ class User
     public function getGenderString()
     {
         return $this->gender == 1? 'Male' : 'Female';
+    }
+    
+    public function getStatuses()
+    {
+        return $this->statuses;
     }
 }

@@ -24,7 +24,7 @@ class UsersTable extends AbstractTableGateway implements AdapterAwareInterface
      * Method to get users by username
      *
      * @param string $username
-     * @return User
+     * @return ArrayObject
      */
     public function getByUsername($username)
     {
