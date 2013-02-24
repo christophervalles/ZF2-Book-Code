@@ -8,11 +8,6 @@
  */
 
 return array(
-    'controller_plugins' => array(
-        'invokables' => array(
-            'Common\Plugins\ApiProblemResult' => 'Common\Plugins\ApiProblemResult',
-        ),
-    ),
     'service_manager' => array(
         'invokables' => array(
             'Common\Listeners\ApiProblemListener' => 'Common\Listeners\ApiProblemListener',
