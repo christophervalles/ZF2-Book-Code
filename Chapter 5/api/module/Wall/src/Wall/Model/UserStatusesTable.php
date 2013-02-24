@@ -52,7 +52,13 @@ class UserStatusesTable extends AbstractTableGateway implements AdapterAwareInte
         ));
     }
     
-    public static function getInputFilter()
+    /**
+     * Return a configured input filter to be able to validate and
+     * filter the data.
+     *
+     * @return InputFilter
+     */
+    public function getInputFilter()
     {
         $inputFilter = new InputFilter();
         $factory = new InputFactory();
@@ -61,12 +67,21 @@ class UserStatusesTable extends AbstractTableGateway implements AdapterAwareInte
             'name'     => 'user_id',
             'required' => true,
             'filters'  => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim'),
                 array('name' => 'Int'),
             ),
             'validators' => array(
+                array('name' => 'NotEmpty'),
+                array('name' => 'Digits'),
                 array(
-                    'name' => 'NotEmpty',
-                ),
+                    'name' => 'Zend\Validator\Db\RecordExists',
+                    'options' => array(
+                        'table' => 'users',
+                        'field' => 'id',
+                        'adapter' => $this->adapter
+                    )
+                )
             ),
         )));
         
@@ -78,9 +93,7 @@ class UserStatusesTable extends AbstractTableGateway implements AdapterAwareInte
                 array('name' => 'StringTrim'),
             ),
             'validators' => array(
-                array(
-                    'name' => 'NotEmpty',
-                ),
+                array('name' => 'NotEmpty'),
                 array(
                     'name'    => 'StringLength',
                     'options' => array(

@@ -76,12 +76,13 @@ class IndexController extends AbstractRestfulController
      */
     public function create($data)
     {
-        $filters = UserStatusesTable::getInputFilter();
+        $userStatusesTable = $this->getUserStatusesTable();
+        
+        $filters = $userStatusesTable->getInputFilter();
         $filters->setData($data);
         $filters->isValid();
         
         if ($filters->isValid()) {
-            $userStatusesTable = $this->getUserStatusesTable();
             $result = new JsonModel(array(
                 'result' => $userStatusesTable->create($data['user_id'], $data['status'])
             ));
