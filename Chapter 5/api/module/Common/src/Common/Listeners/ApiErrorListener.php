@@ -32,7 +32,7 @@ class ApiErrorListener implements ListenerAggregateInterface
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, 'ApiErrorListener::onRender', 1000);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, __CLASS__ . '::onRender', 1000);
     }
     
     /**
@@ -68,8 +68,8 @@ class ApiErrorListener implements ListenerAggregateInterface
         $exception = $viewModel->getVariable('exception');
         
         $model = new JsonModel(array(
-            'errorCode' => $exception->getCode() ?: $httpCode,
-            'errorMsg' => $exception->getMessage()
+            'errorCode' => !empty($exception) ? $exception->getCode() : $httpCode,
+            'errorMsg' => !empty($exception) ? $exception->getMessage() : NULL
         ));
         $model->setTerminal(true);
         
