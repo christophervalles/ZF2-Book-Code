@@ -26,7 +26,8 @@ return array(
     ),
     'di' => array(
         'services' => array(
-            'Wall\Model\UsersTable' => 'Wall\Model\UsersTable'
+            'Wall\Model\UsersTable' => 'Wall\Model\UsersTable',
+            'Wall\Model\UserStatusesTable' => 'Wall\Model\UserStatusesTable'
         ),
     ),
     'controllers' => array(
