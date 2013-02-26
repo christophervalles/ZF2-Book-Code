@@ -62,17 +62,6 @@ class Status
         return $this->updatedAt;
     }
     
-    public function toArray()
-    {
-        return array(
-            'id' => $this->id,
-            'user_id' => $this->userId,
-            'status' => $this->status,
-            'created_at' => $this->createdAt,
-            'updated_at' => $this->updatedAt
-        );
-    }
-    
     public static function getInputFilter()
     {
         $inputFilter = new InputFilter();

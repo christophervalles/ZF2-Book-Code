@@ -13,7 +13,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Http\Client;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Json\Decoder;
-use Zend\Session\Container;
 use Wall\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Entity\Status;
@@ -24,27 +23,19 @@ class IndexController extends AbstractActionController
     {
         $viewData = array();
         
-        $session = new Container('base');
-        if (!$session->offsetExists('user')) {
-            $username = $this->params()->fromRoute('username');
-            $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
-            $client->setMethod(\Zend\Http\Request::METHOD_GET);
-            $response = $client->send();
+        $username = $this->params()->fromRoute('username');
+        $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
+        $client->setMethod(\Zend\Http\Request::METHOD_GET);
+        $response = $client->send();
             
-            if ($response->isSuccess()) {
-                $response = Decoder::decode($response->getContent(), \Zend\Json\Json::TYPE_ARRAY);
-                $hydrator = new ClassMethods();
+        if ($response->isSuccess()) {
+            $response = Decoder::decode($response->getContent(), \Zend\Json\Json::TYPE_ARRAY);
+            $hydrator = new ClassMethods();
                 
-                $user = $hydrator->hydrate($response, new User());
-            } else {
-                $this->getResponse()->setStatusCode(404);
-                return;
-            }
-            
-            $session->offsetSet('user', $user);
-            $session->setExpirationSeconds('user', 180);
+            $user = $hydrator->hydrate($response, new User());
         } else {
-            $user = $session->offsetGet('user');
+            $this->getResponse()->setStatusCode(404);
+            return;
         }
         
         //Check if we are submitting content
@@ -66,10 +57,6 @@ class IndexController extends AbstractActionController
                 $response = $client->send();
                 
                 if ($response->isSuccess()) {
-                    if ($session->offsetExists('user')) {
-                        $session->offsetUnset('user');
-                    }
-                    
                     return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                 } else {
                     $this->getResponse()->setStatusCode(500);
