@@ -70,7 +70,7 @@ class IndexController extends AbstractRestfulController
     }
     
     /**
-     * Method not available for this endpoint
+     * This method takes cares of creating new statuses for the user
      *
      * @return void
      */

@@ -35,6 +35,13 @@ class IndexController extends AbstractRestfulController
     protected $userStatusesTable;
     
     /**
+     * Holds the table object
+     *
+     * @var UserImagesTable
+     */
+    protected $userImagesTable;
+    
+    /**
      * This method will fetch the data related to the wall of a user and return
      * it. The data is fetched using the username as reference
      *
@@ -69,11 +76,69 @@ class IndexController extends AbstractRestfulController
     }
     
     /**
-     * Method not available for this endpoint
+     * This method inspects the request and routes the data
+     * to the correct method
      *
      * @return void
      */
     public function create($data)
+    {
+        if (array_key_exists('status', $data) && !empty($data['status'])) {
+            $this->createStatus($data);
+        }
+        
+        if (array_key_exists('image', $data) && !empty($data['image'])) {
+            $this->createImage($data);
+        }
+    }
+    
+    /**
+     * Handle the creation of a new image
+     *
+     * @param array $data 
+     * @return JsonModel
+     */
+    protected function createImage($data)
+    {
+        $userImagesTable = $this->getUserImagesTable();
+        
+        $filters = $userImagesTable->getInputFilter();
+        $filters->setData($data);
+        $filters->isValid();
+        
+        if ($filters->isValid()) {
+            $filename = sprintf('public/images/%s.png', sha1(uniqid(time(), TRUE)));
+            $content = base64_decode($data['image']);
+            $image = imagecreatefromstring($content);
+            
+            if (imagepng($image, $filename) === TRUE) {
+                $result = new JsonModel(array(
+                    'result' => $userImagesTable->create($data['user_id'], $filename)
+                ));
+            } else {
+                $result = new JsonModel(array(
+                    'result' => false,
+                    'errors' => 'Error while storing the image'
+                ));
+            }
+            imagedestroy($image);
+        } else {
+            $result = new JsonModel(array(
+                'result' => false,
+                'errors' => $filters->getMessages()
+            ));
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Handle the creation of a new status
+     *
+     * @param array $data 
+     * @return JsonModel
+     */
+    protected function createStatus($data)
     {
         $userStatusesTable = $this->getUserStatusesTable();
         
@@ -148,5 +213,20 @@ class IndexController extends AbstractRestfulController
             $this->userStatusesTable = $sm->get('Wall\Model\UserStatusesTable');
         }
         return $this->userStatusesTable;
+    }
+    
+    /**
+     * This is a convenience method to load the userImagesTable db object and keeps track
+     * of the instance to avoid multiple of them
+     *
+     * @return UserStatusesTable
+     */
+    protected function getUserImagesTable()
+    {
+        if (!$this->userImagesTable) {
+            $sm = $this->getServiceLocator();
+            $this->userImagesTable = $sm->get('Wall\Model\UserImagesTable');
+        }
+        return $this->userImagesTable;
     }
 }
