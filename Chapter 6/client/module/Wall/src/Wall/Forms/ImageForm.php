@@ -15,7 +15,6 @@ class ImageForm extends Form
         
         $this->add(array(
             'name' => 'image',
-            'required' => true,
             'type'  => 'Zend\Form\Element\File',
             'attributes' => array(
                 'class' => 'span11',
