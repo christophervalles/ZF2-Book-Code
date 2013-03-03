@@ -84,12 +84,14 @@ class IndexController extends AbstractRestfulController
     public function create($data)
     {
         if (array_key_exists('status', $data) && !empty($data['status'])) {
-            $this->createStatus($data);
+            $result = $this->createStatus($data);
         }
         
         if (array_key_exists('image', $data) && !empty($data['image'])) {
-            $this->createImage($data);
+            $result = $this->createImage($data);
         }
+		
+		return $result;
     }
     
     /**
@@ -113,7 +115,7 @@ class IndexController extends AbstractRestfulController
             
             if (imagepng($image, $filename) === TRUE) {
                 $result = new JsonModel(array(
-                    'result' => $userImagesTable->create($data['user_id'], $filename)
+                    'result' => $userImagesTable->create($data['user_id'], basename($filename))
                 ));
             } else {
                 $result = new JsonModel(array(

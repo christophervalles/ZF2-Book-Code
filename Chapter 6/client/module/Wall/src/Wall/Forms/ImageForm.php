@@ -3,8 +3,9 @@ namespace Wall\Forms;
 
 use Zend\Form\Element;
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
 
-class ImageForm extends Form
+class ImageForm extends Form implements InputFilterProviderInterface
 {
     public function __construct($name = null)
     {
@@ -12,7 +13,12 @@ class ImageForm extends Form
         
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'well input-append');
-        
+		
+        $this->prepareElements();
+    }
+	
+	public function prepareElements()
+	{
         $this->add(array(
             'name' => 'image',
             'type'  => 'Zend\Form\Element\File',
@@ -29,5 +35,14 @@ class ImageForm extends Form
                 'class' => 'btn'
             ),
         ));
-    }
+	}
+	
+	public function getInputFilterSpecification()
+	{
+		return array(
+	        'image' => array(
+	            'required' => true,
+			)
+	    );
+	}
 }

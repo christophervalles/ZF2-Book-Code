@@ -46,7 +46,7 @@ class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterf
     {
         return $this->insert(array(
             'user_id' => $userId,
-            'filename' => $status,
+            'filename' => $filename,
             'created_at' => new Expression('NOW()'),
             'updated_at' => null
         ));

@@ -31,7 +31,7 @@ class IndexController extends AbstractActionController
         $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
         $client->setMethod(\Zend\Http\Request::METHOD_GET);
         $response = $client->send();
-        // die(var_dump($response));
+		
         if ($response->isSuccess()) {
             $response = Decoder::decode($response->getContent(), \Zend\Json\Json::TYPE_ARRAY);
             $hydrator = new ClassMethods();
@@ -101,6 +101,10 @@ class IndexController extends AbstractActionController
      */
     protected function createImage($form, $user, $data)
     {
+		if ($data['image']['error'] != 0) {
+			$data['image'] = NULL;
+		}
+		
         $form->setData($data);
         
         $size = new Size(array('max' => 2048000));
@@ -117,13 +121,13 @@ class IndexController extends AbstractActionController
             }
             $form->setMessages(array('image' => $errors));
         }
-        
-        if ($form->isValid()) {
+		
+        if ($form->isValid()) {-
             $destPath = 'data/tmp/';
             $adapter->setDestination($destPath);
                 
             $fileinfo = $adapter->getFileInfo();
-            preg_match('/.+\/(.+)/', $fileinfo[$field]['type'], $matches);
+            preg_match('/.+\/(.+)/', $fileinfo['image']['type'], $matches);
             $extension = $matches[1];
             $newFilename = sprintf('%s.%s', sha1(uniqid(time(), TRUE)), $extension);
                 
@@ -135,10 +139,6 @@ class IndexController extends AbstractActionController
             );
                 
             if ($adapter->receive($filename)) {
-                if (file_exists($destPath . $filename)) {
-                    unlink($destPath . $filename);
-                }
-                    
                 $data = array();
                 $data['image'] = base64_encode(
                     file_get_contents(
@@ -152,7 +152,11 @@ class IndexController extends AbstractActionController
                 $client->setMethod(\Zend\Http\Request::METHOD_POST);
                 $client->setParameterPost($data);
                 $response = $client->send();
-                    
+				
+                if (file_exists($destPath . $newFilename)) {
+                    unlink($destPath . $newFilename);
+                }		
+				
                 return $response->isSuccess();
             }
         }
