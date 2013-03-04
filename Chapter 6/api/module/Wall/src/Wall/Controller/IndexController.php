@@ -52,11 +52,25 @@ class IndexController extends AbstractRestfulController
     {
         $usersTable = $this->getUsersTable();
         $userStatusesTable = $this->getUserStatusesTable();
+        $userImagesTable = $this->getUserImagesTable();
         
         $userData = $usersTable->getByUsername($username);
         $userStatuses = $userStatusesTable->getByUserId($userData->id);
+        $userImages = $userImagesTable->getByUserId($userData->id);
         
         $wallData = $userData->getArrayCopy();
+		$wallData['feed'] = array_merge($userStatuses->toArray(), $userImages->toArray());
+		
+		usort($wallData['feed'], function($a, $b){
+			$timestampA = strtotime($a['created_at']);
+			$timestampB = strtotime($b['created_at']);
+			
+			if ($timestampA == $timestampB) {
+		        return 0;
+		    }
+			
+		    return ($timestampA > $timestampB) ? -1 : 1;
+		});
         
         if ($userData !== false) {
             return new JsonModel($wallData);

@@ -44,7 +44,7 @@
                 </section>
                 <section>
                     <ul class="post-list">
-                        <?php foreach ($profileData->getStatuses() as $status) : ?>
+                        <?php foreach ($profileData->getFeed() as $entry) : ?>
                             <li class="post">
                                 <section>
                                     <a href="#" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="pull-left thumbnail">
@@ -52,10 +52,14 @@
                                     </a>
                                     <div class="post-body">
                                         <h4 class="post-heading"><a href="#" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>"><?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?></a></h4>
-                                        <p><?php echo $status->getStatus() ?></p>
-                                        <ul>
-                                            <li><a href="#" title="Comment" class="comment-link"><i class=" icon-comment"></i> Comment</a></li>
-                                        </ul>
+										<?php if ($entry instanceOf \Wall\Entity\Status) : ?>
+											<p><?php echo $entry->getStatus() ?></p>
+										<?php elseif ($entry instanceOf \Wall\Entity\Image) : ?>
+											<p><img src="<?php echo $entry->getUrl() ?>" width="400" /></p>
+										<?php endif; ?>
+										<ul>
+                                           	<li><a href="#" title="Comment" class="comment-link"><i class=" icon-comment"></i> Comment</a></li>
+										</ul>
                                     </div>
                                 </section>
                             </li>

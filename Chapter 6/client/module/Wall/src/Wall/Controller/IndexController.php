@@ -25,7 +25,8 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        $viewData = array();
+		$viewData = array();
+		$flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
         $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
@@ -48,15 +49,16 @@ class IndexController extends AbstractActionController
         $imageForm = new ImageForm();
         
         if ($request->isPost()) {
-            $data = $request->getPost();
+            $data = $request->getPost()->toArray();
             
             if (array_key_exists('status', $data)) {
                 $result = $this->createStatus($statusForm, $user, $data);
                 
-                if ($statusForm instanceOf TextStatusForm) {
+                if ($result instanceOf TextStatusForm) {
                     $statusForm = $result;
                 } else {
                     if ($result === TRUE) {
+						$flashMessenger->addMessage('New status posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
                         return $this->getResponse()->setStatusCode(500);
@@ -66,7 +68,7 @@ class IndexController extends AbstractActionController
             
             if (!empty($request->getFiles()->image)) {
                 $data = array_merge_recursive(
-                    $data->toArray(),
+                    $data,
                     $request->getFiles()->toArray()
                 );
                 $result = $this->createImage($imageForm, $user, $data);
@@ -75,6 +77,8 @@ class IndexController extends AbstractActionController
                     $imageForm = $result;
                 } else {
                     if ($result === TRUE) {
+						$this->flashMessenger()->addMessage('Your image has been posted!');
+						
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
                         return $this->getResponse()->setStatusCode(500);
@@ -88,6 +92,10 @@ class IndexController extends AbstractActionController
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
+		
+		if ($flashMessenger->hasMessages()) {
+			$viewData['flashMessages'] = $flashMessenger->getMessages();
+		}
         
         return $viewData;
     }
@@ -122,7 +130,7 @@ class IndexController extends AbstractActionController
             $form->setMessages(array('image' => $errors));
         }
 		
-        if ($form->isValid()) {-
+        if ($form->isValid()) {
             $destPath = 'data/tmp/';
             $adapter->setDestination($destPath);
                 
@@ -185,12 +193,7 @@ class IndexController extends AbstractActionController
             $client->setParameterPost($data);
             $response = $client->send();
                 
-            if ($response->isSuccess()) {
-                return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
-            } else {
-                $this->getResponse()->setStatusCode(500);
-                return;
-            }
+            return $response->isSuccess();
         }
         
         return $form;

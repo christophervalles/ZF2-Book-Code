@@ -14,7 +14,7 @@ class User
     protected $bio;
     protected $location;
     protected $gender;
-    protected $statuses = array();
+    protected $feed = array();
     
     public function setId($id)
     {
@@ -51,12 +51,16 @@ class User
         $this->gender = (int)$gender;
     }
     
-    public function setStatuses($statuses)
+    public function setFeed($feed)
     {
         $hydrator = new ClassMethods();
         
-        foreach ($statuses as $status) {
-            $this->statuses[] = $hydrator->hydrate($status, new Status());
+		foreach ($feed as $entry) {
+			if (array_key_exists('status', $entry)) {
+				$this->feed[] = $hydrator->hydrate($entry, new Status());
+			} else if (array_key_exists('filename', $entry)) {
+				$this->feed[] = $hydrator->hydrate($entry, new Image());
+			}
         }
     }
     
@@ -100,8 +104,8 @@ class User
         return $this->gender == 1? 'Male' : 'Female';
     }
     
-    public function getStatuses()
+    public function getFeed()
     {
-        return $this->statuses;
+        return $this->feed;
     }
 }
