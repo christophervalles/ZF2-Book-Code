@@ -59,18 +59,18 @@ class IndexController extends AbstractRestfulController
         $userImages = $userImagesTable->getByUserId($userData->id);
         
         $wallData = $userData->getArrayCopy();
-		$wallData['feed'] = array_merge($userStatuses->toArray(), $userImages->toArray());
-		
-		usort($wallData['feed'], function($a, $b){
-			$timestampA = strtotime($a['created_at']);
-			$timestampB = strtotime($b['created_at']);
-			
-			if ($timestampA == $timestampB) {
-		        return 0;
-		    }
-			
-		    return ($timestampA > $timestampB) ? -1 : 1;
-		});
+        $wallData['feed'] = array_merge($userStatuses->toArray(), $userImages->toArray());
+        
+        usort($wallData['feed'], function($a, $b){
+            $timestampA = strtotime($a['created_at']);
+            $timestampB = strtotime($b['created_at']);
+            
+            if ($timestampA == $timestampB) {
+                return 0;
+            }
+            
+            return ($timestampA > $timestampB) ? -1 : 1;
+        });
         
         if ($userData !== false) {
             return new JsonModel($wallData);
@@ -104,8 +104,8 @@ class IndexController extends AbstractRestfulController
         if (array_key_exists('image', $data) && !empty($data['image'])) {
             $result = $this->createImage($data);
         }
-		
-		return $result;
+        
+        return $result;
     }
     
     /**

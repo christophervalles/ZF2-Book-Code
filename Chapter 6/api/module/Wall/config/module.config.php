@@ -28,6 +28,7 @@ return array(
         'services' => array(
             'Wall\Model\UsersTable' => 'Wall\Model\UsersTable',
             'Wall\Model\UserStatusesTable' => 'Wall\Model\UserStatusesTable'
+            'Wall\Model\UserImagesTable' => 'Wall\Model\UserImagesTable'
         ),
     ),
     'controllers' => array(
