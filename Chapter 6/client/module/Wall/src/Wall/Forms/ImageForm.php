@@ -13,12 +13,12 @@ class ImageForm extends Form implements InputFilterProviderInterface
         
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'well input-append');
-		
+        
         $this->prepareElements();
     }
-	
-	public function prepareElements()
-	{
+    
+    public function prepareElements()
+    {
         $this->add(array(
             'name' => 'image',
             'type'  => 'Zend\Form\Element\File',
@@ -35,14 +35,14 @@ class ImageForm extends Form implements InputFilterProviderInterface
                 'class' => 'btn'
             ),
         ));
-	}
-	
-	public function getInputFilterSpecification()
-	{
-		return array(
-	        'image' => array(
-	            'required' => true,
-			)
-	    );
-	}
+    }
+    
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'image' => array(
+                'required' => true,
+            )
+        );
+    }
 }

@@ -4,8 +4,8 @@ namespace Wall\Entity;
 
 class Image
 {
-	public $domain = 'http://zf2-api/images/';
-	
+    public $domain = 'http://zf2-api/images/';
+    
     protected $id = null;
     protected $userId = null;
     protected $filename = null;
@@ -64,6 +64,6 @@ class Image
     
     public function getUrl()
     {
-		return $this->domain . $this->getFilename();
+        return $this->domain . $this->getFilename();
     }
 }
