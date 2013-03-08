@@ -63,13 +63,19 @@ class IndexController extends AbstractRestfulController
         $usersTable = $this->getUsersTable();
         $userStatusesTable = $this->getUserStatusesTable();
         $userImagesTable = $this->getUserImagesTable();
+        $userLinksTable = $this->getUserLinksTable();
         
         $userData = $usersTable->getByUsername($username);
         $userStatuses = $userStatusesTable->getByUserId($userData->id);
         $userImages = $userImagesTable->getByUserId($userData->id);
+        $userLinks = $userLinksTable->getByUserId($userData->id);
         
         $wallData = $userData->getArrayCopy();
-        $wallData['feed'] = array_merge($userStatuses->toArray(), $userImages->toArray());
+        $wallData['feed'] = array_merge(
+            $userStatuses->toArray(), 
+            $userImages->toArray(),
+            $userLinks->toArray()
+        );
         
         usort($wallData['feed'], function($a, $b){
             $timestampA = strtotime($a['created_at']);
