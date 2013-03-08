@@ -11,7 +11,7 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Wall\Model\UserStatusesTable;
+use Zend\Http\Client;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -40,6 +40,13 @@ class IndexController extends AbstractRestfulController
      * @var UserImagesTable
      */
     protected $userImagesTable;
+    
+    /**
+     * Holds the table object
+     *
+     * @var UserLinksTable
+     */
+    protected $userLinksTable;
     
     /**
      * This method will fetch the data related to the wall of a user and return
@@ -105,6 +112,10 @@ class IndexController extends AbstractRestfulController
             $result = $this->createImage($data);
         }
         
+        if (array_key_exists('url', $data) && !empty($data['url'])) {
+            $result = $this->createLink($data);
+        }
+        
         return $result;
     }
     
@@ -120,9 +131,10 @@ class IndexController extends AbstractRestfulController
         
         $filters = $userImagesTable->getInputFilter();
         $filters->setData($data);
-        $filters->isValid();
         
         if ($filters->isValid()) {
+            $data = $filters->getValues();
+            
             $filename = sprintf('public/images/%s.png', sha1(uniqid(time(), TRUE)));
             $content = base64_decode($data['image']);
             $image = imagecreatefromstring($content);
@@ -160,12 +172,67 @@ class IndexController extends AbstractRestfulController
         
         $filters = $userStatusesTable->getInputFilter();
         $filters->setData($data);
-        $filters->isValid();
         
         if ($filters->isValid()) {
+            $data = $filters->getValues();
+            
             $result = new JsonModel(array(
                 'result' => $userStatusesTable->create($data['user_id'], $data['status'])
             ));
+        } else {
+            $result = new JsonModel(array(
+                'result' => false,
+                'errors' => $filters->getMessages()
+            ));
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Handle the creation of a new link
+     *
+     * @param array $data 
+     * @return JsonModel
+     */
+    protected function createLink($data)
+    {
+        $userLinksTable = $this->getUserLinksTable();
+        
+        $filters = $userLinksTable->getInputFilter();
+        $filters->setData($data);
+        
+        if ($filters->isValid()) {
+            $data = $filters->getValues();
+            
+            $client = new Client($data['url']);
+            $client->setEncType(Client::ENC_URLENCODED);
+            $client->setMethod(\Zend\Http\Request::METHOD_GET);
+            $response = $client->send();
+            
+            if ($response->isSuccess()) {
+                $dom = new \DOMDocument();
+                $dom->loadHTML($response->getBody());
+                $titleElement = $dom->getElementsByTagName('title');
+                if ($titleElement->length > 0) {
+                    $title = $titleElement->item(0)->nodeValue;
+                } else {
+                    $title = NULL;
+                }
+                
+                $result = new JsonModel(array(
+                    'result' => $userLinksTable->create(
+                        $data['user_id'], 
+                        $data['url'], 
+                        $title
+                    )
+                ));
+            } else {
+                $result = new JsonModel(array(
+                    'result' => false,
+                    'errors' => $filters->getMessages()
+                ));
+            }
         } else {
             $result = new JsonModel(array(
                 'result' => false,
@@ -244,5 +311,20 @@ class IndexController extends AbstractRestfulController
             $this->userImagesTable = $sm->get('Wall\Model\UserImagesTable');
         }
         return $this->userImagesTable;
+    }
+    
+    /**
+     * This is a convenience method to load the userLinksTable db object and keeps track
+     * of the instance to avoid multiple of them
+     *
+     * @return UserStatusesTable
+     */
+    protected function getUserLinksTable()
+    {
+        if (!$this->userLinksTable) {
+            $sm = $this->getServiceLocator();
+            $this->userLinksTable = $sm->get('Wall\Model\UserLinksTable');
+        }
+        return $this->userLinksTable;
     }
 }
