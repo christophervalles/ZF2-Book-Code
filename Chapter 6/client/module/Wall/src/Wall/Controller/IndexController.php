@@ -25,14 +25,14 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-		$viewData = array();
-		$flashMessenger = $this->flashMessenger();
+        $viewData = array();
+        $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
         $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
         $client->setMethod(\Zend\Http\Request::METHOD_GET);
         $response = $client->send();
-		
+        
         if ($response->isSuccess()) {
             $response = Decoder::decode($response->getContent(), \Zend\Json\Json::TYPE_ARRAY);
             $hydrator = new ClassMethods();
@@ -58,7 +58,7 @@ class IndexController extends AbstractActionController
                     $statusForm = $result;
                 } else {
                     if ($result === TRUE) {
-						$flashMessenger->addMessage('New status posted!');
+                        $flashMessenger->addMessage('New status posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
                         return $this->getResponse()->setStatusCode(500);
@@ -77,8 +77,8 @@ class IndexController extends AbstractActionController
                     $imageForm = $result;
                 } else {
                     if ($result === TRUE) {
-						$this->flashMessenger()->addMessage('Your image has been posted!');
-						
+                        $this->flashMessenger()->addMessage('Your image has been posted!');
+                        
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
                         return $this->getResponse()->setStatusCode(500);
@@ -92,10 +92,10 @@ class IndexController extends AbstractActionController
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
-		
-		if ($flashMessenger->hasMessages()) {
-			$viewData['flashMessages'] = $flashMessenger->getMessages();
-		}
+        
+        if ($flashMessenger->hasMessages()) {
+            $viewData['flashMessages'] = $flashMessenger->getMessages();
+        }
         
         return $viewData;
     }
@@ -109,10 +109,10 @@ class IndexController extends AbstractActionController
      */
     protected function createImage($form, $user, $data)
     {
-		if ($data['image']['error'] != 0) {
-			$data['image'] = NULL;
-		}
-		
+        if ($data['image']['error'] != 0) {
+            $data['image'] = NULL;
+        }
+        
         $form->setData($data);
         
         $size = new Size(array('max' => 2048000));
@@ -129,7 +129,7 @@ class IndexController extends AbstractActionController
             }
             $form->setMessages(array('image' => $errors));
         }
-		
+        
         if ($form->isValid()) {
             $destPath = 'data/tmp/';
             $adapter->setDestination($destPath);
@@ -160,11 +160,11 @@ class IndexController extends AbstractActionController
                 $client->setMethod(\Zend\Http\Request::METHOD_POST);
                 $client->setParameterPost($data);
                 $response = $client->send();
-				
+                
                 if (file_exists($destPath . $newFilename)) {
                     unlink($destPath . $newFilename);
-                }		
-				
+                }       
+                
                 return $response->isSuccess();
             }
         }

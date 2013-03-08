@@ -55,12 +55,12 @@ class User
     {
         $hydrator = new ClassMethods();
         
-		foreach ($feed as $entry) {
-			if (array_key_exists('status', $entry)) {
-				$this->feed[] = $hydrator->hydrate($entry, new Status());
-			} else if (array_key_exists('filename', $entry)) {
-				$this->feed[] = $hydrator->hydrate($entry, new Image());
-			}
+        foreach ($feed as $entry) {
+            if (array_key_exists('status', $entry)) {
+                $this->feed[] = $hydrator->hydrate($entry, new Status());
+            } else if (array_key_exists('filename', $entry)) {
+                $this->feed[] = $hydrator->hydrate($entry, new Image());
+            }
         }
     }
     
