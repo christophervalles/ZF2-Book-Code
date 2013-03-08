@@ -12,6 +12,9 @@ namespace Wall\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Zend\Http\Client;
+use Zend\Filter\StripTags;
+use Zend\Filter\StringTrim;
+use Zend\Filter\StripNewLines;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -215,7 +218,12 @@ class IndexController extends AbstractRestfulController
                 $dom->loadHTML($response->getBody());
                 $titleElement = $dom->getElementsByTagName('title');
                 if ($titleElement->length > 0) {
-                    $title = $titleElement->item(0)->nodeValue;
+                    $filterChain = new Zend\Filter\FilterChain();
+                    $filterChain->attach(new StripTags());
+                    $filterChain->attach(new StringTrim());
+                    $filterChain->attach(new StripNewLines());
+                    
+                    $title = $filterChain->filter($titleElement->item(0)->nodeValue);
                 } else {
                     $title = NULL;
                 }
