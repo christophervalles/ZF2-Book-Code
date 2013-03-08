@@ -1,0 +1,15 @@
+<?php $form = $this->form; ?>
+<?php $form->prepare(); ?>
+<?php echo $this->form()->openTag($form) ?>
+<!-- Status input text -->
+<?php echo $this->formElement($form->get('url')); ?>
+<?php echo $this->formElementErrors($form->get('url')); ?>
+
+<!-- Submit button -->
+<?php echo $this->formElement($form->get('submit')); ?>
+
+<!-- CSRF -->
+<?php echo $this->formElement($form->get('csrf')); ?>
+<?php echo $this->formElementErrors($form->get('csrf')); ?>
+
+<?php echo $this->form()->closeTag() ?>

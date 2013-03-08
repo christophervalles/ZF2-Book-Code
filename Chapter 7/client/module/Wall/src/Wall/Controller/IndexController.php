@@ -16,6 +16,7 @@ use Zend\Json\Decoder;
 use Wall\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
+use Wall\Forms\LinkForm;
 use Wall\Entity\Status;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
@@ -46,6 +47,7 @@ class IndexController extends AbstractActionController
         $request = $this->getRequest();
         $statusForm = new TextStatusForm;
         $imageForm = new ImageForm();
+        $linkForm = new LinkForm();
         
         if ($request->isPost()) {
             $data = $request->getPost()->toArray();
@@ -84,13 +86,30 @@ class IndexController extends AbstractActionController
                     }
                 }
             }
+            
+            if (array_key_exists('url', $data)) {
+                $result = $this->createLink($linkForm, $user, $data);
+                
+                if ($result instanceOf LinkForm) {
+                    $linkForm = $result;
+                } else {
+                    if ($result === TRUE) {
+                        $flashMessenger->addMessage('New link published!');
+                        return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
+                    } else {
+                        return $this->getResponse()->setStatusCode(500);
+                    }
+                }
+            }
         }
         
         $statusForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $imageForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
+        $linkForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
+        $viewData['linkContentForm'] = $linkForm;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
@@ -186,7 +205,38 @@ class IndexController extends AbstractActionController
         if ($form->isValid()) {
             $data = $form->getData();
             $data['user_id'] = $user->getId();
-                
+            unset($data['submit']);
+            unset($data['csrf']);
+            
+            $client = new Client(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()));
+            $client->setEncType(Client::ENC_URLENCODED);
+            $client->setMethod(\Zend\Http\Request::METHOD_POST);
+            $client->setParameterPost($data);
+            $response = $client->send();
+            
+            return $response->isSuccess();
+        }
+        
+        return $form;
+    }
+    
+    /**
+     * Store a new link
+     *
+     * @param Zend\Form\Form $form 
+     * @param Wall\Entity\User $user 
+     * @param array $data
+     */
+    protected function createLink($form, $user, array $data)
+    {
+        $form->setData($data);
+        
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $data['user_id'] = $user->getId();
+            unset($data['submit']);
+            unset($data['csrf']);
+            
             $client = new Client(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()));
             $client->setEncType(Client::ENC_URLENCODED);
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
