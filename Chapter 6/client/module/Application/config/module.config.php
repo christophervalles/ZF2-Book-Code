@@ -72,7 +72,7 @@ return array(
             'Application\Controller\Index' => 'Application\Controller\IndexController'
         ),
     ),
-	'view_helpers' => array(
+    'view_helpers' => array(
         'invokables' => array(
             'flashMessengerHelper' => 'Application\View\Helper\FlashMessenger',
         ),

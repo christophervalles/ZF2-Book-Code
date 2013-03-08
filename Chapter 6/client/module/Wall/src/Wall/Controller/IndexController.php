@@ -20,7 +20,6 @@ use Wall\Entity\Status;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
 
-
 class IndexController extends AbstractActionController
 {
     public function indexAction()
@@ -118,10 +117,10 @@ class IndexController extends AbstractActionController
         $size = new Size(array('max' => 2048000));
         $isImage = new IsImage();
         $filename = $data['image']['name'];
-            
+        
         $adapter = new \Zend\File\Transfer\Adapter\Http();
         $adapter->setValidators(array($size, $isImage), $filename);
-            
+        
         if (!$adapter->isValid($filename)){
             $errors = array();
             foreach($adapter->getMessages() as $key => $row) {
@@ -133,19 +132,19 @@ class IndexController extends AbstractActionController
         if ($form->isValid()) {
             $destPath = 'data/tmp/';
             $adapter->setDestination($destPath);
-                
+            
             $fileinfo = $adapter->getFileInfo();
             preg_match('/.+\/(.+)/', $fileinfo['image']['type'], $matches);
             $extension = $matches[1];
             $newFilename = sprintf('%s.%s', sha1(uniqid(time(), TRUE)), $extension);
-                
+            
             $adapter->addFilter('File\Rename',
                 array(
                     'target' => $destPath . $newFilename,
                     'overwrite' => true,
                 )
             );
-                
+            
             if ($adapter->receive($filename)) {
                 $data = array();
                 $data['image'] = base64_encode(
@@ -154,7 +153,7 @@ class IndexController extends AbstractActionController
                     )
                 );
                 $data['user_id'] = $user->getId();
-                    
+                
                 $client = new Client(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()));
                 $client->setEncType(Client::ENC_URLENCODED);
                 $client->setMethod(\Zend\Http\Request::METHOD_POST);
@@ -163,11 +162,12 @@ class IndexController extends AbstractActionController
                 
                 if (file_exists($destPath . $newFilename)) {
                     unlink($destPath . $newFilename);
-                }       
+                }
                 
                 return $response->isSuccess();
             }
         }
+        
         return $form;
     }
     
