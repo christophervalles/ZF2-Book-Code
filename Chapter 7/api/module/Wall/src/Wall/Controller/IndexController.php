@@ -12,6 +12,7 @@ namespace Wall\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Zend\Http\Client;
+use Zend\Filter\FilterChain;
 use Zend\Filter\StripTags;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripNewLines;
@@ -220,11 +221,15 @@ class IndexController extends AbstractRestfulController
             $response = $client->send();
             
             if ($response->isSuccess()) {
+                $html = $response->getBody();
+                $html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"); 
+                
                 $dom = new \DOMDocument();
-                $dom->loadHTML($response->getBody());
+                $dom->loadHTML($html);
                 $titleElement = $dom->getElementsByTagName('title');
+                
                 if ($titleElement->length > 0) {
-                    $filterChain = new Zend\Filter\FilterChain();
+                    $filterChain = new FilterChain();
                     $filterChain->attach(new StripTags());
                     $filterChain->attach(new StringTrim());
                     $filterChain->attach(new StripNewLines());
