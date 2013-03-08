@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: 192.168.56.2 (MySQL 5.5.29-0ubuntu0.12.04.1-log)
+# Host: 192.168.56.2 (MySQL 5.5.29-0ubuntu0.12.04.2-log)
 # Database: sn
-# Generation Time: 2013-03-03 21:01:52 +0000
+# Generation Time: 2013-03-08 07:22:08 +0000
 # ************************************************************
 
 
@@ -29,6 +29,24 @@ CREATE TABLE `user_images` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned DEFAULT NULL,
   `filename` varchar(44) DEFAULT '',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table user_links
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_links`;
+
+CREATE TABLE `user_links` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned DEFAULT NULL,
+  `url` varchar(2048) DEFAULT NULL,
+  `title` varchar(512) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -70,15 +88,17 @@ CREATE TABLE `users` (
   `bio` tinytext,
   `location` tinytext,
   `gender` tinyint(1) unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `avatar_id`, `name`, `surname`, `bio`, `location`, `gender`)
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `avatar_id`, `name`, `surname`, `bio`, `location`, `gender`, `created_at`, `updated_at`)
 VALUES
-	(1,'tbhot3ww','info@christophervalles.com',NULL,1,'Christopher','Valles','Game backend engineer. Entrepreneur. Airsofter. Apple fanboy. ACTC. Cooker. Sysadmin. ACSP. If you want to know more just ask!','London, United Kingdom',1);
+	(1,'tbhot3ww','info@christophervalles.com',NULL,1,'Christopher','Valles','Game backend engineer. Entrepreneur. Airsofter. Apple fanboy. ACTC. Cooker. Sysadmin. ACSP. If you want to know more just ask!','London, United Kingdom',1,NULL,NULL);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

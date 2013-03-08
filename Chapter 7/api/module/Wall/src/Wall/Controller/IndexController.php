@@ -143,8 +143,6 @@ class IndexController extends AbstractRestfulController
         $filters->setData($data);
         
         if ($filters->isValid()) {
-            $data = $filters->getValues();
-            
             $filename = sprintf('public/images/%s.png', sha1(uniqid(time(), TRUE)));
             $content = base64_decode($data['image']);
             $image = imagecreatefromstring($content);
