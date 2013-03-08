@@ -3,7 +3,6 @@
 namespace Wall\Entity;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Wall\Entity\Status;
 
 class User
 {
@@ -60,6 +59,8 @@ class User
                 $this->feed[] = $hydrator->hydrate($entry, new Status());
             } else if (array_key_exists('filename', $entry)) {
                 $this->feed[] = $hydrator->hydrate($entry, new Image());
+            } else if (array_key_exists('url', $entry)) {
+                $this->feed[] = $hydrator->hydrate($entry, new Link());
             }
         }
     }
