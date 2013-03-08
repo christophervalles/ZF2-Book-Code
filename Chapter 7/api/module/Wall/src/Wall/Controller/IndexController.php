@@ -12,6 +12,7 @@ namespace Wall\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Zend\Http\Client;
+use Zend\Filter\FilterChain;
 use Zend\Filter\StripTags;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripNewLines;
@@ -142,8 +143,6 @@ class IndexController extends AbstractRestfulController
         $filters->setData($data);
         
         if ($filters->isValid()) {
-            $data = $filters->getValues();
-            
             $filename = sprintf('public/images/%s.png', sha1(uniqid(time(), TRUE)));
             $content = base64_decode($data['image']);
             $image = imagecreatefromstring($content);
@@ -220,11 +219,15 @@ class IndexController extends AbstractRestfulController
             $response = $client->send();
             
             if ($response->isSuccess()) {
+                $html = $response->getBody();
+                $html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"); 
+                
                 $dom = new \DOMDocument();
-                $dom->loadHTML($response->getBody());
+                $dom->loadHTML($html);
                 $titleElement = $dom->getElementsByTagName('title');
+                
                 if ($titleElement->length > 0) {
-                    $filterChain = new Zend\Filter\FilterChain();
+                    $filterChain = new FilterChain();
                     $filterChain->attach(new StripTags());
                     $filterChain->attach(new StringTrim());
                     $filterChain->attach(new StripNewLines());
@@ -234,27 +237,20 @@ class IndexController extends AbstractRestfulController
                     $title = NULL;
                 }
                 
-                $result = new JsonModel(array(
+                return new JsonModel(array(
                     'result' => $userLinksTable->create(
                         $data['user_id'], 
                         $data['url'], 
                         $title
                     )
                 ));
-            } else {
-                $result = new JsonModel(array(
-                    'result' => false,
-                    'errors' => $filters->getMessages()
-                ));
             }
-        } else {
-            $result = new JsonModel(array(
-                'result' => false,
-                'errors' => $filters->getMessages()
-            ));
         }
         
-        return $result;
+        return new JsonModel(array(
+            'result' => false,
+            'errors' => $filters->getMessages()
+        ));
     }
     
     /**
