@@ -237,27 +237,20 @@ class IndexController extends AbstractRestfulController
                     $title = NULL;
                 }
                 
-                $result = new JsonModel(array(
+                return new JsonModel(array(
                     'result' => $userLinksTable->create(
                         $data['user_id'], 
                         $data['url'], 
                         $title
                     )
                 ));
-            } else {
-                $result = new JsonModel(array(
-                    'result' => false,
-                    'errors' => $filters->getMessages()
-                ));
             }
-        } else {
-            $result = new JsonModel(array(
-                'result' => false,
-                'errors' => $filters->getMessages()
-            ));
         }
         
-        return $result;
+        return new JsonModel(array(
+            'result' => false,
+            'errors' => $filters->getMessages()
+        ));
     }
     
     /**
