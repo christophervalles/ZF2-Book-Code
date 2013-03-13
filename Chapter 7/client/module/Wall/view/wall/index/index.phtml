@@ -60,7 +60,7 @@
                                         <?php elseif ($entry instanceOf \Wall\Entity\Image) : ?>
                                             <p><img src="<?php echo $entry->getUrl() ?>" width="400" /></p>
                                         <?php elseif ($entry instanceOf \Wall\Entity\Link) : ?>
-                                            <p><a href="<?php echo $entry->getUrl() ?>"><?php echo $entry->getTitle() ?></p>
+                                            <p><a href="<?php echo $entry->getUrl() ?>"><?php echo $entry->getTitle() ?></a></p>
                                         <?php endif; ?>
                                         <ul>
                                             <li><a href="#" title="Comment" class="comment-link"><i class=" icon-comment"></i> Comment</a></li>

@@ -3,9 +3,8 @@ namespace Wall\Forms;
 
 use Zend\Form\Element;
 use Zend\Form\Form;
-use Zend\InputFilter\InputFilterProviderInterface;
 
-class LinkForm extends Form implements InputFilterProviderInterface
+class LinkForm extends Form
 {
     public function __construct($name = null)
     {
@@ -21,7 +20,7 @@ class LinkForm extends Form implements InputFilterProviderInterface
     {
         $this->add(array(
             'name' => 'url',
-            'type'  => 'Zend\Form\Element\Text',
+            'type'  => 'Zend\Form\Element\Url',
             'attributes' => array(
                 'class' => 'span11',
             ),
@@ -35,17 +34,5 @@ class LinkForm extends Form implements InputFilterProviderInterface
                 'class' => 'btn'
             ),
         ));
-    }
-    
-    public function getInputFilterSpecification()
-    {
-        return array(
-            'url' => array(
-                'required' => true,
-                'validators' => array(
-                    array('name' => '\Wall\Validator\Url')
-                )
-            )
-        );
     }
 }

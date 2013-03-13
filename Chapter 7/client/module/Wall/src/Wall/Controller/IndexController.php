@@ -242,7 +242,7 @@ class IndexController extends AbstractActionController
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
             $client->setParameterPost($data);
             $response = $client->send();
-                
+            
             return $response->isSuccess();
         }
         
