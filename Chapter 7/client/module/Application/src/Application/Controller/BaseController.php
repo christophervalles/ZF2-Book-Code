@@ -23,19 +23,4 @@ class BaseController extends AbstractActionController {
         
         return $client->send();
     }
-    
-    /**
-     * Make a GET request to the API
-     *
-     * @param string $url
-     * @return Response
-     */
-    protected function makeGetRequest($url, $data)
-    {
-        $client = new Client($url);
-        $client->setEncType(Client::ENC_URLENCODED);
-        $client->setMethod(\Zend\Http\Request::METHOD_GET);
-        
-        return $client->send();
-    }
 }
