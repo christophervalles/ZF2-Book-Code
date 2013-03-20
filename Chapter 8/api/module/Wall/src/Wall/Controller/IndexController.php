@@ -85,12 +85,26 @@ class IndexController extends AbstractRestfulController
             3 => $userLinks
         );
         
+        $cachedUsers = array();
         foreach ($allEntries as $type => &$entries) {
             foreach ($entries as &$entry) {
                 $comments = $userCommentsTable->getByTypeAndEntryId($type, $entry['id']);
                 
                 if (count($comments) > 0) {
-                    $entry['comments'] = $comments->toArray();
+                    foreach ($comments as $c) {
+                        if (array_key_exists($c->user_id, $cachedUsers)) {
+                            $user = $cachedUsers[$c->user_id];
+                        } else {
+                            $user = $usersTable->getById($c->user_id);
+                            $cachedUsers[$c->user_id] = $user;
+                        }
+                        
+                        $entry['comments'][] = array(
+                            'id' => $c->id,
+                            'user' => $user,
+                            'comment' => $c->comment
+                        );
+                    }
                 }
             }
         }
