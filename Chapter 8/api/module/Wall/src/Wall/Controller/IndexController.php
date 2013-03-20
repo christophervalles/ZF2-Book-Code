@@ -331,7 +331,7 @@ class IndexController extends AbstractRestfulController
             $data = $filters->getValues();
             
             $result = new JsonModel(array(
-                'result' => $userCommentsTable->create($data['user_id'], $data['type'], $data['entry_id'], $data['comment'])
+                'result' => $userCommentsTable->create($data['user_id'], $data['type'], $data['entry_id'], $data['comment']['comment_content'])
             ));
         } else {
             $result = new JsonModel(array(
