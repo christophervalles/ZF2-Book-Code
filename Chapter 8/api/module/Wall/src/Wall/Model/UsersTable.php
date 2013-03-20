@@ -32,4 +32,17 @@ class UsersTable extends AbstractTableGateway implements AdapterAwareInterface
         
         return $rowset->current();
     }
+    
+    /**
+     * Method to get users by id
+     *
+     * @param int $id
+     * @return ArrayObject
+     */
+    public function getById($id)
+    {
+        $rowset = $this->select(array('id' => $id));
+        
+        return $rowset->current();
+    }
 }

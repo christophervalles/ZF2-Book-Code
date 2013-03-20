@@ -24,7 +24,7 @@ class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterf
     }
     
     /**
-     * Method to get statuses by userId
+     * Method to get entries by userId
      *
      * @param int $userId
      * @return Zend\Db\ResultSet\ResultSet
@@ -36,7 +36,7 @@ class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterf
     }
     
     /**
-     * Method to insert an image to a user
+     * Method to insert an entry
      *
      * @param int $userId
      * @param string $filename

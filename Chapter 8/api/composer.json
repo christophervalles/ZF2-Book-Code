@@ -6,9 +6,16 @@
         "framework",
         "zf2"
     ],
-    "homepage": "http://framework.zend.com/",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.zendframework.com/"
+        }
+    ],
+    "homepage": "http://packages.zendframework.com/",
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": "2.0.6"
+        "zendframework/zendframework": "2.*",
+        "zendframework/zendservice-akismet": "2.*"
     }
 }

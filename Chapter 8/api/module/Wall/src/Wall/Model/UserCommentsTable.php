@@ -7,11 +7,10 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Expression;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
-use Wall\Validator\Url;
 
-class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterface
+class UserCommentsTable extends AbstractTableGateway implements AdapterAwareInterface
 {
-    protected $table = 'user_links';
+    protected $table = 'user_comments';
     
     /**
      * Set db adapter
@@ -25,34 +24,37 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
     }
     
     /**
-     * Method to get entries by userId
-     *
-     * @param int $userId
-     * @return Zend\Db\ResultSet\ResultSet
-     */
-    public function getByUserId($userId)
-    {
-        $select = $this->sql->select()->where(array('user_id' => $userId))->order('created_at DESC');
-        return $this->selectWith($select);
-    }
-    
-    /**
      * Method to insert an entry
      *
      * @param int $userId
-     * @param string $url
-     * @param string $title
+     * @param int $type
+     * @param int $entryId
+     * @param string $comment
      * @return boolean
      */
-    public function create($userId, $url, $title)
+    public function create($userId, $type, $entryId, $comment)
     {
         return $this->insert(array(
             'user_id' => $userId,
-            'url' => $url,
-            'title' => $title,
+            'type' => $type,
+            'entry_id' => $entryId,
+            'comment' => $comment,
             'created_at' => new Expression('NOW()'),
             'updated_at' => null
         ));
+    }
+    
+    /**
+     * Method to get entries by type and entry_id
+     *
+     * @param int $type
+     * @param int $entryId
+     * @return Zend\Db\ResultSet\ResultSet
+     */
+    public function getByTypeAndEntryId($type, $entryId)
+    {
+        $select = $this->sql->select()->where(array('type' => $type, 'entry_id' => $entryId))->order('created_at DESC');
+        return $this->selectWith($select);
     }
     
     /**
@@ -61,8 +63,10 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
      *
      * @return InputFilter
      */
-    public function getInputFilter()
+    public function getInputFilter($validatorTable)
     {
+        $config = new \Zend\Config\Config(require 'module/Wall/config/module.config.php');
+        
         $inputFilter = new InputFilter();
         $factory = new InputFactory();
         
@@ -89,7 +93,7 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
         )));
         
         $inputFilter->add($factory->createInput(array(
-            'name'     => 'url',
+            'name'     => 'type',
             'required' => true,
             'filters'  => array(
                 array('name' => 'StripTags'),
@@ -97,13 +101,43 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
             ),
             'validators' => array(
                 array('name' => 'NotEmpty'),
+                array('name' => 'Digits'),
+            ),
+        )));
+        
+        $inputFilter->add($factory->createInput(array(
+            'name'     => 'entry_id',
+            'required' => true,
+            'filters'  => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim')
+            ),
+            'validators' => array(
+                array('name' => 'NotEmpty'),
+                array('name' => 'Digits'),
                 array(
-                    'name' => 'StringLength',
+                    'name' => 'Zend\Validator\Db\RecordExists',
                     'options' => array(
-                        'max' => 2048
+                        'table' => $validatorTable,
+                        'field' => 'id',
+                        'adapter' => $this->adapter
+                    )
+                )
+            ),
+        )));
+        
+        $inputFilter->add($factory->createInput(array(
+            'name'     => 'comment',
+            'required' => true,
+            'validators' => array(
+                array('name' => 'NotEmpty'),
+                array(
+                    'name' => '\Wall\Validator\Spam',
+                    'options' => array(
+                        'apiKey' => $config['akismet']['apiKey'],
+                        'url' => $config['akismet']['url']
                     )
                 ),
-                array('name' => '\Wall\Validator\Url'),
             ),
         )));
         

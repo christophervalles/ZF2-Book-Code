@@ -53,6 +53,13 @@ class IndexController extends AbstractRestfulController
     protected $userLinksTable;
     
     /**
+     * Holds the table object
+     *
+     * @var UserCommentsTable
+     */
+    protected $userCommentsTable;
+    
+    /**
      * This method will fetch the data related to the wall of a user and return
      * it. The data is fetched using the username as reference
      *
@@ -65,18 +72,31 @@ class IndexController extends AbstractRestfulController
         $userStatusesTable = $this->getUserStatusesTable();
         $userImagesTable = $this->getUserImagesTable();
         $userLinksTable = $this->getUserLinksTable();
+        $userCommentsTable = $this->getUserCommentsTable();
         
         $userData = $usersTable->getByUsername($username);
-        $userStatuses = $userStatusesTable->getByUserId($userData->id);
-        $userImages = $userImagesTable->getByUserId($userData->id);
-        $userLinks = $userLinksTable->getByUserId($userData->id);
+        $userStatuses = $userStatusesTable->getByUserId($userData->id)->toArray();
+        $userImages = $userImagesTable->getByUserId($userData->id)->toArray();
+        $userLinks = $userLinksTable->getByUserId($userData->id)->toArray();
+        
+        $allEntries = array(
+            1 => $userStatuses,
+            2 => $userImages,
+            3 => $userLinks
+        );
+        
+        foreach ($allEntries as $type => &$entries) {
+            foreach ($entries as &$entry) {
+                $comments = $userCommentsTable->getByTypeAndEntryId($type, $entry['id']);
+                
+                if (count($comments) > 0) {
+                    $entry['comments'] = $comments->toArray();
+                }
+            }
+        }
         
         $wallData = $userData->getArrayCopy();
-        $wallData['feed'] = array_merge(
-            $userStatuses->toArray(), 
-            $userImages->toArray(),
-            $userLinks->toArray()
-        );
+        $wallData['feed'] = call_user_func_array('array_merge', $allEntries);
         
         usort($wallData['feed'], function($a, $b){
             $timestampA = strtotime($a['created_at']);
@@ -124,6 +144,10 @@ class IndexController extends AbstractRestfulController
         
         if (array_key_exists('url', $data) && !empty($data['url'])) {
             $result = $this->createLink($data);
+        }
+        
+        if (array_key_exists('comment', $data) && !empty($data['comment'])) {
+            $result = $this->createComment($data);
         }
         
         return $result;
@@ -254,6 +278,58 @@ class IndexController extends AbstractRestfulController
     }
     
     /**
+     * Handle the creation of a new comment
+     *
+     * @param array $data 
+     * @return JsonModel
+     */
+    protected function createComment($data)
+    {
+        $userCommentsTable = $this->getUserCommentsTable();
+        $usersTable = $this->getUsersTable();
+        $user = $usersTable->getById($data['user_id']);
+        
+        $data['comment'] = array(
+            'user_ip' => $this->getRequest()->getServer('REMOTE_ADDR'),
+            'user_agent' => $this->getRequest()->getServer('HTTP_USER_AGENT'),
+            'comment_type' => 'comment',
+            'comment_author' => sprintf('%s %s', $user->name, $user->surname),
+            'comment_author_email' => $user->email,
+            'comment_content' => $data['comment']
+        );
+        
+        switch ($data['type']) {
+            case 1:
+                $validatorTable = 'user_statuses';
+                break;
+            case 2:
+                $validatorTable = 'user_images';
+                break;
+            case 3:
+                $validatorTable = 'user_links';
+                break;
+        }
+        
+        $filters = $userCommentsTable->getInputFilter($validatorTable);
+        $filters->setData($data);
+        
+        if ($filters->isValid()) {
+            $data = $filters->getValues();
+            
+            $result = new JsonModel(array(
+                'result' => $userCommentsTable->create($data['user_id'], $data['type'], $data['entry_id'], $data['comment'])
+            ));
+        } else {
+            $result = new JsonModel(array(
+                'result' => false,
+                'errors' => $filters->getMessages()
+            ));
+        }
+        
+        return $result;
+    }
+    
+    /**
      * Method not available for this endpoint
      *
      * @return void
@@ -312,7 +388,7 @@ class IndexController extends AbstractRestfulController
      * This is a convenience method to load the userImagesTable db object and keeps track
      * of the instance to avoid multiple of them
      *
-     * @return UserStatusesTable
+     * @return UserImagesTable
      */
     protected function getUserImagesTable()
     {
@@ -327,7 +403,7 @@ class IndexController extends AbstractRestfulController
      * This is a convenience method to load the userLinksTable db object and keeps track
      * of the instance to avoid multiple of them
      *
-     * @return UserStatusesTable
+     * @return UserLinksTable
      */
     protected function getUserLinksTable()
     {
@@ -336,5 +412,20 @@ class IndexController extends AbstractRestfulController
             $this->userLinksTable = $sm->get('Wall\Model\UserLinksTable');
         }
         return $this->userLinksTable;
+    }
+    
+    /**
+     * This is a convenience method to load the userCommentsTable db object and keeps track
+     * of the instance to avoid multiple of them
+     *
+     * @return UserCommentsTable
+     */
+    protected function getUserCommentsTable()
+    {
+        if (!$this->userCommentsTable) {
+            $sm = $this->getServiceLocator();
+            $this->userCommentsTable = $sm->get('Wall\Model\UserCommentsTable');
+        }
+        return $this->userCommentsTable;
     }
 }
