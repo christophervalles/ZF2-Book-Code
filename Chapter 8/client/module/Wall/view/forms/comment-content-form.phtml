@@ -1,0 +1,17 @@
+<?php $form = $this->form; ?>
+<?php $form->prepare(); ?>
+<?php echo $this->form()->openTag($form) ?>
+<!-- Comment input text -->
+<?php echo $this->formElement($form->get('comment')); ?>
+<?php echo $this->formElementErrors($form->get('comment')); ?>
+
+<!-- Submit button -->
+<?php echo $this->formElement($form->get('type')->setValue($type)); ?>
+<?php echo $this->formElement($form->get('entry_id')->setValue($entryId)); ?>
+<?php echo $this->formElement($form->get('submit')); ?>
+
+<!-- CSRF -->
+<?php echo $this->formElement($form->get('csrf')); ?>
+<?php echo $this->formElementErrors($form->get('csrf')); ?>
+
+<?php echo $this->form()->closeTag() ?>

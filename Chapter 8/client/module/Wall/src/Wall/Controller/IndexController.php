@@ -17,6 +17,7 @@ use Wall\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
 use Wall\Forms\LinkForm;
+use Wall\Forms\CommentForm;
 use Wall\Entity\Status;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
@@ -48,6 +49,7 @@ class IndexController extends BaseController
         $statusForm = new TextStatusForm;
         $imageForm = new ImageForm();
         $linkForm = new LinkForm();
+        $commentForm = new CommentForm();
         
         if ($request->isPost()) {
             $data = $request->getPost()->toArray();
@@ -68,6 +70,10 @@ class IndexController extends BaseController
                 $result = $this->createLink($linkForm, $user, $data);
             }
             
+            if (array_key_exists('comment', $data)) {
+                $result = $this->createComment($commentForm, $user, $data);
+            }
+            
             switch (true) {
                 case $result instanceOf TextStatusForm:
                     $statusForm = $result;
@@ -77,6 +83,9 @@ class IndexController extends BaseController
                     break;
                 case $result instanceOf LinkForm:
                     $linkForm = $result;
+                    break;
+                case $result instanceOf CommentForm:
+                    $commentForm = $result;
                     break;
                 default:
                     if ($result === TRUE) {
@@ -92,10 +101,12 @@ class IndexController extends BaseController
         $statusForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $imageForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $linkForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
+        $commentForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
+        $viewData['commentContentForm'] = $commentForm;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
@@ -194,6 +205,19 @@ class IndexController extends BaseController
      * @return mixed
      */
     protected function createLink($form, $user, array $data)
+    {
+        return $this->processSimpleForm($form, $user, $data);
+    }
+    
+    /**
+     * Store a new comment
+     *
+     * @param Zend\Form\Form $form 
+     * @param Wall\Entity\User $user 
+     * @param array $data
+     * @return mixed
+     */
+    protected function createComment($form, $user, array $data)
     {
         return $this->processSimpleForm($form, $user, $data);
     }

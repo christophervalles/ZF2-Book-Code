@@ -2,8 +2,12 @@
 
 namespace Wall\Entity;
 
+use Zend\Stdlib\Hydrator\ClassMethods;
+
 class Image
 {
+    const COMMENT_TYPE_ID = 2;
+    
     public $domain = 'http://zf2-api/images/';
     
     protected $id = null;
@@ -11,6 +15,7 @@ class Image
     protected $filename = null;
     protected $createdAt = null;
     protected $updatedAt = null;
+    protected $comments = null;
     
     public function setId($id)
     {
@@ -35,6 +40,15 @@ class Image
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = new \DateTime($updatedAt);
+    }
+    
+    public function setComments($comments)
+    {
+        $hydrator = new ClassMethods();
+        
+        foreach ($comments as $c) {
+            $this->comments[] = $hydrator->hydrate($c, new Comment());
+        }
     }
     
     public function getId()
@@ -65,5 +79,15 @@ class Image
     public function getUrl()
     {
         return $this->domain . $this->getFilename();
+    }
+    
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    public function getType()
+    {
+        return self::COMMENT_TYPE_ID;
     }
 }

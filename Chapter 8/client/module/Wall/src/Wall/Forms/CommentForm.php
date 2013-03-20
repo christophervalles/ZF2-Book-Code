@@ -4,27 +4,30 @@ namespace Wall\Forms;
 use Zend\Form\Element;
 use Zend\Form\Form;
 
-class LinkForm extends Form
+class CommentForm extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('link-content');
+        parent::__construct('comment-content');
         
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'well input-append');
         
-        $this->prepareElements();
-    }
-    
-    public function prepareElements()
-    {
         $this->add(array(
-            'name' => 'url',
-            'type'  => 'Zend\Form\Element\Url',
+            'name' => 'comment',
+            'type'  => 'Zend\Form\Element\Text',
             'attributes' => array(
                 'class' => 'span11',
-                'placeholder' => 'Share a link!'
+                'placeholder' => 'Write a comment here...'
             ),
+        ));
+        $this->add(array(
+            'name' => 'type',
+            'type'  => 'Zend\Form\Element\Hidden',
+        ));
+        $this->add(array(
+            'name' => 'entry_id',
+            'type'  => 'Zend\Form\Element\Hidden',
         ));
         $this->add(new Element\Csrf('csrf'));
         $this->add(array(
