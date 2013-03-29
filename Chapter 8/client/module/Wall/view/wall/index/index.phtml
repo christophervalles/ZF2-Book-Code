@@ -24,7 +24,7 @@
                     </ul>
                 </section>
             </div>
-
+            
             <!-- Wall profile -->
             <div class="span9" id="wall">
                 <section>
@@ -35,14 +35,24 @@
                     </div>
                 <section>
                 <section>
-                    <div id="wall-status">
-                        <?php echo $this->partial('forms/text-content-form.phtml', array('form' => $textContentForm)); ?>
-                    </div>
-                    <div id="wall-image">
-                        <?php echo $this->partial('forms/image-content-form.phtml', array('form' => $imageContentForm)); ?>
-                    </div>
-                    <div id="wall-link">
-                        <?php echo $this->partial('forms/link-content-form.phtml', array('form' => $linkContentForm)); ?>
+                    <div class="tabbable"> <!-- Only required for left/right tabs -->
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#wall-status" data-toggle="tab"><i class="icon-pencil"></i></a></li>
+                            <li><a href="#wall-image" data-toggle="tab"><i class="icon-picture"></i></a></li>
+                            <li><a href="#wall-link" data-toggle="tab"><i class="icon-share"></i></a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <?php //echo $imageContentForm->hasValidated() == false || $imageContentForm->isValid() == true? '' : 'active' ?>
+                            <div class="tab-pane active" id="wall-status">
+                                <?php echo $this->partial('forms/text-content-form.phtml', array('form' => $textContentForm)); ?>
+                            </div>
+                            <div class="tab-pane" id="wall-image">
+                                <?php echo $this->partial('forms/image-content-form.phtml', array('form' => $imageContentForm)); ?>
+                            </div>
+                            <div class="tab-pane" id="wall-link">
+                                <?php echo $this->partial('forms/link-content-form.phtml', array('form' => $linkContentForm)); ?>
+                            </div
+                        </div>
                     </div>
                 </section>
                 <section>
