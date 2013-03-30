@@ -9,19 +9,22 @@ class Spam extends AbstractValidator
 {
     const INVALID = 'invalid';
     const SPAM = 'isSpam';
-    const NO_KEY = 'noKey';
-    const NO_URL = 'noUrl';
     
     /**
+     * Error messages
+     * 
      * @var array
      */
     protected $messageTemplates = array(
         self::INVALID => "Invalid input",
-        self::SPAM => "The text seems to be spam",
-        self::NO_KEY => "No API key provided",
-        self::NO_URL => "No url provided"
+        self::SPAM => "The text seems to be spam"
     );
     
+    /**
+     * The options available for this validator
+     *
+     * @var string
+     */
     protected $options = array(
         'apiKey' => null,
         'url' => null
@@ -67,7 +70,7 @@ class Spam extends AbstractValidator
     public function setApiKey($apiKey)
     {
         if (empty($apiKey)) {
-            throw new \InvalidArgumentException('API key cannot be empty');
+            throw new \Exception('API key cannot be empty');
         }
         
         $this->options['apiKey'] = $apiKey;
@@ -94,7 +97,7 @@ class Spam extends AbstractValidator
     public function setUrl($url)
     {
         if (empty($url)) {
-            throw new \InvalidArgumentException('The url cannot be empty');
+            throw new \Exception('The url cannot be empty');
         }
         
         $this->options['url'] = $url;
