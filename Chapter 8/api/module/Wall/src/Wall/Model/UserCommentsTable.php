@@ -63,10 +63,8 @@ class UserCommentsTable extends AbstractTableGateway implements AdapterAwareInte
      *
      * @return InputFilter
      */
-    public function getInputFilter($validatorTable)
+    public function getInputFilter($validatorTable, $config)
     {
-        $config = new \Zend\Config\Config(require 'module/Wall/config/module.config.php');
-        
         $inputFilter = new InputFilter();
         $factory = new InputFactory();
         
@@ -134,8 +132,8 @@ class UserCommentsTable extends AbstractTableGateway implements AdapterAwareInte
                 array(
                     'name' => '\Wall\Validator\Spam',
                     'options' => array(
-                        'apiKey' => $config['akismet']['apiKey'],
-                        'url' => $config['akismet']['url']
+                        'apiKey' => $config['apiKey'],
+                        'url' => $config['url']
                     )
                 ),
             ),

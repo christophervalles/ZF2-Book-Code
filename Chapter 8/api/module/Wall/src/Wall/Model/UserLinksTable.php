@@ -11,6 +11,16 @@ use Wall\Validator\Url;
 
 class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterface
 {
+    /**
+     * Hold the entity id used for comments
+     */
+    const COMMENT_TYPE_ID = 3;
+    
+    /**
+     * Hold the table name
+     *
+     * @var string
+     */
     protected $table = 'user_links';
     
     /**

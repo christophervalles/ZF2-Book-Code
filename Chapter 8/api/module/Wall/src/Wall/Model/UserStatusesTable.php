@@ -10,6 +10,16 @@ use Zend\InputFilter\Factory as InputFactory;
 
 class UserStatusesTable extends AbstractTableGateway implements AdapterAwareInterface
 {
+    /**
+     * Hold the entity id used for comments
+     */
+    const COMMENT_TYPE_ID = 1;
+    
+    /**
+     * Hold the table name
+     *
+     * @var string
+     */
     protected $table = 'user_statuses';
     
     /**

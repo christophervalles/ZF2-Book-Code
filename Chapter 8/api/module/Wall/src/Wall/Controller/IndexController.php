@@ -313,18 +313,19 @@ class IndexController extends AbstractRestfulController
         );
         
         switch ($data['type']) {
-            case 1:
+            case \Wall\Model\UserStatusesTable::COMMENT_TYPE_ID:
                 $validatorTable = 'user_statuses';
                 break;
-            case 2:
+            case \Wall\Model\UserImagesTable::COMMENT_TYPE_ID:
                 $validatorTable = 'user_images';
                 break;
-            case 3:
+            case \Wall\Model\UserLinksTable::COMMENT_TYPE_ID:
                 $validatorTable = 'user_links';
                 break;
         }
         
-        $filters = $userCommentsTable->getInputFilter($validatorTable);
+        $config = $this->getServiceLocator()->get('Config');
+        $filters = $userCommentsTable->getInputFilter($validatorTable, $config['akismet']);
         $filters->setData($data);
         
         if ($filters->isValid()) {
