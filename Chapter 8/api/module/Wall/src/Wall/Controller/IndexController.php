@@ -314,13 +314,13 @@ class IndexController extends AbstractRestfulController
         
         switch ($data['type']) {
             case \Wall\Model\UserStatusesTable::COMMENT_TYPE_ID:
-                $validatorTable = 'user_statuses';
+                $validatorTable = \Wall\Model\UserStatusesTable::TABLE_NAME;
                 break;
             case \Wall\Model\UserImagesTable::COMMENT_TYPE_ID:
-                $validatorTable = 'user_images';
+                $validatorTable = \Wall\Model\UserImagesTable::TABLE_NAME;
                 break;
             case \Wall\Model\UserLinksTable::COMMENT_TYPE_ID:
-                $validatorTable = 'user_links';
+                $validatorTable = \Wall\Model\UserLinksTable::TABLE_NAME;
                 break;
         }
         

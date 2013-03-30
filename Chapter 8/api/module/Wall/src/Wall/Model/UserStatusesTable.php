@@ -21,6 +21,7 @@ class UserStatusesTable extends AbstractTableGateway implements AdapterAwareInte
      * @var string
      */
     protected $table = 'user_statuses';
+    const TABLE_NAME = 'user_statuses';
     
     /**
      * Set db adapter

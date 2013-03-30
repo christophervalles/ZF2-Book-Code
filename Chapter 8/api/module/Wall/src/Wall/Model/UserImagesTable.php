@@ -21,6 +21,7 @@ class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterf
      * @var string
      */
     protected $table = 'user_images';
+    const TABLE_NAME = 'user_images';
     
     /**
      * Set db adapter

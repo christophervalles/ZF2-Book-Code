@@ -22,6 +22,7 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
      * @var string
      */
     protected $table = 'user_links';
+    const TABLE_NAME = 'user_links';
     
     /**
      * Set db adapter
