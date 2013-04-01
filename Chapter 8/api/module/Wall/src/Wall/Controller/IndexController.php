@@ -80,9 +80,9 @@ class IndexController extends AbstractRestfulController
         $userLinks = $userLinksTable->getByUserId($userData->id)->toArray();
         
         $allEntries = array(
-            1 => $userStatuses,
-            2 => $userImages,
-            3 => $userLinks
+            \Wall\Model\UserStatusesTable::COMMENT_TYPE_ID => $userStatuses,
+            \Wall\Model\UserImagesTable::COMMENT_TYPE_ID => $userImages,
+            \Wall\Model\UserLinksTable::COMMENT_TYPE_ID => $userLinks
         );
         
         $cachedUsers = array();
