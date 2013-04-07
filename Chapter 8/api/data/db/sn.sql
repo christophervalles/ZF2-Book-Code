@@ -7,7 +7,7 @@
 #
 # Host: 192.168.56.2 (MySQL 5.5.29-0ubuntu0.12.04.2-log)
 # Database: sn
-# Generation Time: 2013-03-08 07:22:08 +0000
+# Generation Time: 2013-04-07 10:23:59 +0000
 # ************************************************************
 
 
@@ -18,6 +18,26 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table user_comments
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_comments`;
+
+CREATE TABLE `user_comments` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned DEFAULT NULL,
+  `type` tinyint(1) unsigned DEFAULT NULL,
+  `entry_id` int(11) unsigned DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_entry_id` (`entry_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 # Dump of table user_images
