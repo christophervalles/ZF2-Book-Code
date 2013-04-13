@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: 192.168.56.2 (MySQL 5.5.29-0ubuntu0.12.04.2-log)
+# Host: vm (MySQL 5.5.8-log)
 # Database: sn
-# Generation Time: 2013-04-10 08:58:45 +0000
+# Generation Time: 2013-04-13 12:04:10 +0000
 # ************************************************************
 
 
