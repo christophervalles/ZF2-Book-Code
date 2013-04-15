@@ -4,8 +4,9 @@ namespace Wall\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\Sql\Select;
 
-class UserFeeds extends AbstractTableGateway implements AdapterAwareInterface
+class UserFeedsTable extends AbstractTableGateway implements AdapterAwareInterface
 {
     protected $table = 'user_feeds';
     

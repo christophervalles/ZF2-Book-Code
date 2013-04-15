@@ -20,13 +20,34 @@ use Zend\View\Model\JsonModel;
 class FeedsController extends AbstractRestfulController
 {
     /**
+     * Hold the table instance
+     *
+     * @var UserFeedsTable
+     */
+    protected $userFeedsTable;
+    
+    /**
+     * Hold the table instance
+     *
+     * @var UserFeedEntriesTable
+     */
+    protected $userFeedEntriesTable;
+    
+    /**
      * Method not available for this endpoint
      *
      * @return void
      */
-    public function get($username)
+    public function get($id)
     {
-        $this->methodNotAllowed();
+        $userFeedEntriesTable = $this->getTable('UserFeedEntriesTable');
+        $entry = $userFeedEntriesTable->getById($id)->toArray();
+        
+        if (!empty($entry)) {
+            return new JsonModel($entry);
+        } else {
+            throw new \Exception('Article not found', 404);
+        }
     }
     
     /**
@@ -36,7 +57,19 @@ class FeedsController extends AbstractRestfulController
      */
     public function getList()
     {
-        $this->methodNotAllowed();
+        $userId = $this->params()->fromQuery('user_id');
+        $userFeedsTable = $this->getTable('UserFeedsTable');
+        $userFeedEntriesTable = $this->getTable('UserFeedEntriesTable');
+        
+        $feeds = $userFeedsTable->getByUserId($userId)->toArray();
+        
+        foreach ($feeds as &$f) {
+            $entries = array();
+            $entries = $userFeedEntriesTable->getByFeedId($f['id'])->toArray();
+            $f['entries'] = $entries;
+        }
+        
+        return new JsonModel($feeds);
     }
     
     /**
@@ -72,5 +105,27 @@ class FeedsController extends AbstractRestfulController
     protected function methodNotAllowed()
     {
         $this->response->setStatusCode(\Zend\Http\PhpEnvironment\Response::STATUS_CODE_405);
+    }
+    
+    protected function getTable($table)
+    {
+        $sm = $this->getServiceLocator();
+        
+        switch ($table) {
+            case 'UserFeedsTable':
+                if (!$this->userFeedsTable) {
+                    $this->userFeedsTable = $sm->get('Wall\Model\UserFeedsTable');
+                }
+                
+                return $this->userFeedsTable;
+                break;
+            case 'UserFeedEntriesTable':
+                if (!$this->userFeedEntriesTable) {
+                    $this->userFeedEntriesTable = $sm->get('Wall\Model\UserFeedEntriesTable');
+                }
+                
+                return $this->userFeedEntriesTable;
+                break;
+        }
     }
 }

@@ -5,7 +5,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\AdapterAwareInterface;
 
-class UserFeedEntries extends AbstractTableGateway implements AdapterAwareInterface
+class UserFeedEntriesTable extends AbstractTableGateway implements AdapterAwareInterface
 {
     protected $table = 'user_feed_entries';
     
@@ -21,13 +21,24 @@ class UserFeedEntries extends AbstractTableGateway implements AdapterAwareInterf
     }
     
     /**
-     * Method to get rows by user_id
+     * Method to get rows by feed_id
      *
-     * @param int $id
+     * @param int $feedId
      * @return ArrayObject
      */
     public function getByFeedId($feedId)
     {
         return $this->select(array('feed_id' => $feedId));
+    }
+    
+    /**
+     * Method to get rows by id
+     *
+     * @param int $id
+     * @return ArrayObject
+     */
+    public function getById($id)
+    {
+        return $this->select(array('id' => $id));
     }
 }

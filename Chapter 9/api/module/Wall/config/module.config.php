@@ -22,6 +22,18 @@ return array(
                     ),
                 ),
             ),
+            'news' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/api/news[/:id]',
+                    'constraints' => array(
+                        'id' => '\d+'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Wall\Controller\Feeds'
+                    ),
+                ),
+            ),
         ),
     ),
     'di' => array(
@@ -34,7 +46,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Wall\Controller\Index' => 'Wall\Controller\IndexController'
+            'Wall\Controller\Index' => 'Wall\Controller\IndexController',
+            'Wall\Controller\Feeds' => 'Wall\Controller\FeedsController'
         ),
     ),
     'akismet' => array(
