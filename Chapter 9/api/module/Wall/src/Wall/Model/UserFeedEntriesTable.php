@@ -4,6 +4,7 @@ namespace Wall\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\AdapterAwareInterface;
+use Zend\Db\Sql\Expression;
 
 class UserFeedEntriesTable extends AbstractTableGateway implements AdapterAwareInterface
 {
@@ -40,5 +41,24 @@ class UserFeedEntriesTable extends AbstractTableGateway implements AdapterAwareI
     public function getById($id)
     {
         return $this->select(array('id' => $id));
+    }
+    
+    /**
+     * Method to add an item
+     *
+     * @param int $userId
+     * @param string $title
+     * @param string $content
+     * @return boolean
+     */
+    public function create($feedId, $title, $content)
+    {
+        return $this->insert(array(
+            'feed_id' => $feedId,
+            'title' => $title,
+            'content' => $content,
+            'created_at' => new Expression('NOW()'),
+            'updated_at' => null
+        ));
     }
 }

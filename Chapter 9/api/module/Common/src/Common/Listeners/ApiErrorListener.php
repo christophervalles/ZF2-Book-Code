@@ -58,7 +58,7 @@ class ApiErrorListener implements ListenerAggregateInterface
      */
     public static function onRender(MvcEvent $e)
     {
-        if ($e->getResponse()->isOk()) {
+        if ($e->getRequest() instanceOf \Zend\Console\Request || $e->getResponse()->isOk()) {
             return;
         }
         

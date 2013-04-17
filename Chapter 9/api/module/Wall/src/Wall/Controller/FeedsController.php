@@ -11,6 +11,7 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use Zend\Feed\Reader\Reader;
 
 /**
  * This class is the responsible to answer the requests to the /feeds endpoint
@@ -79,7 +80,12 @@ class FeedsController extends AbstractRestfulController
      */
     public function create($data)
     {
-        $this->methodNotAllowed();
+        $userFeedsTable = $this->getTable('UserFeedsTable');
+        
+        $rss = Reader::import($data['url']);
+        return new JsonModel(array(
+            'result' => $userFeedsTable->create($data['user_id'], $data['url'], $rss->getTitle())
+        ));
     }
     
     /**
@@ -99,7 +105,13 @@ class FeedsController extends AbstractRestfulController
      */
     public function delete($id)
     {
-        $this->methodNotAllowed();
+        $userFeedsTable = $this->getTable('UserFeedsTable');
+        $userFeedEntriesTable = $this->getTable('UserFeedEntriesTable');
+        
+        $userFeedEntriesTable->delete(array('feed_id' => $id));
+        return new JsonModel(array(
+            'result' => $userFeedsTable->delete(array('id' => $id))
+        ));
     }
     
     protected function methodNotAllowed()
@@ -118,14 +130,12 @@ class FeedsController extends AbstractRestfulController
                 }
                 
                 return $this->userFeedsTable;
-                break;
             case 'UserFeedEntriesTable':
                 if (!$this->userFeedEntriesTable) {
                     $this->userFeedEntriesTable = $sm->get('Wall\Model\UserFeedEntriesTable');
                 }
                 
                 return $this->userFeedEntriesTable;
-                break;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Wall\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\AdapterAwareInterface;
-use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Expression;
 
 class UserFeedsTable extends AbstractTableGateway implements AdapterAwareInterface
 {
@@ -30,5 +30,39 @@ class UserFeedsTable extends AbstractTableGateway implements AdapterAwareInterfa
     public function getByUserId($userId)
     {
         return $this->select(array('user_id' => $userId));
+    }
+    
+    /**
+     * Method to add a subscription to a rss feed
+     *
+     * @param int $userId
+     * @param string $url
+     * @param string $title
+     * @return boolean
+     */
+    public function create($userId, $url, $title)
+    {
+        return $this->insert(array(
+            'user_id' => $userId,
+            'url' => $url,
+            'title' => $title,
+            'created_at' => new Expression('NOW()'),
+            'updated_at' => null
+        ));
+    }
+    
+    /**
+     * Update the feed updated_at field to reflect when we get the entries
+     *
+     * @param int $feedId 
+     * @return int
+     */
+    public function updateTimestamp($feedId)
+    {
+        return $this->update(array(
+            'updated_at' => new Expression('NOW()')
+        ), array(
+            'id' => $feedId)
+        );
     }
 }
