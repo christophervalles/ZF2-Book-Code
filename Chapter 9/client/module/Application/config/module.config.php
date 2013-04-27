@@ -20,16 +20,6 @@ return array(
                     ),
                 ),
             ),
-            'news' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/news',
-                    'defaults' => array(
-                        'controller' => 'News\Controller\Index',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
             'application' => array(
                 'type'    => 'Literal',
                 'options' => array(

@@ -9,8 +9,7 @@
 
 namespace Wall\Controller;
 
-use Application\Controller\BaseController;
-use Zend\Http\Client;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Json\Decoder;
 use Wall\Entity\User;
@@ -21,8 +20,9 @@ use Wall\Forms\CommentForm;
 use Wall\Entity\Status;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
+use Api\Client\ApiClient as ApiClient;
 
-class IndexController extends BaseController
+class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
@@ -30,9 +30,7 @@ class IndexController extends BaseController
         $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
-        $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
-        $client->setMethod(\Zend\Http\Request::METHOD_GET);
-        $response = $client->send();
+        $response = ApiClient::getWall($username);
         
         if ($response->isSuccess()) {
             $response = Decoder::decode($response->getContent(), \Zend\Json\Json::TYPE_ARRAY);
@@ -174,7 +172,7 @@ class IndexController extends BaseController
                     unlink($destPath . $newFilename);
                 }
                 
-                $response = $this->makePostRequest(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()), $data);
+                $response = ApiClient::postWallContent($user->getUsername(), $data);
                 return $response->isSuccess();
             }
         }
@@ -241,7 +239,7 @@ class IndexController extends BaseController
             unset($data['submit']);
             unset($data['csrf']);
             
-            $response = $this->makePostRequest(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()), $data);
+            $response = ApiClient::postWallContent($user->getUsername(), $data);
             return $response->isSuccess();
         }
         
