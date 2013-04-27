@@ -15,11 +15,38 @@ return array(
                 'options' => array(
                     'route'    => '/:username/news[/:feed_id]',
                     'constraints' => array(
+                        'username' => '\w+',
                         'feed_id' => '\d*',
                     ),
                     'defaults' => array(
                         'controller' => 'News\Controller\Index',
                         'action' => 'index'
+                    ),
+                ),
+            ),
+            'news-subscribe' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/:username/news/subscribe',
+                    'constraints' => array(
+                        'username' => '\w+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'News\Controller\Index',
+                        'action' => 'subscribe'
+                    ),
+                ),
+            ),
+            'news-unsubscribe' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/:username/news/unsubscribe',
+                    'constraints' => array(
+                        'username' => '\w+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'News\Controller\Index',
+                        'action' => 'unsubscribe'
                     ),
                 ),
             ),
