@@ -236,3 +236,100 @@ footer .container {
 #wall-image input[type="file"] {
     line-height: 0;
 }
+#subscriptions {
+    padding: 0;
+    width: 220px;
+}
+.profile-rss {
+    padding: 19px;
+    float: left;
+    clear: both;
+}
+.profile-picture {
+    text-decoration: none;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    padding: 2px;
+    width: 30%;
+    float: left;
+}
+.profile-picture:hover {
+    border: 1px solid #0088cc;
+}
+.profile-name {
+    float: left;
+    margin: 5px 0 0 10px;
+    width: 60%;
+}
+#articles {
+    float: right;
+}
+#subscription-list {
+    clear: both;
+    margin: 10px 0 30px 0;
+    border-bottom: 1px solid #ddd;
+}
+#subscription-list li {
+    list-style-type: none;
+    border-top: 1px solid #fff;
+}
+#subscription-list li a {
+    display: block;
+    padding: 5px 10px;
+    border-top: 1px solid #ddd;
+    text-decoration: none;
+    white-space: nowrap;
+    -webkit-transition: all ease .2s;
+    -moz-transition: all ease .2s;
+    transition: all ease .2s;
+    color: #333;
+    font-size: 13px;
+}
+
+#subscription-list li a.active,
+#subscription-list li a:hover {
+    background-color: #ededed;
+    text-indent: 10px;
+}
+#subscription-list li a.active{
+    font-weight: bold;
+}
+#subscription-list li a img {
+    width: 15px;
+    margin-right: 3px;
+}
+article.well {
+    background-color: #ededed;
+}
+article h2 {
+    margin-bottom: 5px;
+}
+article .lead-info {
+    margin-bottom: 10px;
+    font-size: 11px;
+    font-style: italic;
+}
+.image-article { float:left; margin:0 10px 0px 0; }
+
+.rss-stream {
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+.rss-stream div {
+    width: 70%;
+}
+.rss-stream div h2 {
+    margin-top: 0;
+}
+
+.add-subscription {
+    margin: 0 0 20px 10px;
+}
+
+.add-subscription .input-medium {
+    width: 134px;
+}

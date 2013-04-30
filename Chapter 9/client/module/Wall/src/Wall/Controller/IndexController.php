@@ -11,7 +11,6 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\Json\Decoder;
 use Wall\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
@@ -32,8 +31,7 @@ class IndexController extends AbstractActionController
         $username = $this->params()->fromRoute('username');
         $response = ApiClient::getWall($username);
         
-        if ($response->isSuccess()) {
-            $response = Decoder::decode($response->getContent(), \Zend\Json\Json::TYPE_ARRAY);
+        if ($response !== FALSE) {
             $hydrator = new ClassMethods();
             
             $user = $hydrator->hydrate($response, new User());
@@ -86,7 +84,7 @@ class IndexController extends AbstractActionController
                     $commentForm = $result;
                     break;
                 default:
-                    if ($result === TRUE) {
+                    if ($result === true) {
                         $flashMessenger->addMessage('New content posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
@@ -150,7 +148,7 @@ class IndexController extends AbstractActionController
             $fileinfo = $adapter->getFileInfo();
             preg_match('/.+\/(.+)/', $fileinfo['image']['type'], $matches);
             $extension = $matches[1];
-            $newFilename = sprintf('%s.%s', sha1(uniqid(time(), TRUE)), $extension);
+            $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $extension);
             
             $adapter->addFilter('File\Rename',
                 array(

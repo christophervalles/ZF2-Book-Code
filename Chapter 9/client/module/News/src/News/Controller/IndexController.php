@@ -10,9 +10,13 @@
 namespace News\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Api\Client\ApiClient as ApiClient;
-use News\Form\SubscribeForm as SubscribeForm;
-use News\Form\UnsubscribeForm as UnsubscribeForm;
+use Api\Client\ApiClient;
+use News\Forms\SubscribeForm;
+use News\Forms\UnsubscribeForm;
+use Zend\Stdlib\Hydrator\ClassMethods;
+use News\Entity\Feed;
+use Zend\Navigation\Navigation;
+use Zend\Navigation\Page\AbstractPage;
 
 class IndexController extends AbstractActionController
 {
@@ -25,28 +29,48 @@ class IndexController extends AbstractActionController
     {
         $viewData = array();
         
-        $subscribeForm = new SubscribeForm();
-        $unsubscribeForm = new UnsubscribeForm();
-        $subscribeForm->setAttribute('action', $this->url()->fromRoute('news-subscribe', array('username' => $user->getUsername())));
-        $unsubscribeForm->setAttribute('action', $this->url()->fromRoute('news-unsubscribe', array('username' => $user->getUsername())));
-        
         $username = $this->params()->fromRoute('username');
-        $feeds = $response = ApiClient::getFeeds($username);
         $currentFeedId = $this->params()->fromRoute('feed_id');
         
-        if ($currentFeedId === null && !empty($feeds)) {
-            $currentFeedId = $feeds[0]->id;
+        $subscribeForm = new SubscribeForm();
+        $unsubscribeForm = new UnsubscribeForm();
+        $subscribeForm->setAttribute('action', $this->url()->fromRoute('news-subscribe', array('username' => $username)));
+        $unsubscribeForm->setAttribute('action', $this->url()->fromRoute('news-unsubscribe', array('username' => $username)));
+        
+        $hydrator = new ClassMethods();
+        $response = ApiClient::getFeeds($username);
+        $feeds = array();
+        foreach ($response as $r) {
+            $feeds[$r['id']] = $hydrator->hydrate($r, new Feed());
         }
         
-        $articles = array();
-        if ($currentFeedId !== null) {
-            $articles = ApiClient::getFeedArticles($username, $currentFeedId);
+        if ($currentFeedId === null && !empty($feeds)) {
+            $currentFeedId = reset($feeds)->getId();
         }
+        
+        $feedsMenu = new Navigation();
+        $router = $this->getEvent()->getRouter();
+        $routeMatch = $this->getEvent()->getRouteMatch()->setParam('feed_id', $currentFeedId);
+        foreach ($feeds as $f) {
+            $feedsMenu->addPage(
+                AbstractPage::factory(array(
+                    'title' => $f->getTitle(),
+                    'icon' => $f->getIcon(),
+                    'route' => 'news',
+                    'routeMatch' => $routeMatch,
+                    'router' => $router,
+                    'params' => array('username' => $username, 'feed_id' => $f->getId())
+                ))
+            );
+        }
+        
+        $unsubscribeForm->get('feed_id')->setValue($currentFeedId);
         
         $viewData['subscribeForm'] = $subscribeForm;
         $viewData['unsubscribeForm'] = $unsubscribeForm;
-        $viewData['feeds'] = $feeds;
-        $viewData['articles'] = $articles;
+        $viewData['feed'] = $feeds[$currentFeedId];
+        $viewData['username'] = $username;
+        $viewData['feedsMenu'] = $feedsMenu;
         
         return $viewData;
     }
@@ -56,7 +80,7 @@ class IndexController extends AbstractActionController
      *
      * @return void
      */
-    public function susbcribeAction()
+    public function subscribeAction()
     {
         $username = $this->params()->fromRoute('username');
         $request = $this->getRequest();
@@ -64,11 +88,11 @@ class IndexController extends AbstractActionController
         if ($request->isPost()) {
             $data = $request->getPost()->toArray();
             
-            $result = ApiClient::addFeedSubscription($username, $data);
+            $response = ApiClient::addFeedSubscription($username, array('url' => $data['url']));
             
-            if ($result === TRUE) {
-                $flashMessenger->addMessage('Subscribed successfully!');
-                return $this->redirect()->toRoute('news', array('username' => $user->getUsername()));
+            if ($response['result'] == TRUE) {
+                $this->flashMessenger()->addMessage('Subscribed successfully!');
+                return $this->redirect()->toRoute('news', array('username' => $username));
             } else {
                 return $this->getResponse()->setStatusCode(500);
             }
@@ -80,7 +104,7 @@ class IndexController extends AbstractActionController
      *
      * @return void
      */
-    public function unsusbcribeAction()
+    public function unsubscribeAction()
     {
         $username = $this->params()->fromRoute('username');
         $request = $this->getRequest();
@@ -88,11 +112,11 @@ class IndexController extends AbstractActionController
         if ($request->isPost()) {
             $data = $request->getPost()->toArray();
             
-            $result = ApiClient::removeFeedSubscription($username, $data);
+            $response = ApiClient::removeFeedSubscription($username, $data['feed_id']);
             
-            if ($result === TRUE) {
-                $flashMessenger->addMessage('Unsubscribed successfully!');
-                return $this->redirect()->toRoute('news', array('username' => $user->getUsername()));
+            if ($response['result'] == TRUE) {
+                $this->flashMessenger()->addMessage('Unsubscribed successfully!');
+                return $this->redirect()->toRoute('news', array('username' => $username));
             } else {
                 return $this->getResponse()->setStatusCode(500);
             }

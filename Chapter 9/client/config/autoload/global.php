@@ -12,5 +12,21 @@
  */
 
 return array(
-    // ...
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'Home',
+                'route' => 'wall',
+            ),
+            array(
+                'label' => 'News',
+                'route' => 'news',
+            ),
+            )
+        ),
+        'service_manager' => array(
+            'factories' => array(
+                'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+            ),
+        ),
 );

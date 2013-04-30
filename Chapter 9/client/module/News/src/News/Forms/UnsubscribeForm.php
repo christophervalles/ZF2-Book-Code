@@ -11,7 +11,7 @@ class UnsubscribeForm extends Form
         parent::__construct('news-unsubscribe');
         
         $this->setAttribute('method', 'post');
-        $this->setAttribute('class', 'well input-append');
+        $this->setAttribute('class', 'input-append');
         
         $this->add(array(
             'name' => 'feed_id',
@@ -22,8 +22,8 @@ class UnsubscribeForm extends Form
             'name' => 'unsubscribe',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Unsubscribe',
-                'class' => 'btn'
+                'value' => 'Delete subscription',
+                'class' => 'btn btn-danger pull-right'
             ),
         ));
     }

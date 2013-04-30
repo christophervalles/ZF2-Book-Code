@@ -29,10 +29,7 @@
                     </a>
                     <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Skeleton Application') ?></a>
                     <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-                            <li><a href="<?php echo $this->url('news') ?>"><?php echo $this->translate('News') ?></a></li>
-                        </ul>
+                        <?php echo $this->navigation('navigation')->menu()->setUlClass('nav')->renderMenu(); ?>
                     </div>
                 </div>
             </div>

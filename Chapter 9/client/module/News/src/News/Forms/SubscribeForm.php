@@ -11,14 +11,14 @@ class SubscribeForm extends Form
         parent::__construct('news-subscribe');
         
         $this->setAttribute('method', 'post');
-        $this->setAttribute('class', 'well input-append');
+        $this->setAttribute('class', 'input-append');
         
         $this->add(array(
             'name' => 'url',
             'type'  => 'Zend\Form\Element\Url',
             'attributes' => array(
-                'class' => 'span11',
-                'placeholder' => 'Insert the feed RSS'
+                'class' => 'input-medium',
+                'placeholder' => 'http://feeds.feedbu...'
             ),
         ));
         $this->add(new Element\Csrf('csrf'));
@@ -26,8 +26,7 @@ class SubscribeForm extends Form
             'name' => 'subscribe',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Subscribe',
-                'class' => 'btn'
+                'class' => 'btn btn-primary'
             ),
         ));
     }

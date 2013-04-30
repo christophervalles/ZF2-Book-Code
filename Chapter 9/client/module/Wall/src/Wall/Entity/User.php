@@ -14,6 +14,8 @@ class User
     protected $location;
     protected $gender;
     protected $feed = array();
+    protected $createdAt = null;
+    protected $updatedAt = null;
     
     public function setId($id)
     {
@@ -65,6 +67,16 @@ class User
         }
     }
     
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = new \DateTime($createdAt);
+    }
+    
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = new \DateTime($updatedAt);
+    }
+    
     public function getId()
     {
         return $this->id;
@@ -108,5 +120,15 @@ class User
     public function getFeed()
     {
         return $this->feed;
+    }
+    
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+    
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

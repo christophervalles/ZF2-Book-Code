@@ -13,9 +13,9 @@ class Image
     protected $id = null;
     protected $userId = null;
     protected $filename = null;
+    protected $comments = null;
     protected $createdAt = null;
     protected $updatedAt = null;
-    protected $comments = null;
     
     public function setId($id)
     {

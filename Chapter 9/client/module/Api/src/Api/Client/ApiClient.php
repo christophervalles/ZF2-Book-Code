@@ -4,6 +4,8 @@ namespace Api\Client;
 
 use Zend\Http\Client as Client;
 use Zend\Http\Request as Request;
+use Zend\Json\Decoder as JsonDecoder;
+use Zend\Json\Json as Json;
 
 /**
  * This client manages all the operations needed to interface with the
@@ -27,7 +29,8 @@ class ApiClient {
      */
     protected static $endpointHost = 'http://zf2-api';
     protected static $endpointWall = '/api/wall/%s';
-    protected static $endpointFeeds = '/api/wall/%s';
+    protected static $endpointFeeds = '/api/news/%s';
+    protected static $endpointSpecificFeed = '/api/news/%s/%d';
     
     /**
      * Perform an API reqquest to retrieve the data of the wall
@@ -52,7 +55,7 @@ class ApiClient {
     public static function postWallContent($username, $data)
     {
         $url = self::$endpointHost . sprintf(self::$endpointWall, $username);
-        return self::doRequest($url, $data);
+        return self::doRequest($url, $data, Request::METHOD_POST);
     }
     
     /**
@@ -64,7 +67,33 @@ class ApiClient {
     public static function getFeeds($username)
     {
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
-        return self::doRequest($url, $data);
+        return self::doRequest($url);
+    }
+    
+    /**
+     * Perform an API request to add a new subscription
+     *
+     * @param string $username 
+     * @param array $postData
+     * @return Zend\Http\Response
+     */
+    public static function addFeedSubscription($username, $postData)
+    {
+        $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
+        return self::doRequest($url, $postData, Request::METHOD_POST);
+    }
+    
+    /**
+     * Perform an API request to remove a subscription
+     *
+     * @param string $username 
+     * @param array $postData
+     * @return Zend\Http\Response
+     */
+    public static function removeFeedSubscription($username, $feedId)
+    {
+        $url = self::$endpointHost . sprintf(self::$endpointSpecificFeed, $username, $feedId);
+        return self::doRequest($url, null, Request::METHOD_DELETE);
     }
     
     /**
@@ -92,20 +121,22 @@ class ApiClient {
      * @return Zend\Http\Response
      * @author Christopher
      */
-    protected static function doRequest($url, array $postData = null, Client $client = null)
+    protected static function doRequest($url, array $postData = null, $method = Request::METHOD_GET)
     {
-        if ($client === null) {
-            $client = self::getClientInstance();
-        }
-        
+        $client = self::getClientInstance();
         $client->setUri($url);
-        $client->setMethod(Request::METHOD_GET);
+        $client->setMethod($method);
         
         if ($postData !== null) {
-            $client->setMethod(Request::METHOD_POST);
             $client->setParameterPost($postData);
         }
         
-        return $client->send();
+        $response = $client->send();
+        
+        if ($response->isSuccess()) {
+            return JsonDecoder::decode($response->getBody(), Json::TYPE_ARRAY);
+        } else {
+            return FALSE;
+        }
     }
 }
