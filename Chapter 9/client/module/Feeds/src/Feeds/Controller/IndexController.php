@@ -7,14 +7,14 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace News\Controller;
+namespace Feeds\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Api\Client\ApiClient;
-use News\Forms\SubscribeForm;
-use News\Forms\UnsubscribeForm;
+use Feeds\Forms\SubscribeForm;
+use Feeds\Forms\UnsubscribeForm;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use News\Entity\Feed;
+use Feeds\Entity\Feed;
 use Zend\Navigation\Navigation;
 use Zend\Navigation\Page\AbstractPage;
 
@@ -34,8 +34,8 @@ class IndexController extends AbstractActionController
         
         $subscribeForm = new SubscribeForm();
         $unsubscribeForm = new UnsubscribeForm();
-        $subscribeForm->setAttribute('action', $this->url()->fromRoute('news-subscribe', array('username' => $username)));
-        $unsubscribeForm->setAttribute('action', $this->url()->fromRoute('news-unsubscribe', array('username' => $username)));
+        $subscribeForm->setAttribute('action', $this->url()->fromRoute('feeds-subscribe', array('username' => $username)));
+        $unsubscribeForm->setAttribute('action', $this->url()->fromRoute('feeds-unsubscribe', array('username' => $username)));
         
         $hydrator = new ClassMethods();
         $response = ApiClient::getFeeds($username);
@@ -56,7 +56,7 @@ class IndexController extends AbstractActionController
                 AbstractPage::factory(array(
                     'title' => $f->getTitle(),
                     'icon' => $f->getIcon(),
-                    'route' => 'news',
+                    'route' => 'feeds',
                     'routeMatch' => $routeMatch,
                     'router' => $router,
                     'params' => array('username' => $username, 'feed_id' => $f->getId())
@@ -92,7 +92,7 @@ class IndexController extends AbstractActionController
             
             if ($response['result'] == TRUE) {
                 $this->flashMessenger()->addMessage('Subscribed successfully!');
-                return $this->redirect()->toRoute('news', array('username' => $username));
+                return $this->redirect()->toRoute('feeds', array('username' => $username));
             } else {
                 return $this->getResponse()->setStatusCode(500);
             }
@@ -116,7 +116,7 @@ class IndexController extends AbstractActionController
             
             if ($response['result'] == TRUE) {
                 $this->flashMessenger()->addMessage('Unsubscribed successfully!');
-                return $this->redirect()->toRoute('news', array('username' => $username));
+                return $this->redirect()->toRoute('feeds', array('username' => $username));
             } else {
                 return $this->getResponse()->setStatusCode(500);
             }

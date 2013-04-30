@@ -19,8 +19,8 @@ return array(
                 'route' => 'wall',
             ),
             array(
-                'label' => 'News',
-                'route' => 'news',
+                'label' => 'Feeds',
+                'route' => 'feeds',
             ),
             )
         ),

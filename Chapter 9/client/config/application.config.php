@@ -3,7 +3,7 @@ return array(
     'modules' => array(
         'Application',
         'Wall',
-        'News',
+        'Feeds',
         'Api'
     ),
     'module_listener_options' => array(

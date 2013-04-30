@@ -1,9 +1,9 @@
 <?php
 
-namespace News\Entity;
+namespace Feeds\Entity;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
-use News\Entity\Article;
+use Feeds\Entity\Article;
 
 class Feed
 {

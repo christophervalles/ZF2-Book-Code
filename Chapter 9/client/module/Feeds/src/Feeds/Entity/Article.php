@@ -1,6 +1,6 @@
 <?php
 
-namespace News\Entity;
+namespace Feeds\Entity;
 
 class Article
 {

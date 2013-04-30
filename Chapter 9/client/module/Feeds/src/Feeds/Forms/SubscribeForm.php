@@ -1,29 +1,32 @@
 <?php
-namespace News\Forms;
+namespace Feeds\Forms;
 
 use Zend\Form\Element;
 use Zend\Form\Form;
 
-class UnsubscribeForm extends Form
+class SubscribeForm extends Form
 {
     public function __construct($name = null)
     {
-        parent::__construct('news-unsubscribe');
+        parent::__construct('feeds-subscribe');
         
         $this->setAttribute('method', 'post');
         $this->setAttribute('class', 'input-append');
         
         $this->add(array(
-            'name' => 'feed_id',
-            'type'  => 'Zend\Form\Element\Hidden',
+            'name' => 'url',
+            'type'  => 'Zend\Form\Element\Url',
+            'attributes' => array(
+                'class' => 'input-medium',
+                'placeholder' => 'http://feeds.feedbu...'
+            ),
         ));
         $this->add(new Element\Csrf('csrf'));
         $this->add(array(
-            'name' => 'unsubscribe',
+            'name' => 'subscribe',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Delete subscription',
-                'class' => 'btn btn-danger pull-right'
+                'class' => 'btn btn-primary'
             ),
         ));
     }

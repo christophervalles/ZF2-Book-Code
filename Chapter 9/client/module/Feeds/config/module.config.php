@@ -10,42 +10,42 @@
 return array(
     'router' => array(
         'routes' => array(
-            'news' => array(
+            'feeds' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/:username/news[/:feed_id]',
+                    'route'    => '/:username/feeds[/:feed_id]',
                     'constraints' => array(
                         'username' => '\w+',
                         'feed_id' => '\d*',
                     ),
                     'defaults' => array(
-                        'controller' => 'News\Controller\Index',
+                        'controller' => 'Feeds\Controller\Index',
                         'action' => 'index'
                     ),
                 ),
             ),
-            'news-subscribe' => array(
+            'feeds-subscribe' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/:username/news/subscribe',
+                    'route'    => '/:username/feeds/subscribe',
                     'constraints' => array(
                         'username' => '\w+',
                     ),
                     'defaults' => array(
-                        'controller' => 'News\Controller\Index',
+                        'controller' => 'Feeds\Controller\Index',
                         'action' => 'subscribe'
                     ),
                 ),
             ),
-            'news-unsubscribe' => array(
+            'feeds-unsubscribe' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/:username/news/unsubscribe',
+                    'route'    => '/:username/feeds/unsubscribe',
                     'constraints' => array(
                         'username' => '\w+',
                     ),
                     'defaults' => array(
-                        'controller' => 'News\Controller\Index',
+                        'controller' => 'Feeds\Controller\Index',
                         'action' => 'unsubscribe'
                     ),
                 ),
@@ -54,7 +54,7 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'News\Controller\Index' => 'News\Controller\IndexController'
+            'Feeds\Controller\Index' => 'Feeds\Controller\IndexController'
         ),
     ),
     'view_manager' => array(
