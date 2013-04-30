@@ -40,12 +40,13 @@ class UserFeedsTable extends AbstractTableGateway implements AdapterAwareInterfa
      * @param string $title
      * @return boolean
      */
-    public function create($userId, $url, $title)
+    public function create($userId, $url, $title, $icon)
     {
         return $this->insert(array(
             'user_id' => $userId,
             'url' => $url,
             'title' => $title,
+            'icon' => $icon,
             'created_at' => new Expression('NOW()'),
             'updated_at' => null
         ));

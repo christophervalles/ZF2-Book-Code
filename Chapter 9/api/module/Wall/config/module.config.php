@@ -25,7 +25,7 @@ return array(
             'news' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/api/news[/:id]',
+                    'route' => '/api/news/:username[/:id]',
                     'constraints' => array(
                         'id' => '\d+'
                     ),

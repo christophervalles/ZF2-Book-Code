@@ -12,6 +12,7 @@ namespace Wall\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Zend\Feed\Reader\Reader;
+use Zend\Http\Client;
 
 /**
  * This class is the responsible to answer the requests to the /feeds endpoint
@@ -30,9 +31,16 @@ class FeedsController extends AbstractRestfulController
     /**
      * Hold the table instance
      *
-     * @var UserFeedEntriesTable
+     * @var UserFeedArticlesTable
      */
-    protected $userFeedEntriesTable;
+    protected $userFeedArticlesTable;
+    
+    /**
+     * Hold the table instance
+     *
+     * @var UsersTable
+     */
+    protected $usersTable;
     
     /**
      * Method not available for this endpoint
@@ -41,50 +49,81 @@ class FeedsController extends AbstractRestfulController
      */
     public function get($id)
     {
-        $userFeedEntriesTable = $this->getTable('UserFeedEntriesTable');
-        $entry = $userFeedEntriesTable->getById($id)->toArray();
-        
-        if (!empty($entry)) {
-            return new JsonModel($entry);
-        } else {
-            throw new \Exception('Article not found', 404);
-        }
+        $this->methodNotAllowed();
     }
     
     /**
-     * Method not available for this endpoint
+     * Return a list of feed subscription for a specific user
      *
-     * @return void
+     * @return JsonModel
      */
     public function getList()
     {
-        $userId = $this->params()->fromQuery('user_id');
+        $username = $this->params()->fromRoute('username');
+        $usersTable = $this->getTable('UsersTable');
+        $user = $usersTable->getByUsername($username);
         $userFeedsTable = $this->getTable('UserFeedsTable');
-        $userFeedEntriesTable = $this->getTable('UserFeedEntriesTable');
+        $userFeedArticlesTable = $this->getTable('UserFeedArticlesTable');
         
-        $feeds = $userFeedsTable->getByUserId($userId)->toArray();
-        
-        foreach ($feeds as &$f) {
-            $entries = array();
-            $entries = $userFeedEntriesTable->getByFeedId($f['id'])->toArray();
-            $f['entries'] = $entries;
+        $feedsFromDb = $userFeedsTable->getByUserId($user->id)->toArray();
+        $feeds = array();
+        foreach ($feedsFromDb as $f) {
+            $feeds[$f['id']] = $f;
+            $feeds[$f['id']]['articles'] = $userFeedArticlesTable->getByFeedId($f['id'])->toArray();
         }
         
         return new JsonModel($feeds);
     }
     
     /**
-     * Method not available for this endpoint
+     * Add a new subscription
      *
-     * @return void
+     * @return JsonModel
      */
     public function create($data)
     {
-        $userFeedsTable = $this->getTable('UserFeedsTable');
+        $username = $this->params()->fromRoute('username');
+        $usersTable = $this->getTable('UsersTable');
+        $user = $usersTable->getByUsername($username);
         
-        $rss = Reader::import($data['url']);
+        $userFeedsTable = $this->getTable('UserFeedsTable');
+        $url = $data['url'];
+        $rssLinkXpath = '//link[@type="application/rss+xml"]';
+        $faviconXpath = '//link[@rel="shortcut icon"]';
+        
+        $client = new Client($data['url']);
+        $client->setEncType(Client::ENC_URLENCODED);
+        $client->setMethod(\Zend\Http\Request::METHOD_GET);
+        $response = $client->send();
+        
+        if ($response->isSuccess()) {
+            $html = $response->getBody();
+            $html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"); 
+            
+            $dom = new \DOMDocument();
+            $dom->loadHTML($html);
+            $xpath = new \DOMXPath($dom);
+            
+            $rssUrl = $xpath->query($rssLinkXpath);
+            if ($rssUrl->length == 0) {
+                throw new Exception('Rss url not found in the url provided', 404);
+            }
+            $rssUrl = $rssUrl->item(0)->getAttribute('href');
+            
+            $faviconUrl = $xpath->query($faviconXpath);
+            if ($faviconUrl->length > 0) {
+                $faviconUrl = $faviconUrl->item(0)->getAttribute('href');
+            } else {
+                $faviconUrl = null;
+            }
+        } else {
+            throw new Exception("Website not found", 404);
+        }
+        
+        $rss = Reader::import($rssUrl);
+        
         return new JsonModel(array(
-            'result' => $userFeedsTable->create($data['user_id'], $data['url'], $rss->getTitle())
+            'result' => $userFeedsTable->create($user->id, $rssUrl, $rss->getTitle(), $faviconUrl)
         ));
     }
     
@@ -99,18 +138,22 @@ class FeedsController extends AbstractRestfulController
     }
     
     /**
-     * Method not available for this endpoint
+     * Delete a subscription
      *
-     * @return void
+     * @return JsonModel
      */
     public function delete($id)
     {
-        $userFeedsTable = $this->getTable('UserFeedsTable');
-        $userFeedEntriesTable = $this->getTable('UserFeedEntriesTable');
+        $username = $this->params()->fromRoute('username');
+        $usersTable = $this->getTable('UsersTable');
+        $user = $usersTable->getByUsername($username);
         
-        $userFeedEntriesTable->delete(array('feed_id' => $id));
+        $userFeedsTable = $this->getTable('UserFeedsTable');
+        $userFeedArticlesTable = $this->getTable('UserFeedArticlesTable');
+        
+        $userFeedArticlesTable->delete(array('feed_id' => $id));
         return new JsonModel(array(
-            'result' => $userFeedsTable->delete(array('id' => $id))
+            'result' => $userFeedsTable->delete(array('id' => $id, 'user_id' => $user->id))
         ));
     }
     
@@ -130,12 +173,18 @@ class FeedsController extends AbstractRestfulController
                 }
                 
                 return $this->userFeedsTable;
-            case 'UserFeedEntriesTable':
-                if (!$this->userFeedEntriesTable) {
-                    $this->userFeedEntriesTable = $sm->get('Wall\Model\UserFeedEntriesTable');
+            case 'UserFeedArticlesTable':
+                if (!$this->userFeedArticlesTable) {
+                    $this->userFeedArticlesTable = $sm->get('Wall\Model\UserFeedArticlesTable');
                 }
                 
-                return $this->userFeedEntriesTable;
+                return $this->userFeedArticlesTable;
+            case 'UsersTable':
+                if (!$this->usersTable) {
+                    $this->usersTable = $sm->get('Wall\Model\UsersTable');
+                }
+                
+                return $this->usersTable;
         }
     }
 }

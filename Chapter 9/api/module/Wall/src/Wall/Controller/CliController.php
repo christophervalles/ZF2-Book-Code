@@ -13,7 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Feed\Reader\Reader;
 
 /**
- * This class is the responsible to process the feeds and retrieve new entries
+ * This class is the responsible to process the feeds and retrieve new articles
  *
  * @package Wall/Controller
  */
@@ -25,7 +25,7 @@ class CliController extends AbstractActionController
      * @var UserFeedsTable
      */
     protected $userFeedsTable;
-    protected $userFeedEntriesTable;
+    protected $userFeedArticlesTable;
     
     public function processFeedsAction()
     {
@@ -33,7 +33,7 @@ class CliController extends AbstractActionController
         $verbose = $request->getParam('verbose') || $request->getParam('v');
         
         $userFeedsTable = $this->getTable('UserFeedsTable');
-        $userFeedEntriesTable = $this->getTable('UserFeedEntriesTable');
+        $userFeedArticlesTable = $this->getTable('UserFeedArticlesTable');
         $feeds = $userFeedsTable->select();
         
         foreach ($feeds as $feed) {
@@ -51,7 +51,12 @@ class CliController extends AbstractActionController
                     if ($verbose) {
                         printf("Processing item: %s\n", $item->getTitle());
                     }
-                    $userFeedEntriesTable->create($feed['id'], $item->getTitle(), $item->getContent());
+                    $author = $item->getAuthor();
+                    if (is_array($author)) {
+                        $author = $author['name'];
+                    }
+                    
+                    $userFeedArticlesTable->create($feed['id'], $item->getTitle(), $item->getContent(), $item->getLink(), $author);
                 }
             }
             
@@ -85,12 +90,12 @@ class CliController extends AbstractActionController
                 }
                 
                 return $this->userFeedsTable;
-            case 'UserFeedEntriesTable':
-                if (!$this->userFeedEntriesTable) {
-                    $this->userFeedEntriesTable = $sm->get('Wall\Model\UserFeedEntriesTable');
+            case 'UserFeedArticlesTable':
+                if (!$this->userFeedArticlesTable) {
+                    $this->userFeedArticlesTable = $sm->get('Wall\Model\UserFeedArticlesTable');
                 }
                 
-                return $this->userFeedEntriesTable;
+                return $this->userFeedArticlesTable;
         }
     }
 }
