@@ -33,17 +33,6 @@ class UserFeedArticlesTable extends AbstractTableGateway implements AdapterAware
     }
     
     /**
-     * Method to get rows by id
-     *
-     * @param int $id
-     * @return ArrayObject
-     */
-    public function getById($id)
-    {
-        return $this->select(array('id' => $id));
-    }
-    
-    /**
      * Method to add an item
      *
      * @param int $userId
