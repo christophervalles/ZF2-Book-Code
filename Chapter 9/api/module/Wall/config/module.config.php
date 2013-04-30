@@ -22,34 +22,7 @@ return array(
                     ),
                 ),
             ),
-            'news' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
-                'options' => array(
-                    'route' => '/api/news/:username[/:id]',
-                    'constraints' => array(
-                        'id' => '\d+'
-                    ),
-                    'defaults' => array(
-                        'controller' => 'Wall\Controller\Feeds'
-                    ),
-                ),
-            ),
         ),
-    ),
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-                'feeds-process' => array(
-                    'options' => array(
-                        'route' => 'feeds process [--verbose|-v]',
-                        'defaults' => array(
-                            'controller' => 'Wall\Controller\Cli',
-                            'action'     => 'processFeeds'
-                        )
-                    )
-                )
-            )
-        )
     ),
     'di' => array(
         'services' => array(
@@ -62,8 +35,6 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Wall\Controller\Index' => 'Wall\Controller\IndexController',
-            'Wall\Controller\Feeds' => 'Wall\Controller\FeedsController',
-            'Wall\Controller\Cli' => 'Wall\Controller\CliController'
         ),
     ),
     'akismet' => array(

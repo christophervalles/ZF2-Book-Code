@@ -1,5 +1,5 @@
 <?php
-namespace Wall\Model;
+namespace Feeds\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;

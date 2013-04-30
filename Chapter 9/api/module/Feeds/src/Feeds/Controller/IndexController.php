@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Wall\Controller;
+namespace Feeds\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
@@ -19,7 +19,7 @@ use Zend\Http\Client;
  *
  * @package Wall/Controller
  */
-class FeedsController extends AbstractRestfulController
+class IndexController extends AbstractRestfulController
 {
     /**
      * Hold the table instance
@@ -169,13 +169,13 @@ class FeedsController extends AbstractRestfulController
         switch ($table) {
             case 'UserFeedsTable':
                 if (!$this->userFeedsTable) {
-                    $this->userFeedsTable = $sm->get('Wall\Model\UserFeedsTable');
+                    $this->userFeedsTable = $sm->get('Feeds\Model\UserFeedsTable');
                 }
                 
                 return $this->userFeedsTable;
             case 'UserFeedArticlesTable':
                 if (!$this->userFeedArticlesTable) {
-                    $this->userFeedArticlesTable = $sm->get('Wall\Model\UserFeedArticlesTable');
+                    $this->userFeedArticlesTable = $sm->get('Feeds\Model\UserFeedArticlesTable');
                 }
                 
                 return $this->userFeedArticlesTable;
