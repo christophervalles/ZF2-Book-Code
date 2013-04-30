@@ -29,8 +29,8 @@ class ApiClient {
      */
     protected static $endpointHost = 'http://zf2-api';
     protected static $endpointWall = '/api/wall/%s';
-    protected static $endpointFeeds = '/api/news/%s';
-    protected static $endpointSpecificFeed = '/api/news/%s/%d';
+    protected static $endpointFeeds = '/api/feeds/%s';
+    protected static $endpointSpecificFeed = '/api/feeds/%s/%d';
     
     /**
      * Perform an API reqquest to retrieve the data of the wall
