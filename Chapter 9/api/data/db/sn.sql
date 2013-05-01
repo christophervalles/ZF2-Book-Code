@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: vm (MySQL 5.5.8-log)
+# Host: 192.168.56.2 (MySQL 5.5.29-0ubuntu0.12.04.2-log)
 # Database: sn
-# Generation Time: 2013-04-13 12:04:10 +0000
+# Generation Time: 2013-05-01 05:02:30 +0000
 # ************************************************************
 
 
@@ -38,22 +38,33 @@ CREATE TABLE `user_comments` (
   KEY `idx_entry_id` (`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `user_comments` WRITE;
+/*!40000 ALTER TABLE `user_comments` DISABLE KEYS */;
+
+INSERT INTO `user_comments` (`id`, `user_id`, `type`, `entry_id`, `comment`, `created_at`, `updated_at`)
+VALUES
+	(1,1,3,1,'Comment 1','2013-04-27 20:54:02',NULL);
+
+/*!40000 ALTER TABLE `user_comments` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
-# Dump of table user_feed_entries
+# Dump of table user_feed_articles
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `user_feed_entries`;
+DROP TABLE IF EXISTS `user_feed_articles`;
 
-CREATE TABLE `user_feed_entries` (
+CREATE TABLE `user_feed_articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `feed_id` int(11) unsigned DEFAULT NULL,
   `title` varchar(512) DEFAULT NULL,
   `content` text,
-  `read` bit(1) DEFAULT b'0',
+  `url` varchar(2048) DEFAULT NULL,
+  `author` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_feed_id` (`feed_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -68,9 +79,11 @@ CREATE TABLE `user_feeds` (
   `user_id` int(11) unsigned DEFAULT NULL,
   `url` varchar(2048) DEFAULT NULL,
   `title` varchar(512) DEFAULT NULL,
+  `icon` varchar(2048) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -90,6 +103,15 @@ CREATE TABLE `user_images` (
   KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `user_images` WRITE;
+/*!40000 ALTER TABLE `user_images` DISABLE KEYS */;
+
+INSERT INTO `user_images` (`id`, `user_id`, `filename`, `created_at`, `updated_at`)
+VALUES
+	(1,1,'727f0c18ca77f17bc07bd717bafee686d3f361ad.png','2013-04-27 20:53:15',NULL);
+
+/*!40000 ALTER TABLE `user_images` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table user_links
@@ -108,6 +130,15 @@ CREATE TABLE `user_links` (
   KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `user_links` WRITE;
+/*!40000 ALTER TABLE `user_links` DISABLE KEYS */;
+
+INSERT INTO `user_links` (`id`, `user_id`, `url`, `title`, `created_at`, `updated_at`)
+VALUES
+	(1,1,'http://www.google.es','Google','2013-04-27 20:53:44',NULL);
+
+/*!40000 ALTER TABLE `user_links` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table user_statuses
@@ -125,6 +156,15 @@ CREATE TABLE `user_statuses` (
   KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+LOCK TABLES `user_statuses` WRITE;
+/*!40000 ALTER TABLE `user_statuses` DISABLE KEYS */;
+
+INSERT INTO `user_statuses` (`id`, `user_id`, `status`, `created_at`, `updated_at`)
+VALUES
+	(1,1,'Test','2013-04-27 20:52:59',NULL);
+
+/*!40000 ALTER TABLE `user_statuses` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table users
