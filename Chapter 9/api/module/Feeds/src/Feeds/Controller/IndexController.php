@@ -87,7 +87,6 @@ class IndexController extends AbstractRestfulController
         $user = $usersTable->getByUsername($username);
         
         $userFeedsTable = $this->getTable('UserFeedsTable');
-        $url = $data['url'];
         $rssLinkXpath = '//link[@type="application/rss+xml"]';
         $faviconXpath = '//link[@rel="shortcut icon"]';
         
