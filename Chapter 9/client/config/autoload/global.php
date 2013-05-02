@@ -22,11 +22,11 @@ return array(
                 'label' => 'Feeds',
                 'route' => 'feeds',
             ),
-            )
+        )
+    ),
+    'service_manager' => array(
+        'factories' => array(
+            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
         ),
-        'service_manager' => array(
-            'factories' => array(
-                'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
-            ),
-        ),
+    ),
 );

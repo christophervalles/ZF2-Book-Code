@@ -11,25 +11,25 @@
                         Christopher Valles
                     </a>
                 </section>
-                <section>
-                    <?php if (count($feedsMenu->getPages()) > 0) : ?>
+                <?php if (count($feedsMenu->getPages()) > 0) : ?>
+                    <section>
                         <?php echo $this->navigation($feedsMenu)->menu()->setPartial('partials/menu-feed-container.phtml') ?>
-                    <?php endif; ?>
-                </section>
+                    </section>
+                <?php endif; ?>
                 <section class="add-subscription">
                     <?php echo $this->partial('forms/subscribe-form.phtml', array('form' => $subscribeForm)) ?>
                 </section>
             </div>
             <!-- Wall profile -->
             <div class="span9" id="articles">
-                <section class="rss-stream clearfix">
-                    <div class="pull-left">
-                        <h2><?php echo $feed->getTitle() ?></h2>
-                        <span><strong>URL: </strong><?php echo $feed->getUrl() ?></span>
-                    </div>
-                    <?php echo $this->partial('forms/unsubscribe-form.phtml', array('form' => $unsubscribeForm)) ?>
-                </section>
-                <?php if ($feed->getArticles() != null) : ?>
+                <?php if ($feed != null && $feed->getArticles() != null) : ?>
+                    <section class="rss-stream clearfix">
+                        <div class="pull-left">
+                            <h2><?php echo $feed->getTitle() ?></h2>
+                            <span><strong>URL: </strong><?php echo $feed->getUrl() ?></span>
+                        </div>
+                        <?php echo $this->partial('forms/unsubscribe-form.phtml', array('form' => $unsubscribeForm)) ?>
+                    </section>
                     <?php foreach($feed->getArticles() as $a) : ?>
                         <article class="well">
                             <h2><a href="<?php echo $a->getUrl() ?>" title="<?php echo $a->getTitle() ?>"><?php echo $a->getTitle() ?></a></h2>

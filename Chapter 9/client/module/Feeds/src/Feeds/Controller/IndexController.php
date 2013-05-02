@@ -68,7 +68,7 @@ class IndexController extends AbstractActionController
         
         $viewData['subscribeForm'] = $subscribeForm;
         $viewData['unsubscribeForm'] = $unsubscribeForm;
-        $viewData['feed'] = $feeds[$currentFeedId];
+        $viewData['feed'] = $currentFeedId != null? $feeds[$currentFeedId] : null;
         $viewData['username'] = $username;
         $viewData['feedsMenu'] = $feedsMenu;
         
@@ -92,11 +92,12 @@ class IndexController extends AbstractActionController
             
             if ($response['result'] == TRUE) {
                 $this->flashMessenger()->addMessage('Subscribed successfully!');
-                return $this->redirect()->toRoute('feeds', array('username' => $username));
             } else {
                 return $this->getResponse()->setStatusCode(500);
             }
         }
+        
+        return $this->redirect()->toRoute('feeds', array('username' => $username));
     }
     
     /**
@@ -116,10 +117,11 @@ class IndexController extends AbstractActionController
             
             if ($response['result'] == TRUE) {
                 $this->flashMessenger()->addMessage('Unsubscribed successfully!');
-                return $this->redirect()->toRoute('feeds', array('username' => $username));
             } else {
                 return $this->getResponse()->setStatusCode(500);
             }
         }
+        
+        return $this->redirect()->toRoute('feeds', array('username' => $username));
     }
 }
