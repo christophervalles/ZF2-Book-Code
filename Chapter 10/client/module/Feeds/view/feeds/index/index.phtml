@@ -1,0 +1,57 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="row-fluid">
+            <!-- Profile section -->
+            <div class="span3 well" id="subscriptions">
+                <section class="profile-rss">
+                    <a href="/tbhot3ww" title="Christopher Valles" class="profile-picture">
+                        <img src="/images/avatar.png" alt="Christopher Valles" width="60" />
+                    </a>
+                    <a href="/tbhot3ww" title="Christopher Valles" class="profile-name">
+                        Christopher Valles
+                    </a>
+                </section>
+                <?php if (count($feedsMenu->getPages()) > 0) : ?>
+                    <section>
+                        <?php echo $this->navigation($feedsMenu)->menu()->setPartial('partials/menu-feed-container.phtml') ?>
+                    </section>
+                <?php endif; ?>
+                <section class="add-subscription">
+                    <?php echo $this->partial('forms/subscribe-form.phtml', array('form' => $subscribeForm)) ?>
+                </section>
+            </div>
+            <!-- Wall profile -->
+            <div class="span9" id="articles">
+                <?php if ($feed != null && $feed->getArticles() != null) : ?>
+                    <section class="rss-stream clearfix">
+                        <div class="pull-left">
+                            <h2><?php echo $feed->getTitle() ?></h2>
+                            <span><strong>URL: </strong><?php echo $feed->getUrl() ?></span>
+                        </div>
+                        <?php echo $this->partial('forms/unsubscribe-form.phtml', array('form' => $unsubscribeForm)) ?>
+                    </section>
+                    <?php foreach($feed->getArticles() as $a) : ?>
+                        <article class="well">
+                            <h2><a href="<?php echo $a->getUrl() ?>" title="<?php echo $a->getTitle() ?>"><?php echo $a->getTitle() ?></a></h2>
+                            <div class="lead-info">
+                                <span><strong>Date:</strong> <?php echo $a->getCreatedAt()->format('jS \of F Y h:i:s A') ?></span>
+                                <?php if ($a->getAuthor() !== null) : ?>
+                                    <span><strong>Author:</strong> <?php echo $a->getAuthor() ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="article-info">
+                                <p><?php echo $a->getContent() ?></p>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <article class="well">
+                        <div class="article-info">
+                            You'll see the articles soon...
+                        </div>
+                    </article>
+                <?php endif; ?>
+            </div> <!-- Close wall profile -->
+        </div>
+    </div>
+</div>

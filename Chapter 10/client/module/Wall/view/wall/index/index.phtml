@@ -1,0 +1,100 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="row-fluid">
+            <!-- Profile section -->
+            <div class="span3 well" id="profile">
+                <section>
+                    <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="thumbnail">
+                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" />
+                    </a>
+                    <ul>
+                        <li>
+                            <h3><i class="icon-user"></i> Bio</h3>
+                            <p><?php echo $profileData->getBio() ?></p>
+                        </li>
+                        <li>
+                            <h3><i class="icon-globe"></i> Location</h3>
+                            <p><?php echo $profileData->getLocation() ?></p>
+                        </li>
+                        <li>
+                            <h3><i class="icon-heart"></i> Gender</h3>
+                            <p><?php echo $profileData->getGenderString() ?></p>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            
+            <!-- Wall profile -->
+            <div class="span9" id="wall">
+                <section>
+                    <!-- Main Stream wall profile -->
+                    <div id="wall-stream">
+                        <h2><?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?></h2>
+                    </div>
+                <section>
+                <section>
+                    <div class="tabbable"> <!-- Only required for left/right tabs -->
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#wall-status" data-toggle="tab"><i class="icon-pencil"></i></a></li>
+                            <li><a href="#wall-image" data-toggle="tab"><i class="icon-picture"></i></a></li>
+                            <li><a href="#wall-link" data-toggle="tab"><i class="icon-share"></i></a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <?php //echo $imageContentForm->hasValidated() == false || $imageContentForm->isValid() == true? '' : 'active' ?>
+                            <div class="tab-pane active" id="wall-status">
+                                <?php echo $this->partial('forms/text-content-form.phtml', array('form' => $textContentForm)); ?>
+                            </div>
+                            <div class="tab-pane" id="wall-image">
+                                <?php echo $this->partial('forms/image-content-form.phtml', array('form' => $imageContentForm)); ?>
+                            </div>
+                            <div class="tab-pane" id="wall-link">
+                                <?php echo $this->partial('forms/link-content-form.phtml', array('form' => $linkContentForm)); ?>
+                            </div
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <ul class="post-list">
+                        <?php foreach ($profileData->getFeed() as $entry) : ?>
+                            <li class="post">
+                                <section>
+                                    <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="pull-left thumbnail">
+                                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" />
+                                    </a>
+                                    <div class="post-body">
+                                        <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>"><?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?></a></h4>
+                                        <?php if ($entry instanceOf \Wall\Entity\Status) : ?>
+                                            <p><?php echo $entry->getStatus() ?></p>
+                                        <?php elseif ($entry instanceOf \Wall\Entity\Image) : ?>
+                                            <p><img src="<?php echo $entry->getUrl() ?>" width="400" /></p>
+                                        <?php elseif ($entry instanceOf \Wall\Entity\Link) : ?>
+                                            <p><a href="<?php echo $entry->getUrl() ?>"><?php echo $entry->getTitle() ?></a></p>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php if ($entry->getComments() !== NULL) : ?>
+                                        <ul class="post-list">
+                                            <?php foreach ($entry->getComments() as $i => $c) : ?>
+                                                <li class="post <?php echo $i == count($entry->getComments()) - 1? 'last' : '' ?>">
+                                                    <section>
+                                                        <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>" class="pull-left thumbnail">
+                                                            <img src="/images/avatar.png" alt="Christopher Valles">
+                                                        </a>
+                                                        <div class="post-body">
+                                                            <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>"><?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?></a></h4>
+                                                            <p><?php echo $c->getComment() ?></p>
+                                                        </div>
+                                                    </section>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php endif; ?>
+                                    <?php echo $this->partial('forms/comment-content-form.phtml', array('form' => $commentContentForm, 'type' => $entry->getType(), 'entryId' => $entry->getId())); ?>
+                                </section>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul> <!-- Close post list -->
+                <section>
+            </div> <!-- Close wall profile -->
+        </div>
+    </div>
+</div>
