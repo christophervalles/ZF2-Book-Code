@@ -84,7 +84,7 @@ class IndexController extends AbstractActionController
                     $commentForm = $result;
                     break;
                 default:
-                    if ($result === true) {
+                    if ($result == true) {
                         $flashMessenger->addMessage('New content posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
@@ -238,7 +238,7 @@ class IndexController extends AbstractActionController
             unset($data['csrf']);
             
             $response = ApiClient::postWallContent($user->getUsername(), $data);
-            return $response->isSuccess();
+            return $response['result'];
         }
         
         return $form;
