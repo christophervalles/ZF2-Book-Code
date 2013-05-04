@@ -10,7 +10,7 @@
 return array(
     'router' => array(
         'routes' => array(
-            'news' => array(
+            'feeds' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
                     'route' => '/api/feeds/:username[/:id]',
