@@ -171,7 +171,7 @@ class IndexController extends AbstractActionController
                 }
                 
                 $response = ApiClient::postWallContent($user->getUsername(), $data);
-                return $response->isSuccess();
+                return $response['result'];
             }
         }
         
