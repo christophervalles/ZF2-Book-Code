@@ -109,7 +109,7 @@ class IndexController extends AbstractRestfulController
             }
         }
         
-        $wallData = $userData->getArrayCopy();
+        $wallData = array();
         $wallData['feed'] = call_user_func_array('array_merge', $allEntries);
         
         usort($wallData['feed'], function($a, $b){
@@ -379,7 +379,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->usersTable) {
             $sm = $this->getServiceLocator();
-            $this->usersTable = $sm->get('Wall\Model\UsersTable');
+            $this->usersTable = $sm->get('Users\Model\UsersTable');
         }
         return $this->usersTable;
     }

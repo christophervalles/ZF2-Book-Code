@@ -10,15 +10,12 @@
 return array(
     'router' => array(
         'routes' => array(
-            'wall' => array(
+            'users' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/api/wall[/:id]',
-                    'constraints' => array(
-                        'id' => '\w+'
-                    ),
+                    'route' => '/api/users[/:id]',
                     'defaults' => array(
-                        'controller' => 'Wall\Controller\Index'
+                        'controller' => 'Users\Controller\Index'
                     ),
                 ),
             ),
@@ -26,19 +23,12 @@ return array(
     ),
     'di' => array(
         'services' => array(
-            'Wall\Model\UserStatusesTable' => 'Wall\Model\UserStatusesTable',
-            'Wall\Model\UserLinksTable' => 'Wall\Model\UserLinksTable',
-            'Wall\Model\UserImagesTable' => 'Wall\Model\UserImagesTable',
-            'Wall\Model\UserCommentsTable' => 'Wall\Model\UserCommentsTable',
+            'Users\Model\UsersTable' => 'Users\Model\UsersTable'
         )
     ),
     'controllers' => array(
         'invokables' => array(
-            'Wall\Controller\Index' => 'Wall\Controller\IndexController',
+            'Users\Controller\Index' => 'Users\Controller\IndexController',
         ),
     ),
-    'akismet' => array(
-        'apiKey' => '010b675653dd',
-        'url' => 'http://zf2-test-book.com'
-    )
 );

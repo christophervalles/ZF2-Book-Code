@@ -180,7 +180,7 @@ class IndexController extends AbstractRestfulController
                 return $this->userFeedArticlesTable;
             case 'UsersTable':
                 if (!$this->usersTable) {
-                    $this->usersTable = $sm->get('Wall\Model\UsersTable');
+                    $this->usersTable = $sm->get('Users\Model\UsersTable');
                 }
                 
                 return $this->usersTable;

@@ -10,7 +10,7 @@
 return array(
     'router' => array(
         'routes' => array(
-            'news' => array(
+            'feeds' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
                     'route' => '/api/feeds/:username[/:id]',
@@ -37,6 +37,12 @@ return array(
                     )
                 )
             )
+        )
+    ),
+    'di' => array(
+        'services' => array(
+            'Feeds\Model\UserFeedArticlesTable' => 'Feeds\Model\UserFeedArticlesTable',
+            'Feeds\Model\UserFeedsTable' => 'Feeds\Model\UserFeedsTable',
         )
     ),
     'controllers' => array(

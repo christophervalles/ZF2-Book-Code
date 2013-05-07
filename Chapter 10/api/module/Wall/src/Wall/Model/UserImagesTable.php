@@ -47,6 +47,30 @@ class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterf
     }
     
     /**
+     * Method to get an image by filename
+     *
+     * @param string $filename
+     * @return ArrayObject
+     */
+    public function getByFilename($filename)
+    {
+        $rowset = $this->select(array('filename' => $filename));
+        return $rowset->current();
+    }
+    
+    /**
+     * Method to get an image by id
+     *
+     * @param int $id
+     * @return ArrayObject
+     */
+    public function getById($id)
+    {
+        $rowset = $this->select(array('id' => $id));
+        return $rowset->current();
+    }
+    
+    /**
      * Method to insert an entry
      *
      * @param int $userId
