@@ -29,6 +29,8 @@ class IndexController extends AbstractActionController
     {
         $viewData = array();
         
+        $flashMessenger = $this->flashMessenger();
+        
         $username = $this->params()->fromRoute('username');
         $currentFeedId = $this->params()->fromRoute('feed_id');
         
@@ -71,6 +73,10 @@ class IndexController extends AbstractActionController
         $viewData['feed'] = $currentFeedId != null? $feeds[$currentFeedId] : null;
         $viewData['username'] = $username;
         $viewData['feedsMenu'] = $feedsMenu;
+        
+        if ($flashMessenger->hasMessages()) {
+            $viewData['flashMessages'] = $flashMessenger->getMessages();
+        }
         
         return $viewData;
     }
