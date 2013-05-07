@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\View\Helper;
+namespace Common\View\Helper;
 
 use Zend\Form\View\Helper\AbstractHelper;
 use Zend\View\Helper\ViewModel;

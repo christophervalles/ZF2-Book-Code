@@ -17,6 +17,7 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 use Feeds\Entity\Feed;
 use Zend\Navigation\Navigation;
 use Zend\Navigation\Page\AbstractPage;
+use Users\Entity\User;
 
 class IndexController extends AbstractActionController
 {
@@ -29,8 +30,14 @@ class IndexController extends AbstractActionController
     {
         $viewData = array();
         
+        $flashMessenger = $this->flashMessenger();
+        
         $username = $this->params()->fromRoute('username');
         $currentFeedId = $this->params()->fromRoute('feed_id');
+        
+        $hydrator = new ClassMethods();
+        $userData = ApiClient::getUser($username);
+        $user = $hydrator->hydrate($userData, new User());
         
         $subscribeForm = new SubscribeForm();
         $unsubscribeForm = new UnsubscribeForm();
@@ -39,6 +46,7 @@ class IndexController extends AbstractActionController
         
         $hydrator = new ClassMethods();
         $response = ApiClient::getFeeds($username);
+        $response = $response ?: array();
         $feeds = array();
         foreach ($response as $r) {
             $feeds[$r['id']] = $hydrator->hydrate($r, new Feed());
@@ -69,8 +77,12 @@ class IndexController extends AbstractActionController
         $viewData['subscribeForm'] = $subscribeForm;
         $viewData['unsubscribeForm'] = $unsubscribeForm;
         $viewData['feed'] = $currentFeedId != null? $feeds[$currentFeedId] : null;
-        $viewData['username'] = $username;
+        $viewData['user'] = $user;
         $viewData['feedsMenu'] = $feedsMenu;
+        
+        if ($flashMessenger->hasMessages()) {
+            $viewData['flashMessages'] = $flashMessenger->getMessages();
+        }
         
         return $viewData;
     }

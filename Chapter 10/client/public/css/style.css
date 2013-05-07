@@ -326,7 +326,9 @@ article .lead-info {
 .add-subscription {
     margin: 0 0 20px 10px;
 }
-
+.add-subscription form{
+    clear: both;
+}
 .add-subscription .input-medium {
     width: 134px;
 }

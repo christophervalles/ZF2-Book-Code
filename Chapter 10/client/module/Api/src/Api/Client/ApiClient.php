@@ -31,6 +31,8 @@ class ApiClient {
     protected static $endpointWall = '/api/wall/%s';
     protected static $endpointFeeds = '/api/feeds/%s';
     protected static $endpointSpecificFeed = '/api/feeds/%s/%d';
+    protected static $endpointUsers = '/api/users';
+    protected static $endpointGetUser = '/api/users/%s';
     
     /**
      * Perform an API reqquest to retrieve the data of the wall
@@ -94,6 +96,30 @@ class ApiClient {
     {
         $url = self::$endpointHost . sprintf(self::$endpointSpecificFeed, $username, $feedId);
         return self::doRequest($url, null, Request::METHOD_DELETE);
+    }
+    
+    /**
+     * Perform an API request to add a new user
+     *
+     * @param array $postData
+     * @return Zend\Http\Response
+     */
+    public static function registerUser($postData)
+    {
+        $url = self::$endpointHost . self::$endpointUsers;
+        return self::doRequest($url, $postData, Request::METHOD_POST);
+    }
+    
+    /**
+     * Perform an API request to get the basic data of a user
+     *
+     * @param string $username
+     * @return Zend\Http\Response
+     */
+    public static function getUser($username)
+    {
+        $url = self::$endpointHost . sprintf(self::$endpointGetUser, $username);
+        return self::doRequest($url, null, Request::METHOD_GET);
     }
     
     /**

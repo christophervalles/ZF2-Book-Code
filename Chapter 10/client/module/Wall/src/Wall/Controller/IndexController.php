@@ -11,15 +11,16 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Wall\Entity\User;
+use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
 use Wall\Forms\LinkForm;
 use Wall\Forms\CommentForm;
 use Wall\Entity\Status;
+use Wall\Entity\Wall;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
-use Api\Client\ApiClient as ApiClient;
+use Api\Client\ApiClient;
 
 class IndexController extends AbstractActionController
 {
@@ -29,16 +30,21 @@ class IndexController extends AbstractActionController
         $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
-        $response = ApiClient::getWall($username);
+        $userData = ApiClient::getUser($username);
         
-        if ($response !== FALSE) {
+        if ($userData !== FALSE) {
             $hydrator = new ClassMethods();
             
-            $user = $hydrator->hydrate($response, new User());
+            $user = $hydrator->hydrate($userData, new User());
         } else {
             $this->getResponse()->setStatusCode(404);
             return;
         }
+        
+        $wallData = ApiClient::getWall($username);
+        
+        $hydrator = new ClassMethods();
+        $wall = $hydrator->hydrate($wallData, new Wall());
         
         //Check if we are submitting content
         $request = $this->getRequest();
@@ -84,7 +90,7 @@ class IndexController extends AbstractActionController
                     $commentForm = $result;
                     break;
                 default:
-                    if ($result === true) {
+                    if ($result == true) {
                         $flashMessenger->addMessage('New content posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
@@ -98,7 +104,8 @@ class IndexController extends AbstractActionController
         $imageForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $linkForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $commentForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
-        $viewData['profileData'] = $user;
+        $viewData['user'] = $user;
+        $viewData['wall'] = $wall;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
@@ -115,7 +122,7 @@ class IndexController extends AbstractActionController
      * Upload a new image
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      */
     protected function createImage($form, $user, $data)
@@ -171,7 +178,7 @@ class IndexController extends AbstractActionController
                 }
                 
                 $response = ApiClient::postWallContent($user->getUsername(), $data);
-                return $response->isSuccess();
+                return $response['result'];
             }
         }
         
@@ -182,7 +189,7 @@ class IndexController extends AbstractActionController
      * Create a new status
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */
@@ -196,7 +203,7 @@ class IndexController extends AbstractActionController
      * Store a new link
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */
@@ -209,7 +216,7 @@ class IndexController extends AbstractActionController
      * Store a new comment
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */
@@ -238,7 +245,7 @@ class IndexController extends AbstractActionController
             unset($data['csrf']);
             
             $response = ApiClient::postWallContent($user->getUsername(), $data);
-            return $response->isSuccess();
+            return $response['result'];
         }
         
         return $form;

@@ -4,22 +4,28 @@
             <!-- Profile section -->
             <div class="span3 well" id="profile">
                 <section>
-                    <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="thumbnail">
-                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" />
+                    <a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="thumbnail">
+                        <img src="<?php echo $user->getAvatar()->getUrl() ?>" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" />
                     </a>
                     <ul>
-                        <li>
-                            <h3><i class="icon-user"></i> Bio</h3>
-                            <p><?php echo $profileData->getBio() ?></p>
-                        </li>
-                        <li>
-                            <h3><i class="icon-globe"></i> Location</h3>
-                            <p><?php echo $profileData->getLocation() ?></p>
-                        </li>
-                        <li>
-                            <h3><i class="icon-heart"></i> Gender</h3>
-                            <p><?php echo $profileData->getGenderString() ?></p>
-                        </li>
+                        <?php if ($user->getBio() != null) : ?>
+                            <li>
+                                <h3><i class="icon-user"></i> Bio</h3>
+                                <p><?php echo $user->getBio() ?></p>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($user->getLocation() != null) : ?>
+                            <li>
+                                <h3><i class="icon-globe"></i> Location</h3>
+                                <p><?php echo $user->getLocation() ?></p>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($user->getGenderString() != '') : ?>
+                            <li>
+                                <h3><i class="icon-heart"></i> Gender</h3>
+                                <p><?php echo $user->getGenderString() ?></p>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </section>
             </div>
@@ -29,7 +35,7 @@
                 <section>
                     <!-- Main Stream wall profile -->
                     <div id="wall-stream">
-                        <h2><?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?></h2>
+                        <h2><?php printf('%s %s', $user->getName(), $user->getSurname())  ?></h2>
                     </div>
                 <section>
                 <section>
@@ -40,7 +46,6 @@
                             <li><a href="#wall-link" data-toggle="tab"><i class="icon-share"></i></a></li>
                         </ul>
                         <div class="tab-content">
-                            <?php //echo $imageContentForm->hasValidated() == false || $imageContentForm->isValid() == true? '' : 'active' ?>
                             <div class="tab-pane active" id="wall-status">
                                 <?php echo $this->partial('forms/text-content-form.phtml', array('form' => $textContentForm)); ?>
                             </div>
@@ -55,14 +60,14 @@
                 </section>
                 <section>
                     <ul class="post-list">
-                        <?php foreach ($profileData->getFeed() as $entry) : ?>
+                        <?php foreach ($wall->getFeed() as $entry) : ?>
                             <li class="post">
                                 <section>
-                                    <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="pull-left thumbnail">
-                                        <img src="/images/avatar.png" alt="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" />
+                                    <a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $user->getName(), $user->getName())  ?>" class="pull-left thumbnail">
+                                        <img src="<?php echo $user->getAvatar()->getUrl() ?>" alt="<?php printf('%s %s', $user->getName(), $user->getName())  ?>" />
                                     </a>
                                     <div class="post-body">
-                                        <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>"><?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?></a></h4>
+                                        <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $user->getName(), $user->getName())  ?>"><?php printf('%s %s', $user->getName(), $user->getName())  ?></a></h4>
                                         <?php if ($entry instanceOf \Wall\Entity\Status) : ?>
                                             <p><?php echo $entry->getStatus() ?></p>
                                         <?php elseif ($entry instanceOf \Wall\Entity\Image) : ?>
@@ -76,11 +81,11 @@
                                             <?php foreach ($entry->getComments() as $i => $c) : ?>
                                                 <li class="post <?php echo $i == count($entry->getComments()) - 1? 'last' : '' ?>">
                                                     <section>
-                                                        <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>" class="pull-left thumbnail">
-                                                            <img src="/images/avatar.png" alt="Christopher Valles">
+                                                        <a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>" class="pull-left thumbnail">
+                                                            <img src="<?php echo $user->getAvatar()->getUrl() ?>" alt="Christopher Valles">
                                                         </a>
                                                         <div class="post-body">
-                                                            <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>"><?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?></a></h4>
+                                                            <h4 class="post-heading"><a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?>"><?php printf('%s %s', $c->getUser()->getName(), $c->getUser()->getSurname()) ?></a></h4>
                                                             <p><?php echo $c->getComment() ?></p>
                                                         </div>
                                                     </section>
