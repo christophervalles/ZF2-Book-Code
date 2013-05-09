@@ -24,14 +24,6 @@ return array(
             ),
         ),
     ),
-    'di' => array(
-        'services' => array(
-            'Wall\Model\UserStatusesTable' => 'Wall\Model\UserStatusesTable',
-            'Wall\Model\UserLinksTable' => 'Wall\Model\UserLinksTable',
-            'Wall\Model\UserImagesTable' => 'Wall\Model\UserImagesTable',
-            'Wall\Model\UserCommentsTable' => 'Wall\Model\UserCommentsTable',
-        )
-    ),
     'controllers' => array(
         'invokables' => array(
             'Wall\Controller\Index' => 'Wall\Controller\IndexController',

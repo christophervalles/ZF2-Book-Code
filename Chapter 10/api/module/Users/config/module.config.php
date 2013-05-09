@@ -23,7 +23,11 @@ return array(
     ),
     'di' => array(
         'services' => array(
-            'Users\Model\UsersTable' => 'Users\Model\UsersTable'
+            'Users\Model\UsersTable' => 'Users\Model\UsersTable',
+            'Users\Model\UserStatusesTable' => 'Users\Model\UserStatusesTable',
+            'Users\Model\UserLinksTable' => 'Users\Model\UserLinksTable',
+            'Users\Model\UserImagesTable' => 'Users\Model\UserImagesTable',
+            'Users\Model\UserCommentsTable' => 'Users\Model\UserCommentsTable',
         )
     ),
     'controllers' => array(

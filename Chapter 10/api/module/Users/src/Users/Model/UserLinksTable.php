@@ -1,5 +1,5 @@
 <?php
-namespace Wall\Model;
+namespace Users\Model;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -7,21 +7,22 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Expression;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
+use Wall\Validator\Url;
 
-class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterface
+class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterface
 {
     /**
      * Hold the entity id used for comments
      */
-    const COMMENT_TYPE_ID = 2;
+    const COMMENT_TYPE_ID = 3;
     
     /**
      * Hold the table name
      *
      * @var string
      */
-    protected $table = 'user_images';
-    const TABLE_NAME = 'user_images';
+    protected $table = 'user_links';
+    const TABLE_NAME = 'user_links';
     
     /**
      * Set db adapter
@@ -47,41 +48,19 @@ class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterf
     }
     
     /**
-     * Method to get an image by filename
-     *
-     * @param string $filename
-     * @return ArrayObject
-     */
-    public function getByFilename($filename)
-    {
-        $rowset = $this->select(array('filename' => $filename));
-        return $rowset->current();
-    }
-    
-    /**
-     * Method to get an image by id
-     *
-     * @param int $id
-     * @return ArrayObject
-     */
-    public function getById($id)
-    {
-        $rowset = $this->select(array('id' => $id));
-        return $rowset->current();
-    }
-    
-    /**
      * Method to insert an entry
      *
      * @param int $userId
-     * @param string $filename
+     * @param string $url
+     * @param string $title
      * @return boolean
      */
-    public function create($userId, $filename)
+    public function create($userId, $url, $title)
     {
         return $this->insert(array(
             'user_id' => $userId,
-            'filename' => $filename,
+            'url' => $url,
+            'title' => $title,
             'created_at' => new Expression('NOW()'),
             'updated_at' => null
         ));
@@ -117,6 +96,25 @@ class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterf
                         'adapter' => $this->adapter
                     )
                 )
+            ),
+        )));
+        
+        $inputFilter->add($factory->createInput(array(
+            'name'     => 'url',
+            'required' => true,
+            'filters'  => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim')
+            ),
+            'validators' => array(
+                array('name' => 'NotEmpty'),
+                array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'max' => 2048
+                    )
+                ),
+                array('name' => '\Wall\Validator\Url'),
             ),
         )));
         

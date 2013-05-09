@@ -169,7 +169,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userImagesTable) {
             $sm = $this->getServiceLocator();
-            $this->userImagesTable = $sm->get('Wall\Model\UserImagesTable');
+            $this->userImagesTable = $sm->get('Users\Model\UserImagesTable');
         }
         return $this->userImagesTable;
     }
