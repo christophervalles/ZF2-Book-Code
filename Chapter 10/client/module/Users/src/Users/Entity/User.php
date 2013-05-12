@@ -44,8 +44,14 @@ class User
     
     public function setAvatar($avatar)
     {
-        $hydrator = new ClassMethods();
-        $this->avatar = $hydrator->hydrate($avatar, new Image());
+        if ($avatar == null) {
+            $defaultImage = new Image();
+            $defaultImage->setFilename('default.png');
+            $this->avatar = $defaultImage;
+        } else {
+            $hydrator = new ClassMethods();
+            $this->avatar = $hydrator->hydrate($avatar, new Image());
+        }
     }
     
     public function setBio($bio)

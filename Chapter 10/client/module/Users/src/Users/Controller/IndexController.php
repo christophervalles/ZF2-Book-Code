@@ -39,62 +39,63 @@ class IndexController extends AbstractActionController
             $signupForm->setData($data);
             
             if ($signupForm->isValid()) {
-                $data = array_merge_recursive(
-                    $signupForm->getData(),
-                    $request->getFiles()->toArray()
-                );
+                $files = $request->getFiles()->toArray();
+                $data = $signupForm->getData();
+                $data['avatar'] = $files['avatar']['name'] != '' ? $files['avatar']['name'] : null;
                 
-                $size = new Size(array('max' => 2048000));
-                $isImage = new IsImage();
-                $filename = $data['avatar']['name'];
-                
-                $adapter = new \Zend\File\Transfer\Adapter\Http();
-                $adapter->setValidators(array($size, $isImage), $filename);
-                
-                if (!$adapter->isValid($filename)){
-                    $errors = array();
-                    foreach($adapter->getMessages() as $key => $row) {
-                        $errors[] = $row;
+                if ($data['avatar'] === null) {
+                    $size = new Size(array('max' => 2048000));
+                    $isImage = new IsImage();
+                    $filename = $data['avatar']['name'];
+                    
+                    $adapter = new \Zend\File\Transfer\Adapter\Http();
+                    $adapter->setValidators(array($size, $isImage), $filename);
+                    
+                    if (!$adapter->isValid($filename)){
+                        $errors = array();
+                        foreach($adapter->getMessages() as $key => $row) {
+                            $errors[] = $row;
+                        }
+                        $signupForm->setMessages(array('avatar' => $errors));
                     }
-                    $signupForm->setMessages(array('avatar' => $errors));
-                }
-                
-                $destPath = 'data/tmp/';
-                $adapter->setDestination($destPath);
-                
-                $fileinfo = $adapter->getFileInfo();
-                preg_match('/.+\/(.+)/', $fileinfo['avatar']['type'], $matches);
-                $extension = $matches[1];
-                $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $extension);
-                
-                $adapter->addFilter('File\Rename',
-                    array(
-                        'target' => $destPath . $newFilename,
-                        'overwrite' => true,
-                    )
-                );
-                
-                if ($adapter->receive($filename)) {
-                    $data['avatar'] = base64_encode(
-                        file_get_contents(
-                            $destPath . $newFilename
+                    
+                    $destPath = 'data/tmp/';
+                    $adapter->setDestination($destPath);
+                    
+                    $fileinfo = $adapter->getFileInfo();
+                    preg_match('/.+\/(.+)/', $fileinfo['avatar']['type'], $matches);
+                    $extension = $matches[1];
+                    $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $extension);
+                    
+                    $adapter->addFilter('File\Rename',
+                        array(
+                            'target' => $destPath . $newFilename,
+                            'overwrite' => true,
                         )
                     );
                     
-                    if (file_exists($destPath . $newFilename)) {
-                        unlink($destPath . $newFilename);
+                    if ($adapter->receive($filename)) {
+                        $data['avatar'] = base64_encode(
+                            file_get_contents(
+                                $destPath . $newFilename
+                            )
+                        );
+                        
+                        if (file_exists($destPath . $newFilename)) {
+                            unlink($destPath . $newFilename);
+                        }
                     }
-                    
-                    unset($data['repeat_password']);
-                    unset($data['csrf']);
-                    unset($data['register']);
-                    
-                    $response = ApiClient::registerUser($data);
-                    
-                    if ($response['result'] == true) {
-                        $this->flashMessenger()->addMessage('Account created!');
-                        return $this->redirect()->toRoute('wall', array('username' => $data['username']));
-                    }
+                }
+                
+                unset($data['repeat_password']);
+                unset($data['csrf']);
+                unset($data['register']);
+                
+                $response = ApiClient::registerUser($data);
+                
+                if ($response['result'] == true) {
+                    $this->flashMessenger()->addMessage('Account created!');
+                    return $this->redirect()->toRoute('wall', array('username' => $data['username']));
                 }
             }
         }
