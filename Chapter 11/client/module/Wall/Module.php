@@ -14,7 +14,6 @@ use Zend\Mvc\MvcEvent;
 use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
 use Zend\Permissions\Acl\Resource\GenericResource as Resource;
-use Zend\Authentication\AuthenticationService;
 
 class Module
 {
@@ -26,8 +25,6 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        
-        $e->getApplication()->getEventManager()->attach('route', array($this, 'checkAcl'));
     }
     
     public function getConfig()
@@ -83,30 +80,4 @@ class Module
         
         $e->getViewModel()->acl = $acl;
     }
-    
-    /**
-     * Check acl permissions for current request
-     *
-     * @param MvcEvent $e 
-     * @return void
-     */
-    public function checkAcl(MvcEvent $e) {
-        $route = $e->getRouteMatch()->getMatchedRouteName();
-        $auth = new AuthenticationService();
-        
-        $userRole = 'guest';
-        if ($auth->hasIdentity()) {
-            $userRole = 'member';
-            $e->getViewModel()->loggedInUser = $auth->getIdentity();
-        }
-        
-        $e->getViewModel()->userRole = $userRole;
-        
-        if (!$e->getViewModel()->acl->isAllowed($userRole, $route)) {
-            $response = $e->getResponse();
-            $response->setStatusCode(404);
-            return;
-        }
-    }
-    
 }
