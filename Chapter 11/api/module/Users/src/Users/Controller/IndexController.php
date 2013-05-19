@@ -45,9 +45,9 @@ class IndexController extends AbstractRestfulController
         $userImagesTable = $this->getUserImagesTable();
         
         $userData = $usersTable->getByUsername($username);
-        $userData['avatar'] = $userImagesTable->getById($userData['avatar_id']);
         
         if ($userData !== false) {
+            $userData['avatar'] = $userImagesTable->getById($userData['avatar_id']);
             return new JsonModel($userData);
         } else {
             throw new \Exception('User not found', 404);
@@ -86,7 +86,7 @@ class IndexController extends AbstractRestfulController
             $data['password'] = $bcrypt->create($data['password']);
             
             if ($usersTable->create($data)) {
-                if (!empty($$avatarContent)) {
+                if (!empty($avatarContent)) {
                     $userImagesTable = $this->getUserImagesTable();
                     $user = $usersTable->getByUsername($data['username']);
                     

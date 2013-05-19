@@ -96,6 +96,8 @@ class IndexController extends AbstractRestfulController
                             $user = $cachedUsers[$c->user_id];
                         } else {
                             $user = $usersTable->getById($c->user_id);
+                            $user['avatar'] = $userImagesTable->getById($user['avatar_id']);
+                            
                             $cachedUsers[$c->user_id] = $user;
                         }
                         

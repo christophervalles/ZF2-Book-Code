@@ -19,6 +19,15 @@ return array(
                     ),
                 ),
             ),
+            'login' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route' => '/api/users/login',
+                    'defaults' => array(
+                        'controller' => 'Users\Controller\Login'
+                    ),
+                ),
+            ),
         ),
     ),
     'di' => array(
@@ -33,6 +42,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Users\Controller\Index' => 'Users\Controller\IndexController',
+            'Users\Controller\Login' => 'Users\Controller\LoginController',
         ),
     ),
 );
