@@ -17,10 +17,23 @@ return array(
             array(
                 'label' => 'Home',
                 'route' => 'wall',
+                'use_route_match' => true,
+                'resource' => 'wall'
             ),
             array(
                 'label' => 'Feeds',
                 'route' => 'feeds',
+                'resource' => 'feeds'
+            ),
+            array(
+                'label' => 'Logout',
+                'route' => 'users-logout',
+                'resource' => 'users-logout'
+            ),
+            array(
+                'label' => 'Login',
+                'route' => 'users-login',
+                'resource' => 'users-login'
             ),
         )
     ),

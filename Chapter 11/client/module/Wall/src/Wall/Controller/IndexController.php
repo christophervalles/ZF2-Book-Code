@@ -21,6 +21,7 @@ use Wall\Entity\Wall;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
 use Api\Client\ApiClient;
+use Zend\Authentication\AuthenticationService;
 
 class IndexController extends AbstractActionController
 {
@@ -28,6 +29,9 @@ class IndexController extends AbstractActionController
     {
         $viewData = array();
         $flashMessenger = $this->flashMessenger();
+        
+        $auth = new AuthenticationService();
+        $loggedInUser = $auth->getIdentity();
         
         $username = $this->params()->fromRoute('username');
         $userData = ApiClient::getUser($username);
@@ -73,7 +77,7 @@ class IndexController extends AbstractActionController
             }
             
             if (array_key_exists('comment', $data)) {
-                $result = $this->createComment($commentForm, $user, $data);
+                $result = $this->createComment($commentForm, $loggedInUser, $data);
             }
             
             switch (true) {
@@ -110,6 +114,7 @@ class IndexController extends AbstractActionController
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
+        $viewData['isMyWall'] = $loggedInUser->getUsername() == $username;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();

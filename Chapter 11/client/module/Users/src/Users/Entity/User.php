@@ -335,4 +335,54 @@ class User
         
         return $inputFilter;
     }
+    
+    /**
+     * Return the configuration of the validators and filters for this form
+     *
+     * @return InputFilter
+     */
+    public static function getLoginInputFilter()
+    {
+        $inputFilter = new InputFilter();
+        $factory = new InputFactory();
+        
+        $inputFilter->add($factory->createInput(array(
+            'name'     => 'username',
+            'required' => true,
+            'filters'  => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim'),
+            ),
+            'validators' => array(
+                array(
+                    'name' => 'NotEmpty',
+                    'break_chain_on_failure' => true
+                ),
+                array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'min' => 1,
+                        'max' => 50
+                    ),
+                ),
+            ),
+        )));
+        
+        $inputFilter->add($factory->createInput(array(
+            'name'     => 'password',
+            'required' => true,
+            'filters'  => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim'),
+            ),
+            'validators' => array(
+                array(
+                    'name' => 'NotEmpty',
+                    'break_chain_on_failure' => true
+                ),
+            ),
+        )));
+        
+        return $inputFilter;
+    }
 }

@@ -11,16 +11,32 @@ return array(
     'router' => array(
         'routes' => array(
             'users-signup' => array(
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
                     'route'    => '/',
-                    'constraints' => array(
-                        'username' => '\w+',
-                        'feed_id' => '\d*',
-                    ),
                     'defaults' => array(
                         'controller' => 'Users\Controller\Index',
                         'action' => 'index'
+                    ),
+                ),
+            ),
+            'users-login' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/login',
+                    'defaults' => array(
+                        'controller' => 'Users\Controller\Index',
+                        'action' => 'login'
+                    ),
+                ),
+            ),
+            'users-logout' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/logout',
+                    'defaults' => array(
+                        'controller' => 'Users\Controller\Index',
+                        'action' => 'logout'
                     ),
                 ),
             ),

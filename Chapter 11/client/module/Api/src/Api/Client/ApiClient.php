@@ -33,6 +33,7 @@ class ApiClient {
     protected static $endpointSpecificFeed = '/api/feeds/%s/%d';
     protected static $endpointUsers = '/api/users';
     protected static $endpointGetUser = '/api/users/%s';
+    protected static $endpointUserLogin = '/api/users/login';
     
     /**
      * Perform an API reqquest to retrieve the data of the wall
@@ -120,6 +121,18 @@ class ApiClient {
     {
         $url = self::$endpointHost . sprintf(self::$endpointGetUser, $username);
         return self::doRequest($url, null, Request::METHOD_GET);
+    }
+    
+    /**
+     * Perform an API request to authenticate a user
+     *
+     * @param array $postData Array containing username and password on their respective keys
+     * @return Zend\Http\Response
+     */
+    public static function authenticate($postData)
+    {
+        $url = self::$endpointHost . self::$endpointUserLogin;
+        return self::doRequest($url, $postData, Request::METHOD_POST);
     }
     
     /**
