@@ -29,7 +29,9 @@
                     </a>
                     <a class="brand" href="/"><?php echo $this->translate('Skeleton Application') ?></a>
                     <div class="nav-collapse collapse">
-                        <?php $this->navigation('navigation')->findBy('route', 'feeds')->setParams(array('username' => $this->loggedInUser->getUsername())); ?>
+                        <?php if ($this->loggedInUser !== null) : ?>
+                            <?php $this->navigation('navigation')->findBy('route', 'feeds')->setParams(array('username' => $this->loggedInUser->getUsername())); ?>
+                        <?php endif; ?>
                         <?php echo $this->navigation('navigation')->menu()->setUlClass('nav')->setAcl($this->acl)->setRole($this->userRole)->renderMenu(); ?>
                     </div>
                 </div>
