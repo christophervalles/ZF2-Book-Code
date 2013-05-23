@@ -59,7 +59,7 @@ class LoginController extends AbstractRestfulController
         $user = $usersTable->getByUsername($data['username']);
         
         $bcrypt = new Bcrypt();
-        if ($bcrypt->verify($data['password'], $user->password)) {
+        if (!empty($user) && $bcrypt->verify($data['password'], $user->password)) {
             $result = new JsonModel(array(
                 'result' => true,
                 'errors' => null
