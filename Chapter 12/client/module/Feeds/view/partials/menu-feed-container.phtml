@@ -1,0 +1,12 @@
+<ul id="subscription-list">
+    <?php foreach ($container->getPages() as $p) : ?>
+        <li>
+            <a href="<?php echo $p->getHref() ?>" title="<?php echo $p->getTitle() ?>" class="<?php echo $p->isActive()? 'active' : '' ?>">
+                <?php if ($p->get('icon') !== null) : ?>
+                    <img src="<?php echo $p->get('icon') ?>" alt="<?php echo $p->getTitle() ?>" />
+                <?php endif; ?>
+                <?php echo $p->getTitle() ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+</ul>
