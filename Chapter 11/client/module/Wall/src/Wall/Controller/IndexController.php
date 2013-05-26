@@ -114,7 +114,7 @@ class IndexController extends AbstractActionController
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
-        $viewData['isMyWall'] = $loggedInUser->getUsername() == $username;
+        $viewData['isMyWall'] = !empty($loggedInUser)? $loggedInUser->getUsername() == $username : false;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
