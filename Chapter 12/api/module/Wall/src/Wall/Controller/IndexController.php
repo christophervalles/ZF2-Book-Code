@@ -319,20 +319,18 @@ class IndexController extends AbstractRestfulController
             case \Users\Model\UserStatusesTable::COMMENT_TYPE_ID:
                 $validatorTable = \Users\Model\UserStatusesTable::TABLE_NAME;
                 $table = $this->getUserStatusesTable();
-                $entry = $table->getById($data['entry_id']);
                 break;
             case \Users\Model\UserImagesTable::COMMENT_TYPE_ID:
                 $validatorTable = \Users\Model\UserImagesTable::TABLE_NAME;
                 $table = $this->getUserImagesTable();
-                $entry = $table->getById($data['entry_id']);
                 break;
             case \Users\Model\UserLinksTable::COMMENT_TYPE_ID:
                 $validatorTable = \Users\Model\UserLinksTable::TABLE_NAME;
                 $table = $this->getUserLinksTable();
-                $entry = $table->getById($data['entry_id']);
                 break;
         }
         
+        $entry = $table->getById($data['entry_id']);
         $recipient = $usersTable->getById($entry['user_id']);
         
         $config = $this->getServiceLocator()->get('Config');
@@ -345,8 +343,10 @@ class IndexController extends AbstractRestfulController
             $result = new JsonModel(array(
                 'result' => $userCommentsTable->create($data['user_id'], $data['type'], $data['entry_id'], $data['comment']['comment_content'])
             ));
-                
-            Mailer::sendContentNotificationEmail($recipient['email'], $recipient['name'], $user['name']);
+            
+            if($recipient['id'] != $user['id']) {
+                Mailer::sendContentNotificationEmail($recipient['email'], $recipient['name'], $user['name']);
+            }
         } else {
             $result = new JsonModel(array(
                 'result' => false,

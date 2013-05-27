@@ -2,7 +2,6 @@
 
 namespace Common;
 
-use Zend\Mail;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Sendmail;
 use Zend\View\Renderer\PhpRenderer;
