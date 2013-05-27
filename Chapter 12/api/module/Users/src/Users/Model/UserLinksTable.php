@@ -36,6 +36,19 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
     }
     
     /**
+     * Method to get entries by id
+     *
+     * @param int $id
+     * @return ArrayObject
+     */
+    public function getById($id)
+    {
+        $rowset = $this->select(array('id' => $id));
+        
+        return $rowset->current();
+    }
+    
+    /**
      * Method to get entries by userId
      *
      * @param int $userId

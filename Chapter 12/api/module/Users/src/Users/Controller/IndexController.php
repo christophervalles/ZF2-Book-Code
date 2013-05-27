@@ -12,6 +12,7 @@ namespace Users\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Zend\Crypt\Password\Bcrypt;
+use Common\Mailer;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -102,6 +103,8 @@ class IndexController extends AbstractRestfulController
                     $image = $userImagesTable->getByFilename(basename($filename));
                     $usersTable->updateAvatar($image['id'], $user['id']);
                 }
+                
+                Mailer::sendWelcomeEmail($user['email'], $user['name']);
                 
                 $result = new JsonModel(array(
                     'result' => true

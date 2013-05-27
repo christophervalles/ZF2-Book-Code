@@ -35,6 +35,19 @@ class UserStatusesTable extends AbstractTableGateway implements AdapterAwareInte
     }
     
     /**
+     * Method to get entries by id
+     *
+     * @param int $id
+     * @return ArrayObject
+     */
+    public function getById($id)
+    {
+        $rowset = $this->select(array('id' => $id));
+        
+        return $rowset->current();
+    }
+    
+    /**
      * Method to get statuses by userId
      *
      * @param int $userId
