@@ -340,11 +340,13 @@ class IndexController extends AbstractRestfulController
         if ($filters->isValid()) {
             $data = $filters->getValues();
             
+            $creationResult = $userCommentsTable->create($data['user_id'], $data['type'], $data['entry_id'], $data['comment']['comment_content']);
+            
             $result = new JsonModel(array(
-                'result' => $userCommentsTable->create($data['user_id'], $data['type'], $data['entry_id'], $data['comment']['comment_content'])
+                'result' => $creationResult
             ));
             
-            if($recipient['id'] != $user['id']) {
+            if($creationResult && $recipient['id'] != $user['id']) {
                 Mailer::sendContentNotificationEmail($recipient['email'], $recipient['name'], $user['name']);
             }
         } else {
