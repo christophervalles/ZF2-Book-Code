@@ -1,0 +1,85 @@
+<?php $form = $this->form; ?>
+<?php $form->prepare(); ?>
+<?php echo $this->form()->openTag($form) ?>
+<div class="control-group <?php echo count($form->get('name')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('name')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('name')); ?>
+        <?php echo $this->formElementErrors()
+                ->setMessageOpenFormat('<div class="help-inline">')
+                ->setMessageSeparatorString('</div><div class="help-inline">')
+                ->setMessageCloseString('</div>')
+                ->render($form->get('name')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('surname')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('surname')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('surname')); ?>
+        <?php echo $this->formElementErrors($form->get('surname')) ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('gender')->getMessages()) > 0 ? 'error' : '' ?>">
+    <label class="control-label">Gender</label>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('gender')); ?>
+        <?php echo $this->formElementErrors($form->get('gender')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('username')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('username')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('username')); ?>
+        <?php echo $this->formElementErrors($form->get('username')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('email')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('email')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('email')); ?>
+        <?php echo $this->formElementErrors($form->get('email')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('password')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('password')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('password')); ?>
+        <?php echo $this->formElementErrors($form->get('password')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('repeat_password')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('repeat_password')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('repeat_password')); ?>
+        <?php echo $this->formElementErrors($form->get('repeat_password')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('avatar')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('avatar')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('avatar')); ?>
+        <?php echo $this->formElementErrors($form->get('avatar')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('bio')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('bio')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('bio')); ?>
+        <?php echo $this->formElementErrors($form->get('bio')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('location')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('location')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('location')); ?>
+        <?php echo $this->formElementErrors($form->get('location')); ?>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <?php echo $this->formElement($form->get('register')); ?>
+        <?php echo $this->formElement($form->get('csrf')); ?>
+    </div>
+</div>
+
+<?php echo $this->form()->closeTag() ?>

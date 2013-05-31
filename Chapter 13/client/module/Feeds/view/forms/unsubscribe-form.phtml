@@ -1,0 +1,14 @@
+<?php $form = $this->form; ?>
+<?php $form->prepare(); ?>
+<?php echo $this->form()->openTag($form) ?>
+<!-- Hidden input text -->
+<?php echo $this->formElement($form->get('feed_id')); ?>
+
+<!-- Submit button -->
+<?php echo $this->formElement($form->get('unsubscribe')); ?>
+
+<!-- CSRF -->
+<?php echo $this->formElement($form->get('csrf')); ?>
+<?php echo $this->formElementErrors($form->get('csrf')); ?>
+
+<?php echo $this->form()->closeTag() ?>

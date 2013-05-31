@@ -1,0 +1,29 @@
+<?php $form = $this->form; ?>
+<?php $form->prepare(); ?>
+<?php echo $this->form()->openTag($form) ?>
+<div class="control-group <?php echo count($form->get('username')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('username')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('username')); ?>
+        <?php echo $this->formElementErrors()
+                ->setMessageOpenFormat('<div class="help-inline">')
+                ->setMessageSeparatorString('</div><div class="help-inline">')
+                ->setMessageCloseString('</div>')
+                ->render($form->get('username')); ?>
+    </div>
+</div>
+<div class="control-group <?php echo count($form->get('password')->getMessages()) > 0 ? 'error' : '' ?>">
+    <?php echo $this->formLabel($form->get('password')); ?>
+    <div class="controls">
+        <?php echo $this->formElement($form->get('password')); ?>
+        <?php echo $this->formElementErrors($form->get('password')); ?>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <?php echo $this->formElement($form->get('login')); ?>
+        <?php echo $this->formElement($form->get('csrf')); ?>
+    </div>
+</div>
+
+<?php echo $this->form()->closeTag() ?>
