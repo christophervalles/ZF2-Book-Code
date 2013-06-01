@@ -60,8 +60,24 @@ class LoginController extends AbstractRestfulController
         
         $bcrypt = new Bcrypt();
         if (!empty($user) && $bcrypt->verify($data['password'], $user->password)) {
+            $storage = new \OAuth2_Storage_Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
+            $server = new \OAuth2_Server($storage);
+            $server->addGrantType(new \OAuth2_GrantType_AuthorizationCode($storage));
+            $response = $server->handleTokenRequest(\OAuth2_Request::createFromGlobals(), new \OAuth2_Response());
+            
+            if (!$response->isSuccessful()) {
+                $result = new JsonModel(array(
+                    'result' => false,
+                    'errors' => 'Invalid oauth'
+                ));
+            }
+            
             $result = new JsonModel(array(
-                'result' => true,
+                'oauth' => array(
+                    'access_token' => $response->getParameter('access_token'),
+                    'expires_in' => $response->getParameter('expires_in'),
+                    'refresh_token' => $response->getParameter('refresh_token')
+                ),
                 'errors' => null
             ));
         } else {

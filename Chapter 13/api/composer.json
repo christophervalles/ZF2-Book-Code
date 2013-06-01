@@ -16,6 +16,7 @@
     "require": {
         "php": ">=5.3.3",
         "zendframework/zendframework": "2.*",
-        "zendframework/zendservice-akismet": "2.*"
+        "zendframework/zendservice-akismet": "2.*",
+        "bshaffer/oauth2-server-php": "dev-develop"
     }
 }

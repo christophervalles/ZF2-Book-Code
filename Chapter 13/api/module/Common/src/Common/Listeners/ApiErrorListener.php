@@ -6,6 +6,7 @@ use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\JsonModel;
+use Zend\Http\Response as Response;
 
 /**
  * Listener attached to render to check the response.
@@ -58,7 +59,7 @@ class ApiErrorListener implements ListenerAggregateInterface
      */
     public static function onRender(MvcEvent $e)
     {
-        if ($e->getRequest() instanceOf \Zend\Console\Request || $e->getResponse()->isOk()) {
+        if ($e->getRequest() instanceOf \Zend\Console\Request || $e->getResponse()->isOk() || $e->getResponse()->getStatusCode() == Response::STATUS_CODE_401) {
             return;
         }
         
