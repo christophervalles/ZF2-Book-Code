@@ -18,6 +18,7 @@ use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
 use Zend\Authentication\AuthenticationService;
 use Common\Authentication\Adapter\Api as AuthAdapter;
+use Zend\Session\Container;
 
 class IndexController extends AbstractActionController
 {
@@ -102,9 +103,17 @@ class IndexController extends AbstractActionController
                 $response = ApiClient::registerUser($data);
                 
                 if ($response['result'] == true) {
+                    $session = new Container('oauth');
+                    $session->setExpirationSeconds(30);
+                    
+                    if ($session->authorizationCode === null) {
+                        $oauthCode = ApiClient::getOAuthAuthorizationCode();
+                        $session->authorizationCode = $oauthCode['code'];
+                    }
+                    
                     $auth = new AuthenticationService();
-                    $authAdapter = new AuthAdapter($data['username'], $data['password']);
-                    $auth->authenticate($authAdapter);
+                    $authAdapter = new AuthAdapter($data['username'], $data['password'], $session->authorizationCode);
+                    $result = $auth->authenticate($authAdapter);
                     
                     $this->flashMessenger()->addMessage('Account created!');
                     return $this->redirect()->toRoute('wall', array('username' => $data['username']));
@@ -123,6 +132,14 @@ class IndexController extends AbstractActionController
      */
     public function loginAction()
     {
+        $session = new Container('oauth');
+        $session->setExpirationSeconds(30);
+        
+        if ($session->authorizationCode === null) {
+            $oauthCode = ApiClient::getOAuthAuthorizationCode();
+            $session->authorizationCode = $oauthCode['code'];
+        }
+        
         $viewData = array();
         $flashMessenger = $this->flashMessenger();
         
@@ -140,7 +157,7 @@ class IndexController extends AbstractActionController
                 $data = $loginForm->getData();
                 
                 $auth = new AuthenticationService();
-                $authAdapter = new AuthAdapter($data['username'], $data['password']);
+                $authAdapter = new AuthAdapter($data['username'], $data['password'], $session->authorizationCode);
                 $result = $auth->authenticate($authAdapter);
                 
                 if (!$result->isValid()) {

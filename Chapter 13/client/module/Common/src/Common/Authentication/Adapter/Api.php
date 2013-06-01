@@ -7,6 +7,7 @@ use Zend\Authentication\Result;
 use Api\Client\ApiClient;
 use Users\Entity\User;
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Session\Container;
 
 class Api implements AdapterInterface
 {
@@ -17,17 +18,18 @@ class Api implements AdapterInterface
      */
     private $username = null;
     private $password = null;
-    
+    private $oauthCode = null;
     
     /**
      * Sets username and password for authentication
      *
      * @return void
      */
-    public function __construct($username, $password)
+    public function __construct($username, $password, $oauthCode)
     {
         $this->username = $username;
         $this->password = $password;
+        $this->oauthCode = $oauthCode;
     }
     
     /**
@@ -41,12 +43,18 @@ class Api implements AdapterInterface
     {
         $result = ApiClient::authenticate(array(
             'username' => $this->username,
-            'password' => $this->password
+            'password' => $this->password,
+            'code' => $this->oauthCode
         ));
         
-        if ($result['result'] === true) {
+        if (array_key_exists('oauth', $result)) {
             $hydrator = new ClassMethods();
             $user = $hydrator->hydrate(ApiClient::getUser($this->username), new User());
+            
+            $session = new Container('oauth_session');
+            $session->setExpirationSeconds($result['oauth']['expires_in']);
+            $session->accessToken = $result['oauth']['access_token'];
+            $session->refreshToken = $result['oauth']['refresh_token'];
             
             $response = new Result(Result::SUCCESS, $user, array('Authentication successful.'));
         } else {

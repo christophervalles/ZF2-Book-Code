@@ -6,6 +6,7 @@ use Zend\Http\Client as Client;
 use Zend\Http\Request as Request;
 use Zend\Json\Decoder as JsonDecoder;
 use Zend\Json\Json as Json;
+use Zend\Session\Container;
 
 /**
  * This client manages all the operations needed to interface with the
@@ -23,6 +24,13 @@ class ApiClient {
     protected static $client = null;
     
     /**
+     * Holds the session container
+     *
+     * @var Zend\Session\Container
+     */
+    protected static $session = null;
+    
+    /**
      * Holds the endpoint urls
      *
      * @var string
@@ -34,6 +42,7 @@ class ApiClient {
     protected static $endpointUsers = '/api/users';
     protected static $endpointGetUser = '/api/users/%s';
     protected static $endpointUserLogin = '/api/users/login';
+    protected static $endpointOAuth = '/oauth';
     
     /**
      * Perform an API reqquest to retrieve the data of the wall
@@ -44,8 +53,11 @@ class ApiClient {
      */
     public static function getWall($username)
     {
+        $data = array();
+        $data['access_token'] = self::getSession()->accessToken;
+        
         $url = self::$endpointHost . sprintf(self::$endpointWall, $username);
-        return self::doRequest($url);
+        return self::doRequest($url, $data);
     }
     
     /**
@@ -57,6 +69,8 @@ class ApiClient {
      */
     public static function postWallContent($username, $data)
     {
+        $data['access_token'] = self::getSession()->accessToken;
+        
         $url = self::$endpointHost . sprintf(self::$endpointWall, $username);
         return self::doRequest($url, $data, Request::METHOD_POST);
     }
@@ -69,8 +83,11 @@ class ApiClient {
      */
     public static function getFeeds($username)
     {
+        $data = array();
+        $data['access_token'] = self::getSession()->accessToken;
+        
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
-        return self::doRequest($url);
+        return self::doRequest($url, $data);
     }
     
     /**
@@ -82,6 +99,8 @@ class ApiClient {
      */
     public static function addFeedSubscription($username, $postData)
     {
+        $postData['access_token'] = self::getSession()->accessToken;
+        
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
         return self::doRequest($url, $postData, Request::METHOD_POST);
     }
@@ -95,8 +114,11 @@ class ApiClient {
      */
     public static function removeFeedSubscription($username, $feedId)
     {
+        $data = array();
+        $data['access_token'] = self::getSession()->accessToken;
+        
         $url = self::$endpointHost . sprintf(self::$endpointSpecificFeed, $username, $feedId);
-        return self::doRequest($url, null, Request::METHOD_DELETE);
+        return self::doRequest($url, $data, Request::METHOD_DELETE);
     }
     
     /**
@@ -119,8 +141,11 @@ class ApiClient {
      */
     public static function getUser($username)
     {
+        $data = array();
+        $data['access_token'] = self::getSession()->accessToken;
+        
         $url = self::$endpointHost . sprintf(self::$endpointGetUser, $username);
-        return self::doRequest($url, null, Request::METHOD_GET);
+        return self::doRequest($url, $data, Request::METHOD_GET);
     }
     
     /**
@@ -131,8 +156,45 @@ class ApiClient {
      */
     public static function authenticate($postData)
     {
+        $postData['grant_type'] = 'authorization_code';
+        $postData['redirect_uri'] = 'http://example.com';
+        $postData['client_id'] = 'zf2-client';
+        $postData['client_secret'] = 'mysupersecretpass';
+        
         $url = self::$endpointHost . self::$endpointUserLogin;
         return self::doRequest($url, $postData, Request::METHOD_POST);
+    }
+    
+    /**
+     * Get the oauth session container
+     *
+     * @return Zend\Session\Container
+     */
+    public static function getSession()
+    {
+        if (self::$session === null) {
+            self::$session = new Container('oauth_session');
+        }
+        
+        return self::$session;
+    }
+    
+    /**
+     * Call the API side to get an authorization code
+     *
+     * @return void
+     * @author Christopher
+     */
+    public function getOAuthAuthorizationCode()
+    {
+        $postData = array();
+        $postData['response_type'] = 'code';
+        $postData['state'] = sha1(uniqid(time(), TRUE));
+        $postData['client_id'] = 'zf2-client';
+        $postData['client_secret'] = 'mysupersecretpass';
+        
+        $url = self::$endpointHost . self::$endpointOAuth;
+        return self::doRequest($url, $postData, Request::METHOD_GET);
     }
     
     /**
@@ -145,7 +207,6 @@ class ApiClient {
     {
         if (self::$client === null) {
             self::$client = new Client();
-            self::$client->setEncType(Client::ENC_URLENCODED);
         }
         
         return self::$client;
@@ -163,11 +224,17 @@ class ApiClient {
     protected static function doRequest($url, array $postData = null, $method = Request::METHOD_GET)
     {
         $client = self::getClientInstance();
+        $client->resetParameters();
+        $client->setEncType(Client::ENC_URLENCODED);
         $client->setUri($url);
         $client->setMethod($method);
         
-        if ($postData !== null) {
+        if ($method == Request::METHOD_POST && $postData !== null) {
             $client->setParameterPost($postData);
+        }
+        
+        if (($method == Request::METHOD_GET || $method == Request::METHOD_DELETE) && $postData !== null) {
+            $client->setParameterGet($postData);
         }
         
         $response = $client->send();
@@ -175,7 +242,7 @@ class ApiClient {
         if ($response->isSuccess()) {
             return JsonDecoder::decode($response->getBody(), Json::TYPE_ARRAY);
         } else {
-            return FALSE;
+            return $response;
         }
     }
 }
