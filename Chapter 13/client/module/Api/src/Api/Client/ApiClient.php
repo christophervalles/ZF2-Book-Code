@@ -53,11 +53,8 @@ class ApiClient {
      */
     public static function getWall($username)
     {
-        $data = array();
-        $data['access_token'] = self::getSession()->accessToken;
-        
         $url = self::$endpointHost . sprintf(self::$endpointWall, $username);
-        return self::doRequest($url, $data);
+        return self::doRequest($url);
     }
     
     /**
@@ -69,8 +66,6 @@ class ApiClient {
      */
     public static function postWallContent($username, $data)
     {
-        $data['access_token'] = self::getSession()->accessToken;
-        
         $url = self::$endpointHost . sprintf(self::$endpointWall, $username);
         return self::doRequest($url, $data, Request::METHOD_POST);
     }
@@ -83,11 +78,8 @@ class ApiClient {
      */
     public static function getFeeds($username)
     {
-        $data = array();
-        $data['access_token'] = self::getSession()->accessToken;
-        
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
-        return self::doRequest($url, $data);
+        return self::doRequest($url);
     }
     
     /**
@@ -99,8 +91,6 @@ class ApiClient {
      */
     public static function addFeedSubscription($username, $postData)
     {
-        $postData['access_token'] = self::getSession()->accessToken;
-        
         $url = self::$endpointHost . sprintf(self::$endpointFeeds, $username);
         return self::doRequest($url, $postData, Request::METHOD_POST);
     }
@@ -114,11 +104,8 @@ class ApiClient {
      */
     public static function removeFeedSubscription($username, $feedId)
     {
-        $data = array();
-        $data['access_token'] = self::getSession()->accessToken;
-        
         $url = self::$endpointHost . sprintf(self::$endpointSpecificFeed, $username, $feedId);
-        return self::doRequest($url, $data, Request::METHOD_DELETE);
+        return self::doRequest($url, null, Request::METHOD_DELETE);
     }
     
     /**
@@ -141,11 +128,8 @@ class ApiClient {
      */
     public static function getUser($username)
     {
-        $data = array();
-        $data['access_token'] = self::getSession()->accessToken;
-        
         $url = self::$endpointHost . sprintf(self::$endpointGetUser, $username);
-        return self::doRequest($url, $data, Request::METHOD_GET);
+        return self::doRequest($url);
     }
     
     /**
@@ -228,6 +212,12 @@ class ApiClient {
         $client->setEncType(Client::ENC_URLENCODED);
         $client->setUri($url);
         $client->setMethod($method);
+        
+        if ($postData === null) {
+            $postData = array();
+        }
+        
+        $postData['access_token'] = self::getSession()->accessToken;
         
         if ($method == Request::METHOD_POST && $postData !== null) {
             $client->setParameterPost($postData);

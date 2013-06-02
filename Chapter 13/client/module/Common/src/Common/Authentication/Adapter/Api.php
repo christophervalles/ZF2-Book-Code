@@ -18,18 +18,16 @@ class Api implements AdapterInterface
      */
     private $username = null;
     private $password = null;
-    private $oauthCode = null;
     
     /**
      * Sets username and password for authentication
      *
      * @return void
      */
-    public function __construct($username, $password, $oauthCode)
+    public function __construct($username, $password)
     {
         $this->username = $username;
         $this->password = $password;
-        $this->oauthCode = $oauthCode;
     }
     
     /**
@@ -41,10 +39,18 @@ class Api implements AdapterInterface
      */
     public function authenticate()
     {
+        $session = new Container('oauth');
+        $session->setExpirationSeconds(30);
+        
+        if ($session->authorizationCode === null) {
+            $oauthCode = ApiClient::getOAuthAuthorizationCode();
+            $session->authorizationCode = $oauthCode['code'];
+        }
+        
         $result = ApiClient::authenticate(array(
             'username' => $this->username,
             'password' => $this->password,
-            'code' => $this->oauthCode
+            'code' => $session->authorizationCode
         ));
         
         if (array_key_exists('oauth', $result)) {
