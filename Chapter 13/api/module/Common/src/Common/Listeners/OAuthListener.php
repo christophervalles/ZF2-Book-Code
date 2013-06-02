@@ -68,8 +68,7 @@ class OAuthListener implements ListenerAggregateInterface
         if (!$server->verifyResourceRequest(\OAuth2_Request::createFromGlobals(), new \OAuth2_Response())) {
             $model = new JsonModel(array(
                 'errorCode' => $server->getResponse()->getStatusCode(),
-                'errorMsg' => $server->getResponse()->getStatusText(),
-                'debug' => $e->getRequest()
+                'errorMsg' => $server->getResponse()->getStatusText()
             ));
             
             $response = $e->getResponse();
