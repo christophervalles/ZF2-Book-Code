@@ -13,6 +13,7 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Zend\Feed\Reader\Reader;
 use Zend\Http\Client;
+use Zend\Dom\Query;
 
 /**
  * This class is the responsible to answer the requests to the /feeds endpoint
@@ -99,19 +100,17 @@ class IndexController extends AbstractRestfulController
             $html = $response->getBody();
             $html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"); 
             
-            $dom = new \DOMDocument();
-            $dom->loadHTML($html);
-            $xpath = new \DOMXPath($dom);
+            $dom = new Query($html);
+            $rssUrl = $dom->execute($rssLinkXpath);
             
-            $rssUrl = $xpath->query($rssLinkXpath);
-            if ($rssUrl->length == 0) {
+            if (!count($rssUrl)) {
                 throw new Exception('Rss url not found in the url provided', 404);
             }
-            $rssUrl = $rssUrl->item(0)->getAttribute('href');
+            $rssUrl = $rssUrl->current()->getAttribute('href');
             
-            $faviconUrl = $xpath->query($faviconXpath);
-            if ($faviconUrl->length > 0) {
-                $faviconUrl = $faviconUrl->item(0)->getAttribute('href');
+            $faviconUrl = $dom->execute($faviconXpath);
+            if (count($faviconUrl)) {
+                $faviconUrl = $faviconUrl->current()->getAttribute('href');
             } else {
                 $faviconUrl = null;
             }
