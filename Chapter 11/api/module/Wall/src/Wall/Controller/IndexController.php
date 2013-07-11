@@ -16,6 +16,7 @@ use Zend\Filter\FilterChain;
 use Zend\Filter\StripTags;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripNewLines;
+use Zend\Dom\Query;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -262,17 +263,16 @@ class IndexController extends AbstractRestfulController
                 $html = $response->getBody();
                 $html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"); 
                 
-                $dom = new \DOMDocument();
-                $dom->loadHTML($html);
-                $titleElement = $dom->getElementsByTagName('title');
+                $dom = new Query($html);
+                $title = $dom->execute('title')->current()->nodeValue;
                 
-                if ($titleElement->length > 0) {
+                if (!empty($title)) {
                     $filterChain = new FilterChain();
                     $filterChain->attach(new StripTags());
                     $filterChain->attach(new StringTrim());
                     $filterChain->attach(new StripNewLines());
                     
-                    $title = $filterChain->filter($titleElement->item(0)->nodeValue);
+                    $title = $filterChain->filter($title);
                 } else {
                     $title = NULL;
                 }
