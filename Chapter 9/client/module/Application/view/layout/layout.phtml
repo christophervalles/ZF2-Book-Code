@@ -29,7 +29,8 @@
                     </a>
                     <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Skeleton Application') ?></a>
                     <div class="nav-collapse collapse">
-                        <?php echo $this->navigation('navigation')->menu()->setUlClass('nav')->renderMenu(); ?>
+                        <?php //$this->navigation('navigation')->findBy('route', 'feeds')->setParams(array('username' => $this->username)); ?>
+                        <?php //echo $this->navigation('navigation')->menu()->setUlClass('nav')->renderMenu(); ?>
                     </div>
                 </div>
             </div>

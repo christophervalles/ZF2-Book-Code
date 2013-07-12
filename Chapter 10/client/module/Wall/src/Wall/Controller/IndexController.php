@@ -110,6 +110,7 @@ class IndexController extends AbstractActionController
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
+        $viewData['username'] = $username;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();

@@ -43,10 +43,10 @@ class IndexController extends AbstractActionController
                 $data = $signupForm->getData();
                 $data['avatar'] = $files['avatar']['name'] != '' ? $files['avatar']['name'] : null;
                 
-                if ($data['avatar'] === null) {
+                if ($data['avatar'] !== null) {
                     $size = new Size(array('max' => 2048000));
                     $isImage = new IsImage();
-                    $filename = $data['avatar']['name'];
+                    $filename = $data['avatar'];
                     
                     $adapter = new \Zend\File\Transfer\Adapter\Http();
                     $adapter->setValidators(array($size, $isImage), $filename);
