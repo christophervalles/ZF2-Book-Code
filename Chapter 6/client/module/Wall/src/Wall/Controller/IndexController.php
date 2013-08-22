@@ -33,7 +33,7 @@ class IndexController extends AbstractActionController
         $response = $client->send();
         
         if ($response->isSuccess()) {
-            $response = Decoder::decode($response->getContent(), \Zend\Json\Json::TYPE_ARRAY);
+            $response = Decoder::decode($response->getBody(), \Zend\Json\Json::TYPE_ARRAY);
             $hydrator = new ClassMethods();
             
             $user = $hydrator->hydrate($response, new User());
