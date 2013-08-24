@@ -80,6 +80,8 @@ class IndexController extends AbstractActionController
         $viewData['user'] = $user;
         $viewData['feedsMenu'] = $feedsMenu;
         
+        $this->layout()->username = $username;
+        
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
         }

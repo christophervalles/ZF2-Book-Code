@@ -112,6 +112,8 @@ class IndexController extends AbstractActionController
         $viewData['commentContentForm'] = $commentForm;
         $viewData['username'] = $username;
         
+        $this->layout()->username = $username;
+        
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
         }
