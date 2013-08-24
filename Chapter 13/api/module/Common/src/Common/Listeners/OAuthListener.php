@@ -6,6 +6,10 @@ use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\JsonModel;
+use OAuth2\Storage\Pdo;
+use OAuth2\Server;
+use OAuth2\Request;
+use OAuth2\Response;
 
 class OAuthListener implements ListenerAggregateInterface
 {
@@ -63,9 +67,9 @@ class OAuthListener implements ListenerAggregateInterface
         $sm = $e->getApplication()->getServiceManager();
         $usersTable = $sm->get('Users\Model\UsersTable');
         
-        $storage = new \OAuth2_Storage_Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
-        $server = new \OAuth2_Server($storage);
-        if (!$server->verifyResourceRequest(\OAuth2_Request::createFromGlobals(), new \OAuth2_Response())) {
+        $storage = new Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
+        $server = new Server($storage);
+        if (!$server->verifyResourceRequest(Request::createFromGlobals(), new Response())) {
             $model = new JsonModel(array(
                 'errorCode' => $server->getResponse()->getStatusCode(),
                 'errorMsg' => $server->getResponse()->getStatusText()

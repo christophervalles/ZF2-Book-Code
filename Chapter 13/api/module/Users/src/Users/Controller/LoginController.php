@@ -12,6 +12,11 @@ namespace Users\Controller;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Zend\Crypt\Password\Bcrypt;
+use OAuth2\Storage\Pdo;
+use OAuth2\Server;
+use OAuth2\GrantType\AuthorizationCode;
+use OAuth2\Request;
+use OAuth2\Response;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -60,10 +65,10 @@ class LoginController extends AbstractRestfulController
         
         $bcrypt = new Bcrypt();
         if (!empty($user) && $bcrypt->verify($data['password'], $user->password)) {
-            $storage = new \OAuth2_Storage_Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
-            $server = new \OAuth2_Server($storage);
-            $server->addGrantType(new \OAuth2_GrantType_AuthorizationCode($storage));
-            $response = $server->handleTokenRequest(\OAuth2_Request::createFromGlobals(), new \OAuth2_Response());
+            $storage = new Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
+            $server = new Server($storage);
+            $server->addGrantType(new AuthorizationCode($storage));
+            $response = $server->handleTokenRequest(Request::createFromGlobals(), new Response());
             
             if (!$response->isSuccessful()) {
                 $result = new JsonModel(array(

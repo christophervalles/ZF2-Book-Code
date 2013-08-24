@@ -11,6 +11,11 @@ namespace OAuth\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use OAuth2\Storage\Pdo;
+use OAuth2\Server;
+use OAuth2\Request;
+use OAuth2\Response;
+use OAuth2\GrantType\AuthorizationCode;
 
 /**
  * This class is the responsible to answer the requests to the /oauth/token endpoint
@@ -40,12 +45,12 @@ class TokenController extends AbstractRestfulController
     {
         $usersTable = $this->getUsersTable();
         
-        $storage = new \OAuth2_Storage_Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
-        $server = new \OAuth2_Server($storage);
-        $server->addGrantType(new \OAuth2_GrantType_AuthorizationCode($storage));
+        $storage = new Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
+        $server = new Server($storage);
+        $server->addGrantType(new AuthorizationCode($storage));
         
-        $request = \OAuth2_Request::createFromGlobals();
-        $response = new \OAuth2_Response();
+        $request = Request::createFromGlobals();
+        $response = new Response();
         
         if (!$server->validateAuthorizeRequest($request, $response)) {
             $response->send();

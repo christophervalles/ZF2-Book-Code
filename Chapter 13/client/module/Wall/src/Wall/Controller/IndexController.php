@@ -33,6 +33,10 @@ class IndexController extends AbstractActionController
         $auth = new AuthenticationService();
         $loggedInUser = $auth->getIdentity();
         
+        if ($loggedInUser === null) {
+            return;
+        }
+        
         $username = $this->params()->fromRoute('username');
         $userData = ApiClient::getUser($username);
         
