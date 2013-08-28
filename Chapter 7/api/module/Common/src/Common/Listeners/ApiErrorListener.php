@@ -2,7 +2,7 @@
 
 namespace Common\Listeners;
 
-use Zend\EventManager\ListenerAggregateInterface;
+use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\JsonModel;
@@ -15,15 +15,8 @@ use Zend\View\Model\JsonModel;
  *
  * @package Common\Listeners
  */
-class ApiErrorListener implements ListenerAggregateInterface
+class ApiErrorListener extends AbstractListenerAggregate
 {
-    /**
-     * Holds the attached listeners
-     * 
-     * @var array
-     */
-    protected $listeners = array();
-    
     /**
      * Method to register this listener on the render event
      *
@@ -33,21 +26,6 @@ class ApiErrorListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events)
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, __CLASS__ . '::onRender', 1000);
-    }
-    
-    /**
-     * Method to unregister the listeners
-     *
-     * @param EventManagerInterface $events 
-     * @return void
-     */
-    public function detach(EventManagerInterface $events)
-    {
-        foreach ($this->listeners as $i => $listener) {
-            if ($events->detach($listener)) {
-                unset($this->listeners[$i]);
-            }
-        }
     }
     
     /**

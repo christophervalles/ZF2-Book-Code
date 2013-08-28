@@ -7,6 +7,8 @@ use Wall\Entity\Status;
 
 class User
 {
+    const GENDER_MALE = 1;
+    
     protected $id;
     protected $username;
     protected $name;
@@ -97,7 +99,7 @@ class User
     
     public function getGenderString()
     {
-        return $this->gender == 1? 'Male' : 'Female';
+        return $this->gender == self::GENDER_MALE? 'Male' : 'Female';
     }
     
     public function getStatuses()
