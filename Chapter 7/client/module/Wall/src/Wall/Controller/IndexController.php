@@ -9,19 +9,18 @@
 
 namespace Wall\Controller;
 
-use Application\Controller\BaseController;
-use Zend\Http\Client;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\Json\Decoder;
-use Wall\Entity\User;
+use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
 use Wall\Forms\LinkForm;
 use Wall\Entity\Status;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
+use Api\Client\ApiClient as ApiClient;
 
-class IndexController extends BaseController
+class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
@@ -29,12 +28,9 @@ class IndexController extends BaseController
         $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
-        $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
-        $client->setMethod(\Zend\Http\Request::METHOD_GET);
-        $response = $client->send();
+        $response = ApiClient::getWall($username);
         
-        if ($response->isSuccess()) {
-            $response = Decoder::decode($response->getBody(), \Zend\Json\Json::TYPE_ARRAY);
+        if ($response !== FALSE) {
             $hydrator = new ClassMethods();
             
             $user = $hydrator->hydrate($response, new User());
@@ -79,7 +75,7 @@ class IndexController extends BaseController
                     $linkForm = $result;
                     break;
                 default:
-                    if ($result === TRUE) {
+                    if ($result == true) {
                         $flashMessenger->addMessage('New content posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
@@ -97,6 +93,8 @@ class IndexController extends BaseController
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
         
+        $this->layout()->username = $username;
+        
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
         }
@@ -108,7 +106,7 @@ class IndexController extends BaseController
      * Upload a new image
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      */
     protected function createImage($form, $user, $data)
@@ -141,7 +139,7 @@ class IndexController extends BaseController
             $fileinfo = $adapter->getFileInfo();
             preg_match('/.+\/(.+)/', $fileinfo['image']['type'], $matches);
             $extension = $matches[1];
-            $newFilename = sprintf('%s.%s', sha1(uniqid(time(), TRUE)), $extension);
+            $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $extension);
             
             $adapter->addFilter('File\Rename',
                 array(
@@ -163,8 +161,8 @@ class IndexController extends BaseController
                     unlink($destPath . $newFilename);
                 }
                 
-                $response = $this->makePostRequest(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()), $data);
-                return $response->isSuccess();
+                $response = ApiClient::postWallContent($user->getUsername(), $data);
+                return $response['result'];
             }
         }
         
@@ -175,7 +173,7 @@ class IndexController extends BaseController
      * Create a new status
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */
@@ -189,7 +187,7 @@ class IndexController extends BaseController
      * Store a new link
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */
@@ -217,8 +215,8 @@ class IndexController extends BaseController
             unset($data['submit']);
             unset($data['csrf']);
             
-            $response = $this->makePostRequest(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()), $data);
-            return $response->isSuccess();
+            $response = ApiClient::postWallContent($user->getUsername(), $data);
+            return $response['result'];
         }
         
         return $form;

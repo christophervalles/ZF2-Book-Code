@@ -3,12 +3,15 @@
 namespace Wall\Entity;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Users\Entity\User;
 
 class Comment
 {
     protected $id = null;
     protected $user = null;
     protected $comment = null;
+    protected $createdAt = null;
+    protected $updatedAt = null;
     
     public function setId($id)
     {
@@ -27,6 +30,16 @@ class Comment
         $this->comment = $comment;
     }
     
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = new \DateTime($createdAt);
+    }
+    
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = new \DateTime($updatedAt);
+    }
+    
     public function getId()
     {
         return $this->id;
@@ -40,5 +53,15 @@ class Comment
     public function getComment()
     {
         return $this->comment;
+    }
+    
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+    
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

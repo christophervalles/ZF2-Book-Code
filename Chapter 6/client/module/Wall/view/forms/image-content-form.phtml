@@ -3,10 +3,12 @@
 <?php echo $this->form()->openTag($form) ?>
 <!-- Status input text -->
 <?php echo $this->formFile($form->get('image')); ?>
-<?php echo $this->formElementErrors($form->get('image')); ?>
 
 <!-- Submit button -->
 <?php echo $this->formElement($form->get('submit')); ?>
+
+<!-- Error message -->
+<?php echo $this->formElementErrors($form->get('image')); ?>
 
 <!-- CSRF -->
 <?php echo $this->formElement($form->get('csrf')); ?>

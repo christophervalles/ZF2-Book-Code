@@ -23,6 +23,7 @@ class LinkForm extends Form
             'type'  => 'Zend\Form\Element\Url',
             'attributes' => array(
                 'class' => 'span11',
+                'placeholder' => 'Share a link!'
             ),
         ));
         $this->add(new Element\Csrf('csrf'));

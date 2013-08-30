@@ -3,14 +3,18 @@
 namespace Wall\Entity;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 class Status
 {
+    const COMMENT_TYPE_ID = 1;
+    
     protected $id = null;
     protected $userId = null;
     protected $status = null;
     protected $createdAt = null;
     protected $updatedAt = null;
+    protected $comments = null;
     
     public function setId($id)
     {
@@ -37,6 +41,15 @@ class Status
         $this->updatedAt = new \DateTime($updatedAt);
     }
     
+    public function setComments($comments)
+    {
+        $hydrator = new ClassMethods();
+        
+        foreach ($comments as $c) {
+            $this->comments[] = $hydrator->hydrate($c, new Comment());
+        }
+    }
+    
     public function getId()
     {
         return $this->id;
@@ -60,6 +73,16 @@ class Status
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+    
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    public function getType()
+    {
+        return self::COMMENT_TYPE_ID;
     }
     
     public static function getInputFilter()

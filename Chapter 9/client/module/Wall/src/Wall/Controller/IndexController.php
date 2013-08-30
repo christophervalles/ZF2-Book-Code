@@ -11,7 +11,7 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Wall\Entity\User;
+use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
 use Wall\Forms\LinkForm;
@@ -117,7 +117,7 @@ class IndexController extends AbstractActionController
      * Upload a new image
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      */
     protected function createImage($form, $user, $data)
@@ -184,7 +184,7 @@ class IndexController extends AbstractActionController
      * Create a new status
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */
@@ -198,7 +198,7 @@ class IndexController extends AbstractActionController
      * Store a new link
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */
@@ -211,7 +211,7 @@ class IndexController extends AbstractActionController
      * Store a new comment
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      * @return mixed
      */

@@ -10,32 +10,40 @@
 namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Http\Client;
-use Zend\Http\Request;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Wall\Entity\User;
+use Users\Entity\User;
+use Api\Client\ApiClient as ApiClient;
 
 class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        $username = $this->getEvent()->getRouteMatch()->getParam('username');
-        $request = new Request();
-        $request->setUri(sprintf('http://zf2-api/wall/%s', $username));
-        $request->setMethod('GET');
+        $viewData = array();
+        $flashMessenger = $this->flashMessenger();
         
-        $client = new Client();
-        $response = $client->dispatch($request);
+        $username = $this->params()->fromRoute('username');
+        $response = ApiClient::getWall($username);
         
-        if ($response->isSuccess()) {
-            $response = \Zend\Json\Decoder::decode($response->getBody());
-            $hydrator = new ClassMethods(false);
+        if ($response !== FALSE) {
+            $hydrator = new ClassMethods();
             
-            return array(
-                'user' => $hydrator->hydrate((array)$response->user, new User())
-            );
+            $user = $hydrator->hydrate($response, new User());
+        } else {
+            $this->getResponse()->setStatusCode(404);
+            return;
         }
         
-        return array();
+        //Check if we are submitting content
+        $request = $this->getRequest();
+        
+        $viewData['profileData'] = $user;
+        
+        $this->layout()->username = $username;
+        
+        if ($flashMessenger->hasMessages()) {
+            $viewData['flashMessages'] = $flashMessenger->getMessages();
+        }
+        
+        return $viewData;
     }
 }

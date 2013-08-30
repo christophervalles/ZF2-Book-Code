@@ -22,7 +22,7 @@ use Common\Authentication\Adapter\Api as AuthAdapter;
 class IndexController extends AbstractActionController
 {
     /**
-     * Get the feed list and the posts of the feed we are looking at now
+     * Signup if not logged in
      *
      * @return void
      */

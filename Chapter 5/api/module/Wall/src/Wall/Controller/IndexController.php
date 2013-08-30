@@ -11,7 +11,6 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Wall\Model\UserStatusesTable;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -47,10 +46,21 @@ class IndexController extends AbstractRestfulController
         $userStatusesTable = $this->getUserStatusesTable();
         
         $userData = $usersTable->getByUsername($username);
-        $userStatuses = $userStatusesTable->getByUserId($userData->id);
+        $userStatuses = $userStatusesTable->getByUserId($userData->id)->toArray();
         
         $wallData = $userData->getArrayCopy();
-        $wallData['statuses'] = $userStatuses->toArray();
+        $wallData['feed'] = $userStatuses;
+        
+        usort($wallData['feed'], function($a, $b){
+            $timestampA = strtotime($a['created_at']);
+            $timestampB = strtotime($b['created_at']);
+            
+            if ($timestampA == $timestampB) {
+                return 0;
+            }
+            
+            return ($timestampA > $timestampB) ? -1 : 1;
+        });
         
         if ($userData !== false) {
             return new JsonModel($wallData);
@@ -70,19 +80,36 @@ class IndexController extends AbstractRestfulController
     }
     
     /**
-     * This method takes cares of creating new statuses for the user
+     * This method inspects the request and routes the data
+     * to the correct method
      *
      * @return void
      */
     public function create($data)
     {
+        if (array_key_exists('status', $data) && !empty($data['status'])) {
+            $result = $this->createStatus($data);
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Handle the creation of a new status
+     *
+     * @param array $data 
+     * @return JsonModel
+     */
+    protected function createStatus($data)
+    {
         $userStatusesTable = $this->getUserStatusesTable();
         
         $filters = $userStatusesTable->getInputFilter();
         $filters->setData($data);
-        $filters->isValid();
         
         if ($filters->isValid()) {
+            $data = $filters->getValues();
+            
             $result = new JsonModel(array(
                 'result' => $userStatusesTable->create($data['user_id'], $data['status'])
             ));
@@ -131,7 +158,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->usersTable) {
             $sm = $this->getServiceLocator();
-            $this->usersTable = $sm->get('Wall\Model\UsersTable');
+            $this->usersTable = $sm->get('Users\Model\UsersTable');
         }
         return $this->usersTable;
     }
@@ -146,7 +173,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userStatusesTable) {
             $sm = $this->getServiceLocator();
-            $this->userStatusesTable = $sm->get('Wall\Model\UserStatusesTable');
+            $this->userStatusesTable = $sm->get('Users\Model\UserStatusesTable');
         }
         return $this->userStatusesTable;
     }

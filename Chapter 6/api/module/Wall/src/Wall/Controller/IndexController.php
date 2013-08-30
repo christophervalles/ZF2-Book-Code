@@ -11,7 +11,6 @@ namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Wall\Model\UserStatusesTable;
 
 /**
  * This class is the responsible to answer the requests to the /wall endpoint
@@ -55,11 +54,11 @@ class IndexController extends AbstractRestfulController
         $userImagesTable = $this->getUserImagesTable();
         
         $userData = $usersTable->getByUsername($username);
-        $userStatuses = $userStatusesTable->getByUserId($userData->id);
-        $userImages = $userImagesTable->getByUserId($userData->id);
+        $userStatuses = $userStatusesTable->getByUserId($userData->id)->toArray();
+        $userImages = $userImagesTable->getByUserId($userData->id)->toArray();
         
         $wallData = $userData->getArrayCopy();
-        $wallData['feed'] = array_merge($userStatuses->toArray(), $userImages->toArray());
+        $wallData['feed'] = array_merge($userStatuses, $userImages);
         
         usort($wallData['feed'], function($a, $b){
             $timestampA = strtotime($a['created_at']);
@@ -120,7 +119,6 @@ class IndexController extends AbstractRestfulController
         
         $filters = $userImagesTable->getInputFilter();
         $filters->setData($data);
-        $filters->isValid();
         
         if ($filters->isValid()) {
             $filename = sprintf('public/images/%s.png', sha1(uniqid(time(), TRUE)));
@@ -160,9 +158,10 @@ class IndexController extends AbstractRestfulController
         
         $filters = $userStatusesTable->getInputFilter();
         $filters->setData($data);
-        $filters->isValid();
         
         if ($filters->isValid()) {
+            $data = $filters->getValues();
+            
             $result = new JsonModel(array(
                 'result' => $userStatusesTable->create($data['user_id'], $data['status'])
             ));
@@ -211,7 +210,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->usersTable) {
             $sm = $this->getServiceLocator();
-            $this->usersTable = $sm->get('Wall\Model\UsersTable');
+            $this->usersTable = $sm->get('Users\Model\UsersTable');
         }
         return $this->usersTable;
     }
@@ -226,7 +225,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userStatusesTable) {
             $sm = $this->getServiceLocator();
-            $this->userStatusesTable = $sm->get('Wall\Model\UserStatusesTable');
+            $this->userStatusesTable = $sm->get('Users\Model\UserStatusesTable');
         }
         return $this->userStatusesTable;
     }
@@ -235,13 +234,13 @@ class IndexController extends AbstractRestfulController
      * This is a convenience method to load the userImagesTable db object and keeps track
      * of the instance to avoid multiple of them
      *
-     * @return UserStatusesTable
+     * @return UserImagesTable
      */
     protected function getUserImagesTable()
     {
         if (!$this->userImagesTable) {
             $sm = $this->getServiceLocator();
-            $this->userImagesTable = $sm->get('Wall\Model\UserImagesTable');
+            $this->userImagesTable = $sm->get('Users\Model\UserImagesTable');
         }
         return $this->userImagesTable;
     }

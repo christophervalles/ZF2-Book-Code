@@ -22,7 +22,7 @@ return array(
                         'action'     => 'index',
                     ),
                 ),
-            ),
+            )
         ),
     ),
     'controllers' => array(

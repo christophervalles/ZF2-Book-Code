@@ -13,7 +13,7 @@ return array(
             'wall' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/api/wall[/:id]',
+                    'route' => '/api/wall[/:id]',
                     'constraints' => array(
                         'id' => '\w+'
                     ),
@@ -24,16 +24,9 @@ return array(
             ),
         ),
     ),
-    'di' => array(
-        'services' => array(
-            'Wall\Model\UsersTable' => 'Wall\Model\UsersTable',
-            'Wall\Model\UserStatusesTable' => 'Wall\Model\UserStatusesTable',
-            'Wall\Model\UserImagesTable' => 'Wall\Model\UserImagesTable'
-        ),
-    ),
     'controllers' => array(
         'invokables' => array(
-            'Wall\Controller\Index' => 'Wall\Controller\IndexController'
+            'Wall\Controller\Index' => 'Wall\Controller\IndexController',
         ),
-    )
+    ),
 );

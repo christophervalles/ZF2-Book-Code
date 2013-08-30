@@ -3,7 +3,8 @@ return array(
     'modules' => array(
         'Wall',
         'Common',
-        'Feeds'
+        'Feeds',
+        'Users'
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(

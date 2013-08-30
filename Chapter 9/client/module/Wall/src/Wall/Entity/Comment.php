@@ -3,6 +3,7 @@
 namespace Wall\Entity;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Users\Entity\User;
 
 class Comment
 {

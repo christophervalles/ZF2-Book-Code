@@ -1,10 +1,11 @@
 <?php
 return array(
     'modules' => array(
-        'Application',
+        'Common',
         'Wall',
         'Feeds',
-        'Api'
+        'Api',
+        'Users',
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(

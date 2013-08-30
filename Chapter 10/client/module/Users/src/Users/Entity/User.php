@@ -23,6 +23,7 @@ class User
     protected $gender;
     protected $createdAt = null;
     protected $updatedAt = null;
+    protected $feed = array();
     
     public function setId($id)
     {

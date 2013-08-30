@@ -10,26 +10,23 @@
 namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Http\Client;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\Json\Decoder;
-use Wall\Entity\User;
+use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Entity\Status;
+use Api\Client\ApiClient as ApiClient;
 
 class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
         $viewData = array();
+        $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
-        $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
-        $client->setMethod(\Zend\Http\Request::METHOD_GET);
-        $response = $client->send();
-            
-        if ($response->isSuccess()) {
-            $response = Decoder::decode($response->getBody(), \Zend\Json\Json::TYPE_ARRAY);
+        $response = ApiClient::getWall($username);
+        
+        if ($response !== FALSE) {
             $hydrator = new ClassMethods();
             
             $user = $hydrator->hydrate($response, new User());
@@ -40,35 +37,80 @@ class IndexController extends AbstractActionController
         
         //Check if we are submitting content
         $request = $this->getRequest();
-        $form = new TextStatusForm;
-        $form->setInputFilter(Status::getInputFilter());
+        $statusForm = new TextStatusForm;
         
         if ($request->isPost()) {
-            $form->setData($request->getPost());
+            $data = $request->getPost()->toArray();
             
-            if ($form->isValid()) {
-                $data = $form->getData();
-                $data['user_id'] = $user->getId();
-                
-                $client = new Client(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()));
-                $client->setEncType(Client::ENC_URLENCODED);
-                $client->setMethod(\Zend\Http\Request::METHOD_POST);
-                $client->setParameterPost($data);
-                $response = $client->send();
-                
-                if ($response->isSuccess()) {
-                    return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
-                } else {
-                    $this->getResponse()->setStatusCode(500);
-                    return;
-                }
+            if (array_key_exists('status', $data)) {
+                $result = $this->createStatus($statusForm, $user, $data);
+            }
+            
+            switch (true) {
+                case $result instanceOf TextStatusForm:
+                    $statusForm = $result;
+                    break;
+                default:
+                    if ($result == true) {
+                        $flashMessenger->addMessage('New content posted!');
+                        return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
+                    } else {
+                        return $this->getResponse()->setStatusCode(500);
+                    }
+                    break;
             }
         }
         
-        $form->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
+        $statusForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $viewData['profileData'] = $user;
-        $viewData['textContentForm'] = $form;
+        $viewData['textContentForm'] = $statusForm;
+        
+        $this->layout()->username = $username;
+        
+        if ($flashMessenger->hasMessages()) {
+            $viewData['flashMessages'] = $flashMessenger->getMessages();
+        }
         
         return $viewData;
+    }
+    
+    /**
+     * Create a new status
+     *
+     * @param Zend\Form\Form $form 
+     * @param Users\Entity\User $user 
+     * @param array $data
+     * @return mixed
+     */
+    protected function createStatus($form, $user, array $data)
+    {
+        $form->setInputFilter(Status::getInputFilter());
+        return $this->processSimpleForm($form, $user, $data);
+    }
+    
+    /**
+     * Method to process a simple form
+     * User by createStatus()
+     *
+     * @param Zend\Form\Form $form 
+     * @param string $user 
+     * @param array $data 
+     * @return mixed
+     */
+    protected function processSimpleForm($form, $user, array $data)
+    {
+        $form->setData($data);
+        
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $data['user_id'] = $user->getId();
+            unset($data['submit']);
+            unset($data['csrf']);
+            
+            $response = ApiClient::postWallContent($user->getUsername(), $data);
+            return $response['result'];
+        }
+        
+        return $form;
     }
 }

@@ -10,15 +10,14 @@
 namespace Wall\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Http\Client;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\Json\Decoder;
-use Wall\Entity\User;
+use Users\Entity\User;
 use Wall\Forms\TextStatusForm;
 use Wall\Forms\ImageForm;
 use Wall\Entity\Status;
 use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
+use Api\Client\ApiClient as ApiClient;
 
 class IndexController extends AbstractActionController
 {
@@ -28,12 +27,9 @@ class IndexController extends AbstractActionController
         $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
-        $client = new Client(sprintf('http://zf2-api/api/wall/%s', $username));
-        $client->setMethod(\Zend\Http\Request::METHOD_GET);
-        $response = $client->send();
+        $response = ApiClient::getWall($username);
         
-        if ($response->isSuccess()) {
-            $response = Decoder::decode($response->getBody(), \Zend\Json\Json::TYPE_ARRAY);
+        if ($response !== FALSE) {
             $hydrator = new ClassMethods();
             
             $user = $hydrator->hydrate($response, new User());
@@ -52,17 +48,6 @@ class IndexController extends AbstractActionController
             
             if (array_key_exists('status', $data)) {
                 $result = $this->createStatus($statusForm, $user, $data);
-                
-                if ($result instanceOf TextStatusForm) {
-                    $statusForm = $result;
-                } else {
-                    if ($result === TRUE) {
-                        $flashMessenger->addMessage('New status posted!');
-                        return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
-                    } else {
-                        return $this->getResponse()->setStatusCode(500);
-                    }
-                }
             }
             
             if (!empty($request->getFiles()->image)) {
@@ -71,18 +56,23 @@ class IndexController extends AbstractActionController
                     $request->getFiles()->toArray()
                 );
                 $result = $this->createImage($imageForm, $user, $data);
-                
-                if ($result instanceOf ImageForm) {
+            }
+            
+            switch (true) {
+                case $result instanceOf TextStatusForm:
+                    $statusForm = $result;
+                    break;
+                case $result instanceOf ImageForm:
                     $imageForm = $result;
-                } else {
-                    if ($result === TRUE) {
-                        $this->flashMessenger()->addMessage('Your image has been posted!');
-                        
+                    break;
+                default:
+                    if ($result == true) {
+                        $flashMessenger->addMessage('New content posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
                         return $this->getResponse()->setStatusCode(500);
                     }
-                }
+                    break;
             }
         }
         
@@ -91,6 +81,8 @@ class IndexController extends AbstractActionController
         $viewData['profileData'] = $user;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
+        
+        $this->layout()->username = $username;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();
@@ -103,7 +95,7 @@ class IndexController extends AbstractActionController
      * Upload a new image
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
      */
     protected function createImage($form, $user, $data)
@@ -136,7 +128,7 @@ class IndexController extends AbstractActionController
             $fileinfo = $adapter->getFileInfo();
             preg_match('/.+\/(.+)/', $fileinfo['image']['type'], $matches);
             $extension = $matches[1];
-            $newFilename = sprintf('%s.%s', sha1(uniqid(time(), TRUE)), $extension);
+            $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $extension);
             
             $adapter->addFilter('File\Rename',
                 array(
@@ -154,17 +146,12 @@ class IndexController extends AbstractActionController
                 );
                 $data['user_id'] = $user->getId();
                 
-                $client = new Client(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()));
-                $client->setEncType(Client::ENC_URLENCODED);
-                $client->setMethod(\Zend\Http\Request::METHOD_POST);
-                $client->setParameterPost($data);
-                $response = $client->send();
-                
                 if (file_exists($destPath . $newFilename)) {
                     unlink($destPath . $newFilename);
                 }
                 
-                return $response->isSuccess();
+                $response = ApiClient::postWallContent($user->getUsername(), $data);
+                return $response['result'];
             }
         }
         
@@ -175,25 +162,37 @@ class IndexController extends AbstractActionController
      * Create a new status
      *
      * @param Zend\Form\Form $form 
-     * @param Wall\Entity\User $user 
+     * @param Users\Entity\User $user 
      * @param array $data
+     * @return mixed
      */
     protected function createStatus($form, $user, array $data)
     {
         $form->setInputFilter(Status::getInputFilter());
+        return $this->processSimpleForm($form, $user, $data);
+    }
+    
+    /**
+     * Method to process a simple form
+     * User by createStatus()
+     *
+     * @param Zend\Form\Form $form 
+     * @param string $user 
+     * @param array $data 
+     * @return mixed
+     */
+    protected function processSimpleForm($form, $user, array $data)
+    {
         $form->setData($data);
         
         if ($form->isValid()) {
             $data = $form->getData();
             $data['user_id'] = $user->getId();
-                
-            $client = new Client(sprintf('http://zf2-api/api/wall/%s', $user->getUsername()));
-            $client->setEncType(Client::ENC_URLENCODED);
-            $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setParameterPost($data);
-            $response = $client->send();
-                
-            return $response->isSuccess();
+            unset($data['submit']);
+            unset($data['csrf']);
+            
+            $response = ApiClient::postWallContent($user->getUsername(), $data);
+            return $response['result'];
         }
         
         return $form;

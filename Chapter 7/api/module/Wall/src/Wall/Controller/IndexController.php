@@ -68,16 +68,12 @@ class IndexController extends AbstractRestfulController
         $userLinksTable = $this->getUserLinksTable();
         
         $userData = $usersTable->getByUsername($username);
-        $userStatuses = $userStatusesTable->getByUserId($userData->id);
-        $userImages = $userImagesTable->getByUserId($userData->id);
-        $userLinks = $userLinksTable->getByUserId($userData->id);
+        $userStatuses = $userStatusesTable->getByUserId($userData->id)->toArray();
+        $userImages = $userImagesTable->getByUserId($userData->id)->toArray();
+        $userLinks = $userLinksTable->getByUserId($userData->id)->toArray();
         
         $wallData = $userData->getArrayCopy();
-        $wallData['feed'] = array_merge(
-            $userStatuses->toArray(), 
-            $userImages->toArray(),
-            $userLinks->toArray()
-        );
+        $wallData['feed'] = array_merge($userStatuses, $userImages, $userLinks);
         
         usort($wallData['feed'], function($a, $b){
             $timestampA = strtotime($a['created_at']);
@@ -288,7 +284,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->usersTable) {
             $sm = $this->getServiceLocator();
-            $this->usersTable = $sm->get('Wall\Model\UsersTable');
+            $this->usersTable = $sm->get('Users\Model\UsersTable');
         }
         return $this->usersTable;
     }
@@ -303,7 +299,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userStatusesTable) {
             $sm = $this->getServiceLocator();
-            $this->userStatusesTable = $sm->get('Wall\Model\UserStatusesTable');
+            $this->userStatusesTable = $sm->get('Users\Model\UserStatusesTable');
         }
         return $this->userStatusesTable;
     }
@@ -312,13 +308,13 @@ class IndexController extends AbstractRestfulController
      * This is a convenience method to load the userImagesTable db object and keeps track
      * of the instance to avoid multiple of them
      *
-     * @return UserStatusesTable
+     * @return UserImagesTable
      */
     protected function getUserImagesTable()
     {
         if (!$this->userImagesTable) {
             $sm = $this->getServiceLocator();
-            $this->userImagesTable = $sm->get('Wall\Model\UserImagesTable');
+            $this->userImagesTable = $sm->get('Users\Model\UserImagesTable');
         }
         return $this->userImagesTable;
     }
@@ -327,13 +323,13 @@ class IndexController extends AbstractRestfulController
      * This is a convenience method to load the userLinksTable db object and keeps track
      * of the instance to avoid multiple of them
      *
-     * @return UserStatusesTable
+     * @return UserLinksTable
      */
     protected function getUserLinksTable()
     {
         if (!$this->userLinksTable) {
             $sm = $this->getServiceLocator();
-            $this->userLinksTable = $sm->get('Wall\Model\UserLinksTable');
+            $this->userLinksTable = $sm->get('Users\Model\UserLinksTable');
         }
         return $this->userLinksTable;
     }

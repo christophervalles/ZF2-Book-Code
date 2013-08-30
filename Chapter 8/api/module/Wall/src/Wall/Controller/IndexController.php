@@ -81,9 +81,9 @@ class IndexController extends AbstractRestfulController
         $userLinks = $userLinksTable->getByUserId($userData->id)->toArray();
         
         $allEntries = array(
-            \Wall\Model\UserStatusesTable::COMMENT_TYPE_ID => $userStatuses,
-            \Wall\Model\UserImagesTable::COMMENT_TYPE_ID => $userImages,
-            \Wall\Model\UserLinksTable::COMMENT_TYPE_ID => $userLinks
+            \Users\Model\UserstatusesTable::COMMENT_TYPE_ID => $userStatuses,
+            \Users\Model\UserImagesTable::COMMENT_TYPE_ID => $userImages,
+            \Users\Model\UserLinksTable::COMMENT_TYPE_ID => $userLinks
         );
         
         $cachedUsers = array();
@@ -313,14 +313,14 @@ class IndexController extends AbstractRestfulController
         );
         
         switch ($data['type']) {
-            case \Wall\Model\UserStatusesTable::COMMENT_TYPE_ID:
-                $validatorTable = \Wall\Model\UserStatusesTable::TABLE_NAME;
+            case \Users\Model\UserstatusesTable::COMMENT_TYPE_ID:
+                $validatorTable = \Users\Model\UserstatusesTable::TABLE_NAME;
                 break;
-            case \Wall\Model\UserImagesTable::COMMENT_TYPE_ID:
-                $validatorTable = \Wall\Model\UserImagesTable::TABLE_NAME;
+            case \Users\Model\UserImagesTable::COMMENT_TYPE_ID:
+                $validatorTable = \Users\Model\UserImagesTable::TABLE_NAME;
                 break;
-            case \Wall\Model\UserLinksTable::COMMENT_TYPE_ID:
-                $validatorTable = \Wall\Model\UserLinksTable::TABLE_NAME;
+            case \Users\Model\UserLinksTable::COMMENT_TYPE_ID:
+                $validatorTable = \Users\Model\UserLinksTable::TABLE_NAME;
                 break;
         }
         
@@ -379,7 +379,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->usersTable) {
             $sm = $this->getServiceLocator();
-            $this->usersTable = $sm->get('Wall\Model\UsersTable');
+            $this->usersTable = $sm->get('Users\Model\UsersTable');
         }
         return $this->usersTable;
     }
@@ -394,7 +394,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userStatusesTable) {
             $sm = $this->getServiceLocator();
-            $this->userStatusesTable = $sm->get('Wall\Model\UserStatusesTable');
+            $this->userStatusesTable = $sm->get('Users\Model\UserStatusesTable');
         }
         return $this->userStatusesTable;
     }
@@ -409,7 +409,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userImagesTable) {
             $sm = $this->getServiceLocator();
-            $this->userImagesTable = $sm->get('Wall\Model\UserImagesTable');
+            $this->userImagesTable = $sm->get('Users\Model\UserImagesTable');
         }
         return $this->userImagesTable;
     }
@@ -424,7 +424,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userLinksTable) {
             $sm = $this->getServiceLocator();
-            $this->userLinksTable = $sm->get('Wall\Model\UserLinksTable');
+            $this->userLinksTable = $sm->get('Users\Model\UserLinksTable');
         }
         return $this->userLinksTable;
     }
@@ -439,7 +439,7 @@ class IndexController extends AbstractRestfulController
     {
         if (!$this->userCommentsTable) {
             $sm = $this->getServiceLocator();
-            $this->userCommentsTable = $sm->get('Wall\Model\UserCommentsTable');
+            $this->userCommentsTable = $sm->get('Users\Model\UserCommentsTable');
         }
         return $this->userCommentsTable;
     }

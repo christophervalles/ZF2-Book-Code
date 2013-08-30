@@ -104,7 +104,7 @@ class IndexController extends AbstractRestfulController
             $rssUrl = $dom->execute($rssLinkXpath);
             
             if (!count($rssUrl)) {
-                throw new Exception('Rss url not found in the url provided', 404);
+                throw new \Exception('Rss url not found in the url provided', 404);
             }
             $rssUrl = $rssUrl->current()->getAttribute('href');
             
@@ -179,7 +179,7 @@ class IndexController extends AbstractRestfulController
                 return $this->userFeedArticlesTable;
             case 'UsersTable':
                 if (!$this->usersTable) {
-                    $this->usersTable = $sm->get('Wall\Model\UsersTable');
+                    $this->usersTable = $sm->get('Users\Model\UsersTable');
                 }
                 
                 return $this->usersTable;
