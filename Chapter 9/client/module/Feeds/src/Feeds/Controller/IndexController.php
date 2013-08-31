@@ -13,6 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Api\Client\ApiClient;
 use Feeds\Forms\SubscribeForm;
 use Feeds\Forms\UnsubscribeForm;
+use Users\Entity\User;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Feeds\Entity\Feed;
 use Zend\Navigation\Navigation;
@@ -33,6 +34,16 @@ class IndexController extends AbstractActionController
         
         $username = $this->params()->fromRoute('username');
         $currentFeedId = $this->params()->fromRoute('feed_id');
+        
+        $response = ApiClient::getWall($username);
+        if ($response !== FALSE) {
+            $hydrator = new ClassMethods();
+            
+            $user = $hydrator->hydrate($response, new User());
+        } else {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
         
         $subscribeForm = new SubscribeForm();
         $unsubscribeForm = new UnsubscribeForm();
@@ -73,6 +84,7 @@ class IndexController extends AbstractActionController
         $viewData['feed'] = $currentFeedId != null? $feeds[$currentFeedId] : null;
         $viewData['username'] = $username;
         $viewData['feedsMenu'] = $feedsMenu;
+        $viewData['profileData'] = $user;
         
         $this->layout()->username = $username;
         
@@ -101,7 +113,7 @@ class IndexController extends AbstractActionController
             if ($response['result'] == TRUE) {
                 $this->flashMessenger()->addMessage('Subscribed successfully!');
             } else {
-                return $this->getResponse()->setStatusCode(500);
+                $this->flashMessenger()->addMessage($response['message']);
             }
         }
         

@@ -9,15 +9,15 @@
                     </a>
                     <ul>
                         <li>
-                            <h3><i class="icon-user"></i> Bio</h3>
+                            <h3><i class="icon-user"></i> <?php echo $this->translate('Bio') ?></h3>
                             <p><?php echo $profileData->getBio() ?></p>
                         </li>
                         <li>
-                            <h3><i class="icon-globe"></i> Location</h3>
+                            <h3><i class="icon-globe"></i> <?php echo $this->translate('Location') ?></h3>
                             <p><?php echo $profileData->getLocation() ?></p>
                         </li>
                         <li>
-                            <h3><i class="icon-heart"></i> Gender</h3>
+                            <h3><i class="icon-heart"></i> <?php echo $this->translate('Gender') ?></h3>
                             <p><?php echo $profileData->getGenderString() ?></p>
                         </li>
                     </ul>

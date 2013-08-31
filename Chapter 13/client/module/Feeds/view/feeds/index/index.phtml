@@ -4,11 +4,11 @@
             <!-- Profile section -->
             <div class="span3 well" id="subscriptions">
                 <section class="profile-rss">
-                    <a href="/tbhot3ww" title="Christopher Valles" class="profile-picture">
-                        <img src="<?php echo $user->getAvatar()->getUrl() ?>" alt="Christopher Valles" width="60" />
+                    <a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="profile-picture">
+                        <img src="<?php echo $user->getAvatar()->getUrl() ?>" alt="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" width="60px" />
                     </a>
-                    <a href="/tbhot3ww" title="Christopher Valles" class="profile-name">
-                        Christopher Valles
+                    <a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $user->getName(), $user->getSurname()) ?>" class="profile-name">
+                        <?php printf('%s %s', $user->getName(), $user->getSurname()) ?>
                     </a>
                 </section>
                 <?php if (count($feedsMenu->getPages()) > 0) : ?>
@@ -26,7 +26,7 @@
                     <section class="rss-stream clearfix">
                         <div class="pull-left">
                             <h2><?php echo $feed->getTitle() ?></h2>
-                            <span><strong>URL: </strong><?php echo $feed->getUrl() ?></span>
+                            <span><strong><?php echo $this->translate('URL:') ?> </strong><?php echo $feed->getUrl() ?></span>
                         </div>
                         <?php echo $this->partial('forms/unsubscribe-form.phtml', array('form' => $unsubscribeForm)) ?>
                     </section>
@@ -34,9 +34,9 @@
                         <article class="well">
                             <h2><a href="<?php echo $a->getUrl() ?>" title="<?php echo $a->getTitle() ?>"><?php echo $a->getTitle() ?></a></h2>
                             <div class="lead-info">
-                                <span><strong>Date:</strong> <?php echo $a->getCreatedAt()->format('jS \of F Y h:i:s A') ?></span>
+                                <span><strong><?php echo $this->translate('Date:') ?></strong> <?php echo $a->getCreatedAt()->format('jS \of F Y h:i:s A') ?></span>
                                 <?php if ($a->getAuthor() !== null) : ?>
-                                    <span><strong>Author:</strong> <?php echo $a->getAuthor() ?></span>
+                                    <span><strong><?php echo $this->translate('Author:') ?></strong> <?php echo $a->getAuthor() ?></span>
                                 <?php endif; ?>
                             </div>
                             <div class="article-info">
@@ -47,7 +47,7 @@
                 <?php else : ?>
                     <article class="well">
                         <div class="article-info">
-                            You'll see the articles soon...
+                            <?php echo $this->translate('You\'ll see the articles soon...') ?>
                         </div>
                     </article>
                 <?php endif; ?>

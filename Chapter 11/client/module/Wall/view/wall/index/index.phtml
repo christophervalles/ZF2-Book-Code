@@ -10,19 +10,19 @@
                     <ul>
                         <?php if ($user->getBio() != null) : ?>
                             <li>
-                                <h3><i class="icon-user"></i> Bio</h3>
+                                <h3><i class="icon-user"></i> <?php echo $this->translate('Bio') ?></h3>
                                 <p><?php echo $user->getBio() ?></p>
                             </li>
                         <?php endif; ?>
                         <?php if ($user->getLocation() != null) : ?>
                             <li>
-                                <h3><i class="icon-globe"></i> Location</h3>
+                                <h3><i class="icon-globe"></i> <?php echo $this->translate('Location') ?></h3>
                                 <p><?php echo $user->getLocation() ?></p>
                             </li>
                         <?php endif; ?>
                         <?php if ($user->getGenderString() != '') : ?>
                             <li>
-                                <h3><i class="icon-heart"></i> Gender</h3>
+                                <h3><i class="icon-heart"></i> <?php echo $this->translate('Gender') ?></h3>
                                 <p><?php echo $user->getGenderString() ?></p>
                             </li>
                         <?php endif; ?>

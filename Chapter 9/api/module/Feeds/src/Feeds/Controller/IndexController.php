@@ -14,6 +14,7 @@ use Zend\View\Model\JsonModel;
 use Zend\Feed\Reader\Reader;
 use Zend\Http\Client;
 use Zend\Dom\Query;
+use Zend\Validator\Db\NoRecordExists;
 
 /**
  * This class is the responsible to answer the requests to the /feeds endpoint
@@ -104,7 +105,10 @@ class IndexController extends AbstractRestfulController
             $rssUrl = $dom->execute($rssLinkXpath);
             
             if (!count($rssUrl)) {
-                throw new \Exception('Rss url not found in the url provided', 404);
+                return new JsonModel(array(
+                    'result' => false, 
+                    'message' => 'Rss link not found in the url provided'
+                ));
             }
             $rssUrl = $rssUrl->current()->getAttribute('href');
             
@@ -115,7 +119,24 @@ class IndexController extends AbstractRestfulController
                 $faviconUrl = null;
             }
         } else {
-            throw new Exception("Website not found", 404);
+            return new JsonModel(array(
+                'result' => false, 
+                'message' => 'Website not found'
+            ));
+        }
+        
+        $validator = new NoRecordExists(
+            array(
+                'table'   => 'user_feeds',
+                'field'   => 'url',
+                'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter')
+            )
+        );
+        if (!$validator->isValid($rssUrl)) {
+            return new JsonModel(array(
+                'result' => false, 
+                'message' => 'You already have a subscription to this url'
+            ));
         }
         
         $rss = Reader::import($rssUrl);

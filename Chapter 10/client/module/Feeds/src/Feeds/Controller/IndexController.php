@@ -13,11 +13,11 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Api\Client\ApiClient;
 use Feeds\Forms\SubscribeForm;
 use Feeds\Forms\UnsubscribeForm;
+use Users\Entity\User;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Feeds\Entity\Feed;
 use Zend\Navigation\Navigation;
 use Zend\Navigation\Page\AbstractPage;
-use Users\Entity\User;
 
 class IndexController extends AbstractActionController
 {
@@ -35,9 +35,15 @@ class IndexController extends AbstractActionController
         $username = $this->params()->fromRoute('username');
         $currentFeedId = $this->params()->fromRoute('feed_id');
         
-        $hydrator = new ClassMethods();
         $userData = ApiClient::getUser($username);
-        $user = $hydrator->hydrate($userData, new User());
+        if ($userData !== FALSE) {
+            $hydrator = new ClassMethods();
+            
+            $user = $hydrator->hydrate($userData, new User());
+        } else {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
         
         $subscribeForm = new SubscribeForm();
         $unsubscribeForm = new UnsubscribeForm();
@@ -46,7 +52,6 @@ class IndexController extends AbstractActionController
         
         $hydrator = new ClassMethods();
         $response = ApiClient::getFeeds($username);
-        $response = $response ?: array();
         $feeds = array();
         foreach ($response as $r) {
             $feeds[$r['id']] = $hydrator->hydrate($r, new Feed());
@@ -77,8 +82,9 @@ class IndexController extends AbstractActionController
         $viewData['subscribeForm'] = $subscribeForm;
         $viewData['unsubscribeForm'] = $unsubscribeForm;
         $viewData['feed'] = $currentFeedId != null? $feeds[$currentFeedId] : null;
-        $viewData['user'] = $user;
+        $viewData['username'] = $username;
         $viewData['feedsMenu'] = $feedsMenu;
+        $viewData['user'] = $user;
         
         $this->layout()->username = $username;
         

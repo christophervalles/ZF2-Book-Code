@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?php echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle('ZF2 '. $this->translate('My social network'))->setSeparator(' - ')->setAutoEscape(false) ?>
         
         <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
         
@@ -27,7 +27,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="/"><?php echo $this->translate('Skeleton Application') ?></a>
+                    <a class="brand" href="/"><?php echo $this->translate('My social network') ?></a>
                     <div class="nav-collapse collapse">
                         <?php if ($this->loggedInUser !== null) : ?>
                             <?php $this->navigation('navigation')->findBy('route', 'wall')->setParams(array('username' => $this->loggedInUser->getUsername())); ?>
@@ -44,7 +44,7 @@
         </div>
         <footer>
             <div class="container fluid-row">
-                Welcome to my Social Network | Learn how to create a Social Network with ZF2 &copy; 2013
+                <?php echo $this->translate('Welcome to my Social Network | Learn how to create a Social Network with ZF2 &copy; 2013') ?>
             </div>
         </footer>
         
