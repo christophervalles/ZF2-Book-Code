@@ -30,6 +30,8 @@ class IndexController extends AbstractActionController
         $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
+        $this->layout()->username = $username;
+        
         $userData = ApiClient::getUser($username);
         
         if ($userData !== FALSE) {
@@ -111,8 +113,6 @@ class IndexController extends AbstractActionController
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
         $viewData['username'] = $username;
-        
-        $this->layout()->username = $username;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();

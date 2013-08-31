@@ -33,6 +33,8 @@ class IndexController extends AbstractActionController
         $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
+        $this->layout()->username = $username;
+        
         $currentFeedId = $this->params()->fromRoute('feed_id');
         
         $response = ApiClient::getWall($username);
@@ -85,8 +87,6 @@ class IndexController extends AbstractActionController
         $viewData['username'] = $username;
         $viewData['feedsMenu'] = $feedsMenu;
         $viewData['profileData'] = $user;
-        
-        $this->layout()->username = $username;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();

@@ -53,7 +53,7 @@ class UserCommentsTable extends AbstractTableGateway implements AdapterAwareInte
      */
     public function getByTypeAndEntryId($type, $entryId)
     {
-        $select = $this->sql->select()->where(array('type' => $type, 'entry_id' => $entryId))->order('created_at DESC');
+        $select = $this->sql->select()->where(array('type' => $type, 'entry_id' => $entryId))->order('created_at ASC');
         return $this->selectWith($select);
     }
     

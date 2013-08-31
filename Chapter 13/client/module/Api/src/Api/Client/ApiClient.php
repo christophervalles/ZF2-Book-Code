@@ -2,10 +2,12 @@
 
 namespace Api\Client;
 
-use Zend\Http\Client as Client;
-use Zend\Http\Request as Request;
+use Zend\Http\Client;
+use Zend\Http\Request;
 use Zend\Json\Decoder as JsonDecoder;
-use Zend\Json\Json as Json;
+use Zend\Json\Json;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream;
 use Zend\Session\Container;
 
 /**
@@ -232,7 +234,10 @@ class ApiClient {
         if ($response->isSuccess()) {
             return JsonDecoder::decode($response->getBody(), Json::TYPE_ARRAY);
         } else {
-            return $response;
+            $logger = new Logger;
+            $logger->addWriter(new Stream('data/logs/apiclient.log'));
+            $logger->debug($response->getBody());
+            return FALSE;
         }
     }
 }
