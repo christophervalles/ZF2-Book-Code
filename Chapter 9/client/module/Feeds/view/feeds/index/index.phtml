@@ -22,7 +22,7 @@
             </div>
             <!-- Wall profile -->
             <div class="span9" id="articles">
-                <?php if ($paginator->getCurrentItemCount() > 0) : ?>
+                <?php if (isset($paginator) && $paginator->getCurrentItemCount() > 0) : ?>
                     <section class="rss-stream clearfix">
                         <div class="pull-left">
                             <h2><?php echo $feed->getTitle() ?></h2>
@@ -44,7 +44,7 @@
                             </div>
                         </article>
                     <?php endforeach; ?>
-                    <?php echo $this->paginationControl($paginator, 'Sliding', 'paginator/default', array('route' => 'feeds', 'routeParams' => array('feed_id' => $feedId, 'username' => $user->getUsername()))); ?>
+                    <?php echo $this->paginationControl($paginator, 'Sliding', 'paginator/default', array('route' => 'feeds', 'routeParams' => array('feed_id' => $feedId, 'username' => $profileData->getUsername()))); ?>
                 <?php else : ?>
                     <article class="well">
                         <div class="article-info">

@@ -82,9 +82,14 @@ class IndexController extends AbstractActionController
         }
         
         $currentFeed = $currentFeedId != null? $feeds[$currentFeedId] : null;
-        $paginator = new Paginator(new ArrayAdapter($currentFeed->getArticles()));
-        $paginator->setItemCountPerPage(5);
-        $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
+        
+        if ($currentFeed != null) {
+            $paginator = new Paginator(new ArrayAdapter($currentFeed->getArticles()));
+            $paginator->setItemCountPerPage(5);
+            $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
+            $viewData['paginator'] = $paginator;
+            $viewData['feedId'] = $currentFeedId;
+        }
         
         $unsubscribeForm->get('feed_id')->setValue($currentFeedId);
         
@@ -93,8 +98,6 @@ class IndexController extends AbstractActionController
         $viewData['username'] = $username;
         $viewData['feedsMenu'] = $feedsMenu;
         $viewData['user'] = $user;
-        $viewData['paginator'] = $paginator;
-        $viewData['feedId'] = $currentFeedId;
         $viewData['feed'] = $currentFeed;
         
         if ($flashMessenger->hasMessages()) {

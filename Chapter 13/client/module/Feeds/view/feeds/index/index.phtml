@@ -22,7 +22,7 @@
             </div>
             <!-- Wall profile -->
             <div class="span9" id="articles">
-                <?php if ($paginator->getCurrentItemCount() > 0) : ?>
+                <?php if (isset($paginator) && $paginator->getCurrentItemCount() > 0) : ?>
                     <section class="rss-stream clearfix">
                         <div class="pull-left">
                             <h2><?php echo $feed->getTitle() ?></h2>
