@@ -55,7 +55,7 @@
                 </section>
                 <section>
                     <ul class="post-list">
-                        <?php foreach ($profileData->getFeed() as $entry) : ?>
+                        <?php foreach ($paginator as $entry) : ?>
                             <li class="post">
                                 <section>
                                     <a href="<?php echo $this->url('wall', array('username' => $profileData->getUsername())) ?>" title="<?php printf('%s %s', $profileData->getName(), $profileData->getSurname())  ?>" class="pull-left thumbnail">
@@ -93,6 +93,7 @@
                             </li>
                         <?php endforeach; ?>
                     </ul> <!-- Close post list -->
+                    <?php echo $this->paginationControl($paginator, 'Sliding', 'paginator/default', array('route' => 'wall', 'routeParams' => array('username' => $profileData->getUsername()))); ?>
                 <section>
             </div> <!-- Close wall profile -->
         </div>

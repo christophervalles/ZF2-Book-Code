@@ -22,7 +22,7 @@
             </div>
             <!-- Wall profile -->
             <div class="span9" id="articles">
-                <?php if ($feed != null && $feed->getArticles() != null) : ?>
+                <?php if ($paginator->getCurrentItemCount() > 0) : ?>
                     <section class="rss-stream clearfix">
                         <div class="pull-left">
                             <h2><?php echo $feed->getTitle() ?></h2>
@@ -30,7 +30,7 @@
                         </div>
                         <?php echo $this->partial('forms/unsubscribe-form.phtml', array('form' => $unsubscribeForm)) ?>
                     </section>
-                    <?php foreach($feed->getArticles() as $a) : ?>
+                    <?php foreach($paginator as $a) : ?>
                         <article class="well">
                             <h2><a href="<?php echo $a->getUrl() ?>" title="<?php echo $a->getTitle() ?>"><?php echo $a->getTitle() ?></a></h2>
                             <div class="lead-info">
@@ -44,6 +44,7 @@
                             </div>
                         </article>
                     <?php endforeach; ?>
+                    <?php echo $this->paginationControl($paginator, 'Sliding', 'paginator/default', array('route' => 'feeds', 'routeParams' => array('feed_id' => $feedId, 'username' => $user->getUsername()))); ?>
                 <?php else : ?>
                     <article class="well">
                         <div class="article-info">
@@ -51,7 +52,7 @@
                         </div>
                     </article>
                 <?php endif; ?>
-            </div> <!-- Close wall profile -->
+            </div>
         </div>
     </div>
 </div>

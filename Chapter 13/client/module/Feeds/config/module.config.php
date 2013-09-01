@@ -13,14 +13,15 @@ return array(
             'feeds' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/:username/feeds[/:feed_id]',
+                    'route'    => '/:username/feeds[/:feed_id][/:page]',
                     'constraints' => array(
                         'username' => '\w+',
                         'feed_id' => '\d*',
                     ),
                     'defaults' => array(
                         'controller' => 'Feeds\Controller\Index',
-                        'action' => 'index'
+                        'action' => 'index',
+                        'page' => 1
                     ),
                 ),
             ),

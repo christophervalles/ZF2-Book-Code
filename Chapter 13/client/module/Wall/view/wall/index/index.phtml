@@ -62,7 +62,7 @@
                 <?php endif; ?>
                 <section>
                     <ul class="post-list">
-                        <?php foreach ($wall->getFeed() as $entry) : ?>
+                        <?php foreach ($paginator as $entry) : ?>
                             <li class="post">
                                 <section>
                                     <a href="<?php echo $this->url('wall', array('username' => $user->getUsername())) ?>" title="<?php printf('%s %s', $user->getName(), $user->getSurname())  ?>" class="pull-left thumbnail">
@@ -100,6 +100,7 @@
                             </li>
                         <?php endforeach; ?>
                     </ul> <!-- Close post list -->
+                    <?php echo $this->paginationControl($paginator, 'Sliding', 'paginator/default', array('route' => 'wall', 'routeParams' => array('username' => $user->getUsername()))); ?>
                 <section>
             </div> <!-- Close wall profile -->
         </div>

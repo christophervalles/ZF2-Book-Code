@@ -1,0 +1,21 @@
+<?php if ($this->pageCount > 1): ?>
+    <section class="pagination pagination-centered">
+        <ul>
+            <li <?php echo isset($this->previous)? '' : 'class="disabled"' ?>>
+                <a rel="prev" href="<?php echo $this->url($this->route, array('page' => $this->previous) + $this->routeParams); ?>">&laquo; <?php echo $this->translate('Previous') ?></a>
+            </li>
+            <?php foreach ($this->pagesInRange as $page): ?>
+                <li>
+                    <?php if ($page != $this->current): ?>
+                        <a href="<?php echo $this->url($this->route, array('page' => $page) + $this->routeParams); ?>"><?php echo $page; ?></a>
+                    <?php else: ?>
+                        <span class="active"><?php echo $page; ?></span>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+            <li <?php echo isset($this->next)? '' : 'class="disabled"' ?>>
+                <a rel="next" href="<?php echo $this->url($this->route, array('page' => $this->next) + $this->routeParams); ?>"><?php echo $this->translate('Next') ?> &raquo;</a>
+            </li>
+        </ul>
+    </section>
+<?php endif; ?>

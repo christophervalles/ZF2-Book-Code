@@ -18,6 +18,8 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 use Feeds\Entity\Feed;
 use Zend\Navigation\Navigation;
 use Zend\Navigation\Page\AbstractPage;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\ArrayAdapter;
 
 class IndexController extends AbstractActionController
 {
@@ -33,8 +35,6 @@ class IndexController extends AbstractActionController
         $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
-        $this->layout()->username = $username;
-        
         $currentFeedId = $this->params()->fromRoute('feed_id');
         
         $userData = ApiClient::getUser($username);
@@ -79,14 +79,23 @@ class IndexController extends AbstractActionController
             );
         }
         
+        $currentFeed = $currentFeedId != null? $feeds[$currentFeedId] : null;
+        $paginator = new Paginator(new ArrayAdapter($currentFeed->getArticles()));
+        $paginator->setItemCountPerPage(5);
+        $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
+        
         $unsubscribeForm->get('feed_id')->setValue($currentFeedId);
         
         $viewData['subscribeForm'] = $subscribeForm;
         $viewData['unsubscribeForm'] = $unsubscribeForm;
-        $viewData['feed'] = $currentFeedId != null? $feeds[$currentFeedId] : null;
         $viewData['username'] = $username;
         $viewData['feedsMenu'] = $feedsMenu;
         $viewData['user'] = $user;
+        $viewData['paginator'] = $paginator;
+        $viewData['feedId'] = $currentFeedId;
+        $viewData['feed'] = $currentFeed;
+        
+        $this->layout()->username = $username;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();

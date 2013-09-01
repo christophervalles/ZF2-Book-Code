@@ -22,6 +22,8 @@ use Zend\Validator\File\Size;
 use Zend\Validator\File\IsImage;
 use Api\Client\ApiClient;
 use Zend\Authentication\AuthenticationService;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\ArrayAdapter;
 
 class IndexController extends AbstractActionController
 {
@@ -45,10 +47,13 @@ class IndexController extends AbstractActionController
             return;
         }
         
-        $wallData = ApiClient::getWall($username);
-        
         $hydrator = new ClassMethods();
+        $wallData = ApiClient::getWall($username);
         $wall = $hydrator->hydrate($wallData, new Wall());
+        
+        $paginator = new Paginator(new ArrayAdapter($wall->getFeed()));
+        $paginator->setItemCountPerPage(5);
+        $paginator->setCurrentPageNumber($this->params()->fromRoute('page'));
         
         //Check if we are submitting content
         $request = $this->getRequest();
@@ -109,12 +114,12 @@ class IndexController extends AbstractActionController
         $linkForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $commentForm->setAttribute('action', $this->url()->fromRoute('wall', array('username' => $user->getUsername())));
         $viewData['user'] = $user;
-        $viewData['wall'] = $wall;
         $viewData['textContentForm'] = $statusForm;
         $viewData['imageContentForm'] = $imageForm;
         $viewData['linkContentForm'] = $linkForm;
         $viewData['commentContentForm'] = $commentForm;
         $viewData['isMyWall'] = !empty($loggedInUser)? $loggedInUser->getUsername() == $username : false;
+        $viewData['paginator'] = $paginator;
         
         if ($flashMessenger->hasMessages()) {
             $viewData['flashMessages'] = $flashMessenger->getMessages();

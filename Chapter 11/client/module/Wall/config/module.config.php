@@ -13,13 +13,14 @@ return array(
             'wall' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route'    => '/:username',
+                    'route'    => '/:username[/page/:page]',
                     'constraints' => array(
                         'username' => '\w+'
                     ),
                     'defaults' => array(
                         'controller' => 'Wall\Controller\Index',
                         'action'     => 'index',
+                        'page'       => 1
                     ),
                 ),
             )
