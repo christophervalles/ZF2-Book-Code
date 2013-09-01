@@ -1,16 +1,9 @@
 <?php $form = $this->form; ?>
 <?php $form->prepare(); ?>
 <?php echo $this->form()->openTag($form) ?>
-<!-- Status input text -->
 <?php echo $this->formElement($form->get('status')); ?>
-
-<!-- Submit button -->
 <?php echo $this->formElement($form->get('submit')); ?>
-
-<!-- Status input error -->
 <?php echo $this->formElementErrors($form->get('status')); ?>
-
-<!-- CSRF -->
 <?php echo $this->formElement($form->get('csrf')); ?>
 <?php echo $this->formElementErrors($form->get('csrf')); ?>
 
