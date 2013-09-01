@@ -8,6 +8,7 @@ use Zend\Json\Decoder as JsonDecoder;
 use Zend\Json\Json;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Stream;
+use Zend\Cache\StorageFactory;
 
 /**
  * This client manages all the operations needed to interface with the
@@ -164,6 +165,26 @@ class ApiClient {
      */
     protected static function doRequest($url, array $postData = null, $method = Request::METHOD_GET)
     {
+        $cache = StorageFactory::factory(array(
+            'adapter' => array(
+                'name'    => 'filesystem',
+                'options' => array('ttl' => 60),
+            ),
+            'plugins' => array(
+                'exception_handler' => array('throw_exceptions' => false),
+                'Serializer'
+            ),
+        ));
+        $key = sha1($url);
+        
+        if ($method == Request::METHOD_GET) {
+            $data = $cache->getItem($key, $success);
+            
+            if ($success) {
+                return $data;
+            }
+        }
+        
         $client = self::getClientInstance();
         $client->setUri($url);
         $client->setMethod($method);
@@ -175,7 +196,15 @@ class ApiClient {
         $response = $client->send();
         
         if ($response->isSuccess()) {
-            return JsonDecoder::decode($response->getBody(), Json::TYPE_ARRAY);
+            $data = JsonDecoder::decode($response->getBody(), Json::TYPE_ARRAY);
+            
+            if ($method == Request::METHOD_GET) {
+                $cache->setItem($key, $data);
+            } else if($cache->hasItem($key)) {
+                $cache->removeItem($key);
+            }
+            
+            return $data;
         } else {
             $logger = new Logger;
             $logger->addWriter(new Stream('data/logs/apiclient.log'));
