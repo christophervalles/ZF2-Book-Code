@@ -98,7 +98,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `avatar_id`, `name`, `surname`, `bio`, `location`, `gender`, `created_at`, `updated_at`)
 VALUES
-	(1,'tbhot3ww','info@christophervalles.com',NULL,1,'Christopher','Valles','Game backend engineer. Entrepreneur. Airsofter. Apple fanboy. ACTC. Cooker. Sysadmin. ACSP. If you want to know more just ask!','London, United Kingdom',1,NULL,NULL);
+	(1,'tbhot3ww','hello@christophervalles.com',X'243279243134247078466B61344E4F584B6275363057324445376F754F434E657349796F6F462E49534D694B6D526475796F51315A77494874484E32',1,'Christopher','Valles','Game backend engineer. Entrepreneur. Airsofter. Apple fanboy. ACTC. Cooker. Sysadmin. ACSP. If you want to know more just ask!','London, United Kingdom',1,NULL,NULL);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

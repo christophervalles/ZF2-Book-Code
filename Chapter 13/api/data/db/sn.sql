@@ -294,7 +294,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `avatar_id`, `name`, `surname`, `bio`, `location`, `gender`, `created_at`, `updated_at`)
 VALUES
-	(1,'tbhot3ww','info@christophervalles.com',X'243279243134247078466B61344E4F584B6275363057324445376F754F434E657349796F6F462E49534D694B6D526475796F51315A77494874484E32',1,'Christopher','Valles','Game backend engineer. Entrepreneur. Airsofter. Apple fanboy. ACTC. Cooker. Sysadmin. ACSP. If you want to know more just ask!','London, United Kingdom',1,NULL,NULL),
+	(1,'tbhot3ww','hello@christophervalles.com',X'243279243134247078466B61344E4F584B6275363057324445376F754F434E657349796F6F462E49534D694B6D526475796F51315A77494874484E32',1,'Christopher','Valles','Game backend engineer. Entrepreneur. Airsofter. Apple fanboy. ACTC. Cooker. Sysadmin. ACSP. If you want to know more just ask!','London, United Kingdom',1,NULL,NULL),
 	(4,'esborguergue','esborguergue@gmail.com',X'243279243134244D564E48394F534173714A5742476E6F55755830772E71386A467539693179587375526F354257383132674B6151347A416A37364F',4,'Esborguergue','Ipsum','','',0,'2013-06-01 22:35:29',NULL);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
