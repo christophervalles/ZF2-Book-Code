@@ -19,7 +19,6 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $viewData = array();
-        $flashMessenger = $this->flashMessenger();
         
         $username = $this->params()->fromRoute('username');
         $this->layout()->username = $username;
@@ -35,14 +34,7 @@ class IndexController extends AbstractActionController
             return;
         }
         
-        //Check if we are submitting content
-        $request = $this->getRequest();
-        
         $viewData['profileData'] = $user;
-        
-        if ($flashMessenger->hasMessages()) {
-            $viewData['flashMessages'] = $flashMessenger->getMessages();
-        }
         
         return $viewData;
     }

@@ -2,13 +2,6 @@
 
 namespace Users\Entity;
 
-use Zend\Stdlib\Hydrator\ClassMethods;
-use Zend\InputFilter\InputFilter;
-use Zend\InputFilter\Factory as InputFactory;
-use Wall\Entity\Link;
-use Wall\Entity\Image;
-use Wall\Entity\Status;
-
 class User
 {
     const GENDER_MALE = 1;
@@ -46,14 +39,7 @@ class User
     
     public function setAvatar($avatar)
     {
-        if ($avatar == null) {
-            $defaultImage = new Image();
-            $defaultImage->setFilename('default.png');
-            $this->avatar = $defaultImage;
-        } else {
-            $hydrator = new ClassMethods();
-            $this->avatar = $hydrator->hydrate($avatar, new Image());
-        }
+        $this->avatar = $avatar;
     }
     
     public function setBio($bio)
