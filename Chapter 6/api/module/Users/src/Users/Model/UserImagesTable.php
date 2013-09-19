@@ -11,17 +11,11 @@ use Zend\InputFilter\Factory as InputFactory;
 class UserImagesTable extends AbstractTableGateway implements AdapterAwareInterface
 {
     /**
-     * Hold the entity id used for comments
-     */
-    const COMMENT_TYPE_ID = 2;
-    
-    /**
      * Hold the table name
      *
      * @var string
      */
     protected $table = 'user_images';
-    const TABLE_NAME = 'user_images';
     
     /**
      * Set db adapter
