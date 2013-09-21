@@ -42,11 +42,6 @@ return array(
             'Common\Controller\Index' => 'Common\Controller\IndexController'
         ),
     ),
-    'view_helpers' => array(
-        'invokables' => array(
-            'flashMessengerHelper' => 'Common\View\Helper\FlashMessenger',
-        ),
-    ),
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,

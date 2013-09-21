@@ -69,7 +69,7 @@ class IndexController extends AbstractActionController
                     break;
                 default:
                     if ($result == true) {
-                        $flashMessenger->addMessage('New content posted!');
+                        $flashMessenger->addSuccessMessage('New content posted!');
                         return $this->redirect()->toRoute('wall', array('username' => $user->getUsername()));
                     } else {
                         return $this->getResponse()->setStatusCode(500);

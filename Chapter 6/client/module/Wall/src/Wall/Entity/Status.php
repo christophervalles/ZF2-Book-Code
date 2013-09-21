@@ -3,7 +3,6 @@
 namespace Wall\Entity;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
-use Zend\Stdlib\Hydrator\ClassMethods;
 
 class Status
 {

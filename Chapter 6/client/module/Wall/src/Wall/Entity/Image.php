@@ -2,8 +2,6 @@
 
 namespace Wall\Entity;
 
-use Zend\Stdlib\Hydrator\ClassMethods;
-
 class Image
 {
     public $domain = 'http://zf2-api/images/';
