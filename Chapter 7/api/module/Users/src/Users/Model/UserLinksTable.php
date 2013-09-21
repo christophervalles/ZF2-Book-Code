@@ -7,22 +7,16 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Expression;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
-use Wall\Validator\Url;
+use Users\Validator\Url;
 
 class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterface
 {
-    /**
-     * Hold the entity id used for comments
-     */
-    const COMMENT_TYPE_ID = 3;
-    
     /**
      * Hold the table name
      *
      * @var string
      */
     protected $table = 'user_links';
-    const TABLE_NAME = 'user_links';
     
     /**
      * Set db adapter
@@ -114,7 +108,7 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
                         'max' => 2048
                     )
                 ),
-                array('name' => '\Wall\Validator\Url'),
+                array('name' => '\Users\Validator\Url'),
             ),
         )));
         
