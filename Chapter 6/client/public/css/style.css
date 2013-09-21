@@ -70,7 +70,6 @@ div.container a.brand {
 #wall-stream {
   position: relative;
   padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
 }
 #wall-stream h2 {
   margin: 0;
