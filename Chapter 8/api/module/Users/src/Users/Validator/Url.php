@@ -1,6 +1,6 @@
 <?php
 
-namespace Wall\Validator;
+namespace Users\Validator;
 
 use Zend\Validator\AbstractValidator;
 

@@ -7,7 +7,7 @@ use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Expression;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
-use Wall\Validator\Url;
+use Users\Validator\Url;
 
 class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterface
 {
@@ -114,7 +114,7 @@ class UserLinksTable extends AbstractTableGateway implements AdapterAwareInterfa
                         'max' => 2048
                     )
                 ),
-                array('name' => '\Wall\Validator\Url'),
+                array('name' => '\Users\Validator\Url'),
             ),
         )));
         
