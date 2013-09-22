@@ -130,7 +130,7 @@ class UserCommentsTable extends AbstractTableGateway implements AdapterAwareInte
             'validators' => array(
                 array('name' => 'NotEmpty'),
                 array(
-                    'name' => '\Wall\Validator\Spam',
+                    'name' => '\Users\Validator\Spam',
                     'options' => array(
                         'apiKey' => $config['apiKey'],
                         'url' => $config['url']
