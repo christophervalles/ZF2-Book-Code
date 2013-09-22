@@ -29,8 +29,4 @@ return array(
             'Wall\Controller\Index' => 'Wall\Controller\IndexController',
         ),
     ),
-    'akismet' => array(
-        'apiKey' => '010b675653dd',
-        'url' => 'http://zf2-test-book.com'
-    )
 );

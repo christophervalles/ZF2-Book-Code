@@ -127,6 +127,10 @@ class UserCommentsTable extends AbstractTableGateway implements AdapterAwareInte
         $inputFilter->add($factory->createInput(array(
             'name'     => 'comment',
             'required' => true,
+            'filters'  => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim')
+            ),
             'validators' => array(
                 array('name' => 'NotEmpty'),
                 array(
