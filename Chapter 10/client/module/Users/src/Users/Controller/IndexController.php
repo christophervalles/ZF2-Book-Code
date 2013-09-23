@@ -64,8 +64,7 @@ class IndexController extends AbstractActionController
                     
                     $fileinfo = $adapter->getFileInfo();
                     preg_match('/.+\/(.+)/', $fileinfo['avatar']['type'], $matches);
-                    $extension = $matches[1];
-                    $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $extension);
+                    $newFilename = sprintf('%s.%s', sha1(uniqid(time(), true)), $matches[1]);
                     
                     $adapter->addFilter('File\Rename',
                         array(
