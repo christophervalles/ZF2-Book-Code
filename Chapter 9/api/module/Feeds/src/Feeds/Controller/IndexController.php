@@ -67,11 +67,11 @@ class IndexController extends AbstractRestfulController
         $userFeedsTable = $this->getTable('UserFeedsTable');
         $userFeedArticlesTable = $this->getTable('UserFeedArticlesTable');
         
-        $feedsFromDb = $userFeedsTable->getByUserId($user->id)->toArray();
+        $feedsFromDb = $userFeedsTable->getByUserId($user->id);
         $feeds = array();
         foreach ($feedsFromDb as $f) {
-            $feeds[$f['id']] = $f;
-            $feeds[$f['id']]['articles'] = $userFeedArticlesTable->getByFeedId($f['id'])->toArray();
+            $feeds[$f->id] = $f;
+            $feeds[$f->id]['articles'] = $userFeedArticlesTable->getByFeedId($f->id)->toArray();
         }
         
         return new JsonModel($feeds);

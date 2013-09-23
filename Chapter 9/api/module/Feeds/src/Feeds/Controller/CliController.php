@@ -61,13 +61,13 @@ class CliController extends AbstractActionController
             }
             
             if ($verbose) {
-                echo "Updating timestamp\n";
+                printf("Updating timestamp\n");
             }
             
             $userFeedsTable->updateTimestamp($feed['id']);
             
             if ($verbose) {
-                echo "Finished feed processing\n\n";
+                printf("Finished feed processing\n\n");
             }
         }
     }

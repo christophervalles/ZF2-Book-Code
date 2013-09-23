@@ -10,16 +10,16 @@
 namespace Feeds\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Api\Client\ApiClient;
-use Feeds\Forms\SubscribeForm;
-use Feeds\Forms\UnsubscribeForm;
-use Users\Entity\User;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Feeds\Entity\Feed;
 use Zend\Navigation\Navigation;
 use Zend\Navigation\Page\AbstractPage;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\ArrayAdapter;
+use Api\Client\ApiClient;
+use Users\Entity\User;
+use Feeds\Entity\Feed;
+use Feeds\Forms\SubscribeForm;
+use Feeds\Forms\UnsubscribeForm;
 
 class IndexController extends AbstractActionController
 {
