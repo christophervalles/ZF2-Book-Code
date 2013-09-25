@@ -145,7 +145,7 @@ class IndexController extends AbstractActionController
                 
                 if (!$result->isValid()) {
                     foreach ($result->getMessages() as $msg) {
-                        $flashMessenger->addMessage($msg);
+                        $flashMessenger->addErrorMessage($msg);
                     }
                 } else {
                     return $this->redirect()->toRoute('wall', array('username' => $data['username']));
@@ -155,9 +155,6 @@ class IndexController extends AbstractActionController
         
         $viewData['loginForm'] = $loginForm;
         
-        if ($flashMessenger->hasMessages()) {
-            $viewData['flashMessages'] = $flashMessenger->getMessages();
-        }
         return $viewData;
     }
     
