@@ -60,7 +60,7 @@ class OAuthListener implements ListenerAggregateInterface
         
         $url = $e->getRequest()->getUri()->getPath();
         
-        if ($url == '/oauth' || substr($url, 0, 10) == '/api/users') {
+        if (substr($url, 0, 10) == '/api/users') {
             return;
         }
         
@@ -69,7 +69,7 @@ class OAuthListener implements ListenerAggregateInterface
         
         $storage = new Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
         $server = new Server($storage);
-        if (!$server->verifyResourceRequest(Request::createFromGlobals(), new Response())) {
+        if (!$server->verifyResourceRequest(Request::createFromGlobals())) {
             $model = new JsonModel(array(
                 'errorCode' => $server->getResponse()->getStatusCode(),
                 'errorMsg' => $server->getResponse()->getStatusText()

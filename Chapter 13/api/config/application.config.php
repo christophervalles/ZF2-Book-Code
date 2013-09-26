@@ -4,8 +4,7 @@ return array(
         'Wall',
         'Common',
         'Feeds',
-        'Users',
-        'OAuth'
+        'Users'
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(

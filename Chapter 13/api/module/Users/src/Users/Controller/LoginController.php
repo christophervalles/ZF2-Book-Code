@@ -14,7 +14,7 @@ use Zend\View\Model\JsonModel;
 use Zend\Crypt\Password\Bcrypt;
 use OAuth2\Storage\Pdo;
 use OAuth2\Server;
-use OAuth2\GrantType\AuthorizationCode;
+use OAuth2\GrantType\ClientCredentials;
 use OAuth2\Request;
 use OAuth2\Response;
 
@@ -67,8 +67,8 @@ class LoginController extends AbstractRestfulController
         if (!empty($user) && $bcrypt->verify($data['password'], $user->password)) {
             $storage = new Pdo($usersTable->adapter->getDriver()->getConnection()->getConnectionParameters());
             $server = new Server($storage);
-            $server->addGrantType(new AuthorizationCode($storage));
-            $response = $server->handleTokenRequest(Request::createFromGlobals(), new Response());
+            $server->addGrantType(new ClientCredentials($storage));
+            $response = $server->handleTokenRequest(Request::createFromGlobals());
             
             if (!$response->isSuccessful()) {
                 $result = new JsonModel(array(
@@ -77,14 +77,7 @@ class LoginController extends AbstractRestfulController
                 ));
             }
             
-            $result = new JsonModel(array(
-                'oauth' => array(
-                    'access_token' => $response->getParameter('access_token'),
-                    'expires_in' => $response->getParameter('expires_in'),
-                    'refresh_token' => $response->getParameter('refresh_token')
-                ),
-                'errors' => null
-            ));
+            return new JsonModel($response->getParameters());
         } else {
             $result = new JsonModel(array(
                 'result' => false,

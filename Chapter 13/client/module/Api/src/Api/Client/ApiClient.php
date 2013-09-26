@@ -143,7 +143,7 @@ class ApiClient {
      */
     public static function authenticate($postData)
     {
-        $postData['grant_type'] = 'authorization_code';
+        $postData['grant_type'] = 'client_credentials';
         $postData['redirect_uri'] = 'http://example.com';
         $postData['client_id'] = 'zf2-client';
         $postData['client_secret'] = 'mysupersecretpass';
@@ -164,24 +164,6 @@ class ApiClient {
         }
         
         return self::$session;
-    }
-    
-    /**
-     * Call the API side to get an authorization code
-     *
-     * @return void
-     * @author Christopher
-     */
-    public function getOAuthAuthorizationCode()
-    {
-        $postData = array();
-        $postData['response_type'] = 'code';
-        $postData['state'] = sha1(uniqid(time(), TRUE));
-        $postData['client_id'] = 'zf2-client';
-        $postData['client_secret'] = 'mysupersecretpass';
-        
-        $url = self::$endpointHost . self::$endpointOAuth;
-        return self::doRequest($url, $postData, Request::METHOD_GET);
     }
     
     /**

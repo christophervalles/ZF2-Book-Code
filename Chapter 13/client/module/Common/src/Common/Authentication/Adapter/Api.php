@@ -39,28 +39,18 @@ class Api implements AdapterInterface
      */
     public function authenticate()
     {
-        $session = new Container('oauth');
-        $session->setExpirationSeconds(30);
-        
-        if ($session->authorizationCode === null) {
-            $oauthCode = ApiClient::getOAuthAuthorizationCode();
-            $session->authorizationCode = $oauthCode['code'];
-        }
-        
         $result = ApiClient::authenticate(array(
             'username' => $this->username,
-            'password' => $this->password,
-            'code' => $session->authorizationCode
+            'password' => $this->password
         ));
         
-        if (array_key_exists('oauth', $result)) {
+        if (array_key_exists('access_token', $result) && !empty($result['access_token'])) {
             $hydrator = new ClassMethods();
             $user = $hydrator->hydrate(ApiClient::getUser($this->username), new User());
             
             $session = new Container('oauth_session');
-            $session->setExpirationSeconds($result['oauth']['expires_in']);
-            $session->accessToken = $result['oauth']['access_token'];
-            $session->refreshToken = $result['oauth']['refresh_token'];
+            $session->setExpirationSeconds($result['expires_in']);
+            $session->accessToken = $result['access_token'];
             
             $response = new Result(Result::SUCCESS, $user, array('Authentication successful.'));
         } else {
