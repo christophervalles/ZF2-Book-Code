@@ -2,7 +2,7 @@
 
 namespace Common\Listeners;
 
-use Zend\EventManager\ListenerAggregateInterface;
+use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\JsonModel;
@@ -11,7 +11,7 @@ use OAuth2\Server;
 use OAuth2\Request;
 use OAuth2\Response;
 
-class OAuthListener implements ListenerAggregateInterface
+class OAuthListener extends AbstractListenerAggregate
 {
     /**
      * Holds the attached listeners
@@ -29,21 +29,6 @@ class OAuthListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events)
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, __CLASS__ . '::onDispatch', 1000);
-    }
-    
-    /**
-     * Method to unregister the listeners
-     *
-     * @param EventManagerInterface $events 
-     * @return void
-     */
-    public function detach(EventManagerInterface $events)
-    {
-        foreach ($this->listeners as $i => $listener) {
-            if ($events->detach($listener)) {
-                unset($this->listeners[$i]);
-            }
-        }
     }
     
     /**

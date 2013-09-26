@@ -36,7 +36,7 @@ class ApiErrorListener extends AbstractListenerAggregate
      */
     public static function onRender(MvcEvent $e)
     {
-        if ($e->getRequest() instanceOf \Zend\Console\Request || $e->getResponse()->isOk()) {
+        if ($e->getRequest() instanceOf \Zend\Console\Request || $e->getResponse()->isOk() || $e->getResponse()->getStatusCode() == Response::STATUS_CODE_401) {
             return;
         }
         
