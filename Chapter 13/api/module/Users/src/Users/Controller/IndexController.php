@@ -81,7 +81,7 @@ class IndexController extends AbstractRestfulController
         if ($filters->isValid()) {
             $data = $filters->getValues();
             
-            $avatarContent = $unfilteredData['avatar'];
+            $avatarContent = array_key_exists('avatar', $unfilteredData) ? $unfilteredData['avatar'] : NULL;
             
             $bcrypt = new Bcrypt();
             $data['password'] = $bcrypt->create($data['password']);
