@@ -87,9 +87,9 @@ class IndexController extends AbstractRestfulController
             $data['password'] = $bcrypt->create($data['password']);
             
             if ($usersTable->create($data)) {
+                $user = $usersTable->getByUsername($data['username']);
                 if (!empty($avatarContent)) {
                     $userImagesTable = $this->getUserImagesTable();
-                    $user = $usersTable->getByUsername($data['username']);
                     
                     $filename = sprintf('public/images/%s.png', sha1(uniqid(time(), TRUE)));
                     $content = base64_decode($avatarContent);
