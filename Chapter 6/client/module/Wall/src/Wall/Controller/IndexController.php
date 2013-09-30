@@ -146,9 +146,7 @@ class IndexController extends AbstractActionController
                 );
                 $data['user_id'] = $user->getId();
                 
-                if (file_exists($destPath . $newFilename)) {
-                    unlink($destPath . $newFilename);
-                }
+                unlink($destPath . $newFilename);
                 
                 $response = ApiClient::postWallContent($user->getUsername(), $data);
                 return $response['result'];
