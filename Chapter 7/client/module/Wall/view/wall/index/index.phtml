@@ -68,7 +68,7 @@
                                         <?php elseif ($entry instanceOf \Wall\Entity\Image) : ?>
                                             <p><img src="<?php echo $entry->getUrl() ?>" width="400" /></p>
                                         <?php elseif ($entry instanceOf \Wall\Entity\Link) : ?>
-                                            <p><a href="<?php echo $entry->getUrl() ?>"><?php echo !empty($entry->getTitle())? $entry->getTitle() : $entry->getUrl(); ?></a></p>
+                                            <p><a href="<?php echo $entry->getUrl() ?>"><?php echo $entry->getTitle() !== '' ? $entry->getTitle() : $entry->getUrl(); ?></a></p>
                                         <?php endif; ?>
                                     </div>
                                 </section>
