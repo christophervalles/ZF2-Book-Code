@@ -23,13 +23,16 @@ class CommentForm extends Form
         ));
         $this->add(array(
             'name' => 'type',
-            'type'  => 'Zend\Form\Element\Hidden',
+            'type' => 'Zend\Form\Element\Hidden',
         ));
         $this->add(array(
             'name' => 'entry_id',
-            'type'  => 'Zend\Form\Element\Hidden',
+            'type' => 'Zend\Form\Element\Hidden',
         ));
-        $this->add(new Element\Csrf('csrf'));
+        $this->add(array(
+            'name' => 'csrf',
+            'type' => 'Zend\Form\Element\Csrf'
+        ));
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(
