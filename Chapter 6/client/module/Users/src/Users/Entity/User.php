@@ -47,7 +47,7 @@ class User
     
     public function setAvatar($avatar)
     {
-        if ($avatar == null) {
+        if (empty($avatar)) {
             $defaultImage = new Image();
             $defaultImage->setFilename('default.png');
             $this->avatar = $defaultImage;
