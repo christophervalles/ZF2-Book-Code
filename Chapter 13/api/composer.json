@@ -17,6 +17,6 @@
         "php": ">=5.3.3",
         "zendframework/zendframework": "2.*",
         "zendframework/zendservice-akismet": "2.*@dev",
-        "bshaffer/oauth2-server-php": "dev-develop"
+        "bshaffer/oauth2-server-php": "v1.0"
     }
 }
