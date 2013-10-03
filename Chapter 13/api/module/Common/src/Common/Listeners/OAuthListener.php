@@ -43,9 +43,7 @@ class OAuthListener extends AbstractListenerAggregate
             return;
         }
         
-        $url = $e->getRequest()->getUri()->getPath();
-        
-        if (substr($url, 0, 10) == '/api/users') {
+        if ($e->getRouteMatch()->getMatchedRouteName() == 'login' || $e->getRouteMatch()->getMatchedRouteName() == 'users') {
             return;
         }
         

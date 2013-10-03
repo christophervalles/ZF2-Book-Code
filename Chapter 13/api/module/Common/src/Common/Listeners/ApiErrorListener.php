@@ -6,6 +6,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\JsonModel;
+use Zend\Http\Response;
 
 /**
  * Listener attached to render to check the response.
